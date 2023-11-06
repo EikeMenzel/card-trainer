@@ -1,0 +1,91 @@
+stages:
+  - testing
+  - build
+  - test
+  - code_quality
+  - push_to_registry
+
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+
+build_frontend:
+  stage: build
+  image: node:16
+  tags:
+    - docker
+  before_script:
+    - npm install -g @angular/cli
+  script:
+    - cd app/frontend/angular-frontend
+    - npm install
+    - ng build --configuration=production
+
+build_backend:
+  stage: build
+  image: maven:latest
+  tags:
+    - docker
+  script:
+    - cd app/backend
+    - mvn clean install -DskipTests=true --batch-mode
+    - mvn package
+
+test_backend: #unit tests backend
+  stage: test
+  image: maven:latest
+  tags:
+    - docker
+  script:
+    - cd app/backend
+    - mvn test
+
+sonarqube: # Sonarqube community edition only supports master branch
+  stage: code_quality
+  image: sonarsource/sonar-scanner-cli:latest
+  tags:
+    - docker
+  allow_failure: false
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true
+  only:
+    - master
+
+push_backend_to_registry: # push images to registry
+  stage: push_to_registry
+  tags:
+    - docker
+  image: docker:20.10.21
+  services:
+    - name: docker:20.10.21-dind
+      alias: docker
+      command: [ "--tls=false" ]
+  before_script:
+    - docker login $CI_REGISTRY_URL -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  script:
+    - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
+    - cd app/backend/demo
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/demo-service:$CI_COMMIT_SHORT_SHA . #--load
+    - docker push $CI_REGISTRY_IMAGE_PATH/demo-service:$CI_COMMIT_SHORT_SHA
+
+
+push_frontend_to_registry: # push images to registry
+  stage: push_to_registry
+  tags:
+    - docker
+  image: docker:20.10.21
+  services:
+    - name: docker:20.10.21-dind
+      alias: docker
+      command: [ "--tls=false" ]
+  before_script:
+    - docker login $CI_REGISTRY_URL -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  script:
+    - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
+    - export FRONTEND=angular-frontend;
+    - cd app/frontend/$FRONTEND
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA . # --load
+    - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA
