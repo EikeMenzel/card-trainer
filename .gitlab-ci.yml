@@ -1,5 +1,4 @@
 stages:
-  - testing
   - build
   - test
   - code_quality
@@ -14,7 +13,7 @@ variables:
 
 build_frontend:
   stage: build
-  image: node:16
+  image: node:18.13
   tags:
     - docker
   before_script:
