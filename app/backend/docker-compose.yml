@@ -1,0 +1,54 @@
+version: "3"
+services:
+  db:
+    container_name: postgres-swtp-project
+    ports:
+      - "5433:5432"
+    image: postgres:14.1-alpine
+    restart: unless-stopped
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - type: bind
+        source: ./database/data
+        target: /var/lib/postgresql/data
+
+    networks:
+      - postgres-network
+    user: postgres
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "16543:80"
+    networks:
+      - postgres-network
+    depends_on:
+      - db
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - ./database/servers.json:/pgadmin4/servers.json
+      - ./database/devdbpass:/pgadmin4/devdbpass
+networks:
+  postgres-network:
+    driver: bridge
+
+#       POSTGRES_DB: swtp
+#   adminer:
+#     image: adminer
+#     restart: unless-stopped
+#     depends_on:
+#      - postgres
+#     ports:
+#       - 8080:8080
+
+# networks:
+#   bridge:
+#     external: true
