@@ -9,7 +9,7 @@
 
 ### Softwareentwurf
  - [Live Dokument (Google Drive)](https://docs.google.com/document/d/1mFZ_HBD6-93Hbmu5UpyCfXXPiMsk1iZjIwh0n1aWS6c/edit?usp=sharing)
-
+ - [Abgabe als pdf](documentation/Softwareentwurf_Abgabe_13_11_2023.pdf)
 ### Von
  - Eike Torben Menzel
  - Maria Kazim
