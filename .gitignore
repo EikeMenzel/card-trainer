@@ -42,3 +42,8 @@ build/
 
 ### Database persistency
 /database/data
+frontend/node_modules/
+
+frontend/card-trainer-app/node_modules/
+
+frontend/card-trainer-app/.angular/
