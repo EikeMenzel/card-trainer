@@ -54,6 +54,22 @@ CREATE TABLE "achievement" (
     CONSTRAINT unique_name UNIQUE (name)
 );
 
+INSERT INTO "achievement" (a_id, name, description) VALUES
+    (1, 'Achievement Made! All beginning is … easy', 'For creating the first card deck'),
+    (2, 'Achievement Made! Master of cards', 'For the first successfully completed session'),
+    (3, 'Achievement Made! 50 down, 50 to go', 'For the first 50 successfully completed sessions'),
+    (4, 'Achievement Made! Centurio of Knowledge', 'For the first 100 successfully completed sessions'),
+    (5, 'Achievement Made! Session Supreme', 'For the first 500 successfully completed sessions'),
+    (6, 'Achievement Made! Scholar of the Century', 'For the first 100 cards learned'),
+    (7, 'Achievement Made! Card Conqueror', 'For the first 500 cards learned'),
+    (8, 'Achievement Made! Greatest of all Time', 'For the first 2500 cards learned'),
+    (9, 'Achievement Made! Daily Dedication', 'For daily logging in'),
+    (10, 'Achievement Made! One session a day keeps the bad grades away', 'For daily completion of a learning session'),
+    (11, 'Achievement Made! Ten-time Triumph', 'For daily learning of 10 cards'),
+    (12, 'Achievement Made! Fifty-fold Fiend', 'For daily learning of 50 cards');
+
+
+
 CREATE TABLE "user_achievement" (
     ua_id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -94,7 +110,7 @@ CREATE TABLE "card" (
 );
 
 CREATE TABLE "text_answer_card" (
-    c_id BIGINT NOT NULL,
+    c_id BIGINT PRIMARY KEY,
     answer TEXT NOT NULL,
     image_path TEXT,
 
@@ -102,7 +118,7 @@ CREATE TABLE "text_answer_card" (
 );
 
 CREATE TABLE "multiple_choice_card" (
-    c_id BIGINT NOT NULL,
+    c_id BIGINT PRIMARY KEY,
 
     FOREIGN KEY (c_id) REFERENCES card(c_id)
 );
