@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-
+import {Component, NgModule} from '@angular/core';
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgForm, FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  imports: [ReactiveFormsModule, FormsModule]
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -16,7 +17,10 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]]
     });
   }
-  submitLogin() {
+
+  submitLogin(loginform: NgForm) {
+
+    console.log('Your form data : ', loginform.value);
     if (this.loginForm.valid) {
       console.log(this.loginForm.value);
     }
