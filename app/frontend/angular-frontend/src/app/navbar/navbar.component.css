@@ -7,18 +7,15 @@
     display: flex;
 }
 
-.goto-profile-wrapper {
+.goto-home-wrapper {
     display: flex;
 }
 
-span {
-    top: 50%;
-    transform: translate(0, -50%);
-    position: absolute;
-    vertical-align: center;
+#nav-title {
     display: flex;
     color: black;
 }
+
 .profile-button {
     background-color: var(--blank-color);
     border: 1px solid;
