@@ -1,0 +1,52 @@
+#nav-content {
+    border-bottom: 1px solid black;
+    padding: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: space-between;
+    display: flex;
+}
+
+.goto-profile-wrapper {
+    display: flex;
+}
+
+span {
+    top: 50%;
+    transform: translate(0, -50%);
+    position: absolute;
+    vertical-align: center;
+    display: flex;
+    color: black;
+}
+.profile-button {
+    background-color: var(--blank-color);
+    border: 1px solid;
+    border-radius: 50%; /* Makes the button circular */
+    width: 35px; /* Adjust size as needed */
+    height: 35px; /* Adjust size as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.nav-icon {
+    color: var(--primary-color);
+}
+
+.house-button {
+    background-color: var(--blank-color);
+    border: 1px solid;
+    border-radius: 50%; /* Makes the button circular */
+    width: 35px; /* Adjust size as needed */
+    height: 35px; /* Adjust size as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.house-icon {
+    color: white; /* Change icon color to white or your desired color */
+}

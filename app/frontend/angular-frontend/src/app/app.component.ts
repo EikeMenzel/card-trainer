@@ -17,6 +17,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    return;
     if (!this.isLoggedIn) {
       this.router.navigate(["/login"]);
     }
