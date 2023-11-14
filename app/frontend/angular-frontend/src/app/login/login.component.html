@@ -1,17 +1,17 @@
 <div id="login-body">
-    <div class="login-container bg-green">
+    <div class="login-container">
         <h1>Login</h1>
-        <form>
+        <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
             <label>
-                <input type="text" placeholder="E-Mail" required>
+                <input type="text" placeholder="E-Mail" formControlName="email">
             </label>
             <br>
             <label>
-                <input type="password" placeholder="Password" required>
+                <input type="password" placeholder="Password" formControlName="password">
             </label>
             <div id="remember-me-container">
                 <label for="remember-me">
-                    <input type="checkbox" id="remember-me">
+                    <input name="remember" type="checkbox" id="remember-me" formControlName="remember">
                     <span>
                 Remember Me
             </span>

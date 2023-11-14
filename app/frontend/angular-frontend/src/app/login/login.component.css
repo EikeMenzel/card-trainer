@@ -1,7 +1,3 @@
-:root {
-    --bs-primary-rgb: #72bb53;
-}
-
 .login-container {
     margin: 60px auto;
     width: 400px;
@@ -9,10 +5,10 @@
     text-align: center;
     padding: 20px;
     border-radius: 8px;
-    border-style: solid;
+    border-style: none;
     border-width: 1px;
     border-color: black;
-    background-color: green;
+    background-color: var(--primary-color);
     /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
 }
 
@@ -41,7 +37,7 @@ button {
     width: 95%;
     background-color: white;
     padding: 10px 20px;
-    border-style: solid;
+    border-style: none;
     border-width: 1px;
     border-color: black;
     color: black;

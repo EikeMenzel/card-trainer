@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {CookieService} from "ngx-cookie-service";
 import {RouterModule, Routes} from '@angular/router';
 import { RegisterComponent } from './register/register.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -22,7 +23,9 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     NgbModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
