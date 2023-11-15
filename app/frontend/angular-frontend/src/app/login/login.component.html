@@ -1,25 +1,26 @@
 <div id="login-body">
-    <div class="login-container">
-        <h1>Login</h1>
-        <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
-            <label>
-                <input type="text" placeholder="E-Mail" formControlName="email">
-            </label>
-            <br>
-            <label>
-                <input type="password" placeholder="Password" formControlName="password">
-            </label>
-            <div id="remember-me-container">
-                <label for="remember-me">
-                    <input name="remember" type="checkbox" id="remember-me" formControlName="remember">
-                    <span>
+  <div class="login-container">
+    <h1>Login</h1>
+
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+      <label>
+        <input type="email" placeholder="E-Mail" name="email" ngModel>
+      </label>
+      <br>
+      <label>
+        <input type="password" placeholder="Password" name="password" required ngModel minlength="8">
+      </label>
+      <div id="remember-me-container">
+        <label for="remember-me">
+          <input value="false" [defaultChecked]="true" name="remember" type="checkbox" id="remember-me" ngModel>
+          <span>
                 Remember Me
             </span>
-                </label>
-            </div>
-            <button type="submit" class="btn-success">Login</button>
-        </form>
-        <span style="width: 100%"></span>
-        <p>Are you new here? <a routerLink="/register">Register here</a></p>
-    </div>
+        </label>
+      </div>
+      <button type="submit" class="btn-success">Login</button>
+    </form>
+    <span style="width: 100%"></span>
+    <p>Are you new here? <a routerLink="/register">Register here</a></p>
+  </div>
 </div>

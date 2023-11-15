@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @font-face {
     font-family: 'Helvetica';
-    src: local('Helvetica'), url('~src/assets/Helvetica.woff') format('woff');
+    src: local('Helvetica'), url('./assets/Helvetica.woff') format('woff');
 }
 
 * {
@@ -15,4 +15,9 @@
 
 p, span, h1, h2, h3, h4, h5, h6 {
     color: white;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
 }

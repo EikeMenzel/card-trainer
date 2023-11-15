@@ -1,24 +1,26 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-
+import {Component} from '@angular/core';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  FormControl, FormGroup, Validators, NgForm
+} from '@angular/forms';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink]
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
-      password: ['', Validators.required],
-      remember: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]]
-    });
-  }
-  submitLogin() {
-    if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
+
+  onSubmit(loginForm: NgForm) {
+    if(loginForm.valid) {
+      if (loginForm.value["remember"] == "") {
+        loginForm.value["remember"] = false;
+      }
+      console.log(loginForm.value)
     }
   }
 }
