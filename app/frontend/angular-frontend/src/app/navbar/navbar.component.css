@@ -1,14 +1,18 @@
 #nav-content {
   border-bottom: 1px solid black;
   padding: 5px;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
   justify-content: space-between;
   display: flex;
 }
 
 .goto-home-wrapper {
   display: flex;
+}
+
+#nav-username-display {
+  margin-right: 5px;
 }
 
 #nav-title {

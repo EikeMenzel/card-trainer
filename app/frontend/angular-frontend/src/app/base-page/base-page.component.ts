@@ -11,5 +11,10 @@ import {NavbarComponent} from "../navbar/navbar.component";
   styleUrls: ['./base-page.component.css']
 })
 export class BasePageComponent {
+  PageTitle: string = "Mert";
+  Username: string = "Gürken"
 
+  ngOnInit() {
+
+  }
 }
