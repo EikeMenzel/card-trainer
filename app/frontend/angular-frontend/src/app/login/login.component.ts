@@ -2,32 +2,25 @@ import {Component} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormsModule,
-  FormControl, FormGroup, Validators
+  FormControl, FormGroup, Validators, NgForm
 } from '@angular/forms';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, FormsModule]
+  imports: [ReactiveFormsModule, FormsModule, RouterLink]
 })
 export class LoginComponent {
-  email = new FormControl('');
-  password = new FormControl('');
-  remember = new FormControl('');
-  loginGroup = new FormGroup({
-    email: new FormControl(this.email.value, [Validators.email, Validators.required]),
-  });
-  constructor() {
 
-  }
-
-  submitLogin() {
-    if (this.loginGroup.valid) {
-      console.log(this.email.value)
-    } else {
-      console.log("Not valid")
+  onSubmit(loginForm: NgForm) {
+    if(loginForm.valid) {
+      if (loginForm.value["remember"] == "") {
+        loginForm.value["remember"] = false;
+      }
+      console.log(loginForm.value)
     }
   }
 }
