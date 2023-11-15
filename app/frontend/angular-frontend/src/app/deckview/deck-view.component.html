@@ -1,0 +1,24 @@
+<app-base-page>
+  <div class="container">
+    <table class="table">
+      <thead>
+      <tr>
+        <td><strong>Name</strong></td>
+        <td>
+          <strong>Card Count</strong>
+        </td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let deck of deckList;">
+        <td>{{deck.deckName}}</td>
+        <td>{{deck.deckId}} <i class="bi bi-arrow-right"></i></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="add-button-wrapper">
+    <i id="add-button" class="bi bi-plus"></i>
+  </div>
+</app-base-page>
