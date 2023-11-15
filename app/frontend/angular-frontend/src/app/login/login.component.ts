@@ -1,5 +1,9 @@
-import {Component, NgModule} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgForm, FormsModule} from '@angular/forms';
+import {Component} from '@angular/core';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  FormControl, FormGroup, Validators
+} from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -9,20 +13,21 @@ import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgForm, FormsMo
   imports: [ReactiveFormsModule, FormsModule]
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
-      password: ['', Validators.required],
-      remember: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]]
-    });
+  email = new FormControl('');
+  password = new FormControl('');
+  remember = new FormControl('');
+  loginGroup = new FormGroup({
+    email: new FormControl(this.email.value, [Validators.email, Validators.required]),
+  });
+  constructor() {
+
   }
 
-  submitLogin(loginform: NgForm) {
-
-    console.log('Your form data : ', loginform.value);
-    if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
+  submitLogin() {
+    if (this.loginGroup.valid) {
+      console.log(this.email.value)
+    } else {
+      console.log("Not valid")
     }
   }
 }

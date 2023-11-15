@@ -2,24 +2,24 @@
     <div class="login-container">
         <h1>Login</h1>
 
-        <ng-form (ngSubmit)="submitLogin()">
+        <form [formGroup]="loginGroup" (ngSubmit)="submitLogin()">
           <label>
-            <input type="text" placeholder="E-Mail" formControlName="email">
+            <input type="email" placeholder="E-Mail" [formControl]="email" required>
           </label>
           <br>
           <label>
-            <input type="password" placeholder="Password" formControlName="password">
+            <input type="password" placeholder="Password" [formControl]="password" required>
           </label>
           <div id="remember-me-container">
             <label for="remember-me">
-              <input name="remember" type="checkbox" id="remember-me" formControlName="remember">
+              <input name="remember" type="checkbox" id="remember-me" [formControl]="remember" required>
               <span>
                 Remember Me
             </span>
             </label>
           </div>
           <button type="submit" class="btn-success">Login</button>
-        </ng-form>
+        </form>
         <span style="width: 100%"></span>
         <p>Are you new here? <a routerLink="/register">Register here</a></p>
     </div>
