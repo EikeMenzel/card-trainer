@@ -2,8 +2,8 @@ package com.service.authenticationservice.payload.inc;
 
 public class UserDTO {
     private Long id;
-    private final String username;
-    private final String email;
+    private String username;
+    private String email;
     private String password;
 
     public UserDTO(Long id, String username, String email, String password) {
@@ -18,6 +18,8 @@ public class UserDTO {
         this.email = email;
         this.password = password;
     }
+
+    public UserDTO() {}
 
     public Long getId() {
         return id;

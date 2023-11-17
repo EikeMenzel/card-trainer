@@ -1,7 +1,10 @@
 package com.service.authenticationservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.authenticationservice.controller.AuthController;
 import com.service.authenticationservice.payload.inc.UserDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +20,7 @@ public class DbQueryService {
     //@Value("database.api.path")
     private static final String GENERIC_DB_API_PATH = "http://localhost:8086/api/v1/db";
     private static final String USER_DB_API_PATH =  GENERIC_DB_API_PATH + "/users";
+    private final Logger logger =  LoggerFactory.getLogger(DbQueryService.class);
 
     public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate) {
         this.objectMapper = objectMapper;
@@ -26,10 +30,12 @@ public class DbQueryService {
     public Optional<UserDTO> getUserByEmail(String email) {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/email/" + email, String.class);
+
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), UserDTO.class))
                     : Optional.empty();
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return Optional.empty();
         }
     }
@@ -50,6 +56,17 @@ public class DbQueryService {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/email/" + email + "/exists", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
+                    : Optional.empty();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<String> getUserEmailFromId(Long userId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(GENERIC_DB_API_PATH + "/users/" + userId + "/email", String.class);
+            return responseEntity.getStatusCode() == HttpStatus.OK
+                    ? Optional.ofNullable(responseEntity.getBody())
                     : Optional.empty();
         } catch (Exception e) {
             return Optional.empty();

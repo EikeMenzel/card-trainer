@@ -1,19 +1,27 @@
 package com.service.authenticationservice.controller;
 
 import com.service.authenticationservice.model.MailType;
+import com.service.authenticationservice.payload.inc.LoginDTO;
 import com.service.authenticationservice.payload.inc.RegisterRequestDTO;
 import com.service.authenticationservice.payload.inc.UserDTO;
 import com.service.authenticationservice.payload.out.MessageResponseDTO;
+import com.service.authenticationservice.payload.out.UserInfoResponseDTO;
 import com.service.authenticationservice.security.jwt.JwtUtils;
+import com.service.authenticationservice.security.services.UserDetailsImpl;
+import com.service.authenticationservice.security.services.UserDetailsServiceImpl;
 import com.service.authenticationservice.services.DbQueryService;
 import com.service.authenticationservice.services.EmailQueryService;
 import com.service.authenticationservice.services.EmailValidator;
 import com.service.authenticationservice.services.PasswordSecurityService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +33,18 @@ public class AuthController {
     private final PasswordSecurityService passwordSecurityService;
     private final DbQueryService dbQueryService;
     private final EmailQueryService emailQueryService;
-
     private final PasswordEncoder encoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final Logger logger =  LoggerFactory.getLogger(AuthController.class);
 
-
-    public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder) {
+    public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.passwordSecurityService = passwordSecurityService;
         this.dbQueryService = dbQueryService;
         this.emailQueryService = emailQueryService;
         this.encoder = encoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/register")
@@ -69,6 +80,31 @@ public class AuthController {
             return ResponseEntity.internalServerError().body("Error, some problem occurred");
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
+        try {
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            //if(dbQueryService.getVerificationStateUser(userDetails.id()).isEmpty())
+            //    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: The user is not verified");
+
+            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body(new UserInfoResponseDTO(userDetails.id()));
+        } catch (AuthenticationException e) {
+            logger.error("Authentication failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication failed: " + e.getMessage());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.service.databaseservice.controller;
 
+import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.services.UserService;
 import jakarta.validation.Valid;
@@ -23,6 +24,13 @@ public class UserController {
         Optional<String> userEmail = userService.getUserEmailById(userId);
         return userEmail.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/email/{email}") //TODO write tests....
+    public ResponseEntity<UserDTO> getUserFromEmail(@PathVariable String email) {
+        Optional<UserDTO> userDTO = userService.getUserByEmail(email);
+        return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     @GetMapping("/email/{email}/id")
     public ResponseEntity<Long> getIdFromUserEmail(@PathVariable String email) {
