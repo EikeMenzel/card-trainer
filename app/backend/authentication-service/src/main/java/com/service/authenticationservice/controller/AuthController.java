@@ -69,6 +69,31 @@ public class AuthController {
             return ResponseEntity.internalServerError().body("Error, some problem occurred");
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
+        try {
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            if(dbQueryService.getVerificationStateUser(userDetails.id()).isEmpty())
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: The user is not verified");
+
+            ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body(new UserInfoResponseDTO(userDetails.id()));
+        } catch (AuthenticationException e) {
+            logger.error("Authentication failed: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Authentication failed: " + e.getMessage());
+        }
     }
 }
