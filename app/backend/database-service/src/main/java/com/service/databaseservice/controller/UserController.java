@@ -24,6 +24,13 @@ public class UserController {
         return userEmail.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDTO> getUserFromEmail(@PathVariable String email) {
+        Optional<UserDTO> userDTO = userService.getUserByEmail(email);
+        return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
     @GetMapping("/email/{email}/id")
     public ResponseEntity<Long> getIdFromUserEmail(@PathVariable String email) {
         var userId = userService.getUserIdFromEmail(email);
