@@ -14,9 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 class UserControllerTest {
@@ -32,7 +29,7 @@ class UserControllerTest {
         Long userId = 1L;
         String userEmail = "test@example.com";
 
-        when(userService.getUserEmailById(userId)).thenReturn(Optional.of(userEmail));
+        Mockito.when(userService.getUserEmailById(userId)).thenReturn(Optional.of(userEmail));
 
         ResponseEntity<String> response = userController.getUserEmailFromId(userId);
 
@@ -44,7 +41,7 @@ class UserControllerTest {
     void testGetUserEmailFromId_UserNotFound() {
         Long userId = 1L;
 
-        when(userService.getUserEmailById(userId)).thenReturn(Optional.empty());
+        Mockito.when(userService.getUserEmailById(userId)).thenReturn(Optional.empty());
 
         ResponseEntity<String> response = userController.getUserEmailFromId(userId);
 
@@ -56,7 +53,7 @@ class UserControllerTest {
         String userEmail = "test@example.com";
         Long userId = 1L;
 
-        when(userService.getUserIdFromEmail(userEmail)).thenReturn(Optional.of(userId));
+        Mockito.when(userService.getUserIdFromEmail(userEmail)).thenReturn(Optional.of(userId));
 
         ResponseEntity<Long> response = userController.getIdFromUserEmail(userEmail);
 
@@ -68,7 +65,7 @@ class UserControllerTest {
     void testGetIdFromUserEmail_UserNotFound() {
         String userEmail = "test@example.com";
 
-        when(userService.getUserIdFromEmail(userEmail)).thenReturn(Optional.empty());
+        Mockito.when(userService.getUserIdFromEmail(userEmail)).thenReturn(Optional.empty());
 
         ResponseEntity<Long> response = userController.getIdFromUserEmail(userEmail);
 
@@ -79,7 +76,7 @@ class UserControllerTest {
     void testDoesEmailExist_EmailExists() {
         String userEmail = "test@example.com";
 
-        when(userService.doesEmailExist(userEmail)).thenReturn(true);
+        Mockito.when(userService.doesEmailExist(userEmail)).thenReturn(true);
 
         ResponseEntity<Boolean> response = userController.doesEmailExist(userEmail);
 
@@ -91,7 +88,7 @@ class UserControllerTest {
     void testDoesEmailExist_EmailDoesNotExist() {
         String userEmail = "nonexistent@example.com";
 
-        when(userService.doesEmailExist(userEmail)).thenReturn(false);
+        Mockito.when(userService.doesEmailExist(userEmail)).thenReturn(false);
 
         ResponseEntity<Boolean> response = userController.doesEmailExist(userEmail);
 
@@ -101,7 +98,7 @@ class UserControllerTest {
     @Test
     void testGetIsUserVerifiedWhenUserIsVerified_True() {
         Long userId = 1L;
-        when(userService.isUserVerified(userId)).thenReturn(true);
+        Mockito.when(userService.isUserVerified(userId)).thenReturn(true);
 
         ResponseEntity<Boolean> response = userController.getIsUserVerified(userId);
 
@@ -112,7 +109,7 @@ class UserControllerTest {
     @Test
     void testGetIsUserVerifiedWhenUserIsVerified_False() {
         Long userId = 1L;
-        when(userService.isUserVerified(userId)).thenReturn(Boolean.FALSE);
+        Mockito.when(userService.isUserVerified(userId)).thenReturn(Boolean.FALSE);
 
         ResponseEntity<Boolean> response = userController.getIsUserVerified(userId);
 
@@ -123,7 +120,7 @@ class UserControllerTest {
     void testCreateUser_Success() {
         UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password");
 
-        when(userService.createUser(userDTO)).thenReturn(true);
+        Mockito.when(userService.createUser(userDTO)).thenReturn(true);
 
         ResponseEntity<?> response = userController.createUser(userDTO);
 
@@ -134,32 +131,10 @@ class UserControllerTest {
     void testCreateUser_Failure() {
         UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password");
 
-        when(userService.createUser(userDTO)).thenReturn(false);
+        Mockito.when(userService.createUser(userDTO)).thenReturn(false);
 
         ResponseEntity<?> response = userController.createUser(userDTO);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-    }
-
-    @Test
-    void testGetUserFromEmail_UserFound() {
-        UserDTO mockUser = new UserDTO(1L, "username", "test@example.com", "password");
-        when(userService.getUserByEmail(anyString())).thenReturn(Optional.of(mockUser));
-
-        ResponseEntity<UserDTO> response = userController.getUserFromEmail("test@example.com");
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.hasBody());
-        assertEquals(mockUser, response.getBody());
-    }
-
-    @Test
-    void testGetUserFromEmail_UserNotFound() {
-        when(userService.getUserByEmail(anyString())).thenReturn(Optional.empty());
-
-        ResponseEntity<UserDTO> response = userController.getUserFromEmail("nonexistent@example.com");
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertTrue(response.getBody() == null || response.getBody().getId() == null);
     }
 }

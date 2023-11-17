@@ -37,11 +37,6 @@ public class UserService {
         return userRepository.getUserById(id);
     }
 
-    public Optional<UserDTO> getUserByEmail(String email) {
-        Optional<User> user = userRepository.getUserByEmail(email);
-        return user.map(value -> new UserDTO(value.getId(), value.getUsername(), value.getEmail(), value.getPassword()));
-    }
-
     public Boolean isUserVerified(Long userId) {
         return userRepository.existsByIdAndIsVerifiedTrue(userId);
     }

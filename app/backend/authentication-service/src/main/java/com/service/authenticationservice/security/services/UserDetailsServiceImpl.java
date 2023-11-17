@@ -13,6 +13,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsServiceImpl(DbQueryService dbQueryService) {
         this.dbQueryService = dbQueryService;
     }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserDTO user = dbQueryService.getUserByEmail(email)
