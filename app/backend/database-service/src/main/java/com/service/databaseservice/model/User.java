@@ -28,7 +28,7 @@ public class User {
     private Integer cardsPerSession = 20;
 
     @Column(name = "lang_code", length = 3, nullable = false)
-    private String langCode;
+    private String langCode = "EN";
 
     public User(Long id, String username, String email, String password, Boolean isVerified, Boolean getsNotified, Integer cardsPerSession, String langCode) {
         this.id = id;
@@ -39,6 +39,12 @@ public class User {
         this.getsNotified = getsNotified;
         this.cardsPerSession = cardsPerSession;
         this.langCode = langCode;
+    }
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
     public User() {
