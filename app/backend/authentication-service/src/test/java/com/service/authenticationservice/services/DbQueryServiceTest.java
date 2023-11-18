@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -202,5 +203,37 @@ class DbQueryServiceTest {
         HttpStatusCode result = dbQueryService.saveUser(userDTO);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result);
+    }
+
+    @Test
+    void getUserEmailFromId_Success() {
+        Long userId = 1L;
+        String userEmail = "user@example.com";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/";
+
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(userEmail, HttpStatus.OK);
+
+        when(restTemplate.getForEntity(expectedUrl + userId + "/email", String.class))
+                .thenReturn(responseEntity);
+
+        Optional<String> result = dbQueryService.getUserEmailFromId(userId);
+
+        assertTrue(result.isPresent());
+        assertEquals(userEmail, result.get());
+    }
+
+    @Test
+    void getUserEmailFromId_UserNotFound() {
+        Long userId = 1L;
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/";
+
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        when(restTemplate.getForEntity(expectedUrl + userId + "/email", String.class))
+                .thenReturn(responseEntity);
+
+        Optional<String> result = dbQueryService.getUserEmailFromId(userId);
+
+        assertFalse(result.isPresent());
     }
 }

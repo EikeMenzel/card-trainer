@@ -1,5 +1,6 @@
 package com.service.databaseservice.controller;
 
+import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.services.UserService;
 import jakarta.validation.Valid;
