@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class UserTokenControllerTest {
@@ -57,5 +57,69 @@ class UserTokenControllerTest {
         ResponseEntity<?> response = userTokenController.createUserToken(userTokenDTO);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+
+    //Put Route
+    @Test
+    void testUpdateUserWithToken_ValidVerificationToken() {
+        when(userTokenService.isUserTokenValid("tokenValue")).thenReturn(true);
+        when(userTokenService.isTokenVerificationToken("tokenValue")).thenReturn(true);
+        when(userTokenService.isUserWithTokenVerified("tokenValue")).thenReturn(false);
+        when(userTokenService.setUserEmailAsVerified("tokenValue")).thenReturn(true);
+
+        ResponseEntity<?> response = userTokenController.updateUserWithToken("tokenValue");
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        verify(userTokenService, times(1)).isUserTokenValid(anyString());
+        verify(userTokenService, times(1)).isTokenVerificationToken(anyString());
+        verify(userTokenService, times(1)).isUserWithTokenVerified(anyString());
+        verify(userTokenService, times(1)).setUserEmailAsVerified(anyString());
+    }
+
+    @Test
+    void testUpdateUserWithToken_InvalidToken() {
+        when(userTokenService.isUserTokenValid("invalidToken")).thenReturn(false);
+
+        ResponseEntity<?> response = userTokenController.updateUserWithToken("invalidToken");
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        verify(userTokenService, times(1)).isUserTokenValid(anyString());
+        verify(userTokenService, never()).isTokenVerificationToken(anyString());
+        verify(userTokenService, never()).isUserWithTokenVerified(anyString());
+        verify(userTokenService, never()).setUserEmailAsVerified(anyString());
+    }
+
+    @Test
+    void testUpdateUserWithToken_ConflictVerificationToken() {
+        when(userTokenService.isUserTokenValid("conflictToken")).thenReturn(true);
+        when(userTokenService.isTokenVerificationToken("conflictToken")).thenReturn(true);
+        when(userTokenService.isUserWithTokenVerified("conflictToken")).thenReturn(true);
+
+        ResponseEntity<?> response = userTokenController.updateUserWithToken("conflictToken");
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+
+        verify(userTokenService, times(1)).isUserTokenValid(anyString());
+        verify(userTokenService, times(1)).isTokenVerificationToken(anyString());
+        verify(userTokenService, times(1)).isUserWithTokenVerified(anyString());
+        verify(userTokenService, never()).setUserEmailAsVerified(anyString());
+    }
+
+    @Test
+    void testUpdateUserWithToken_UnprocessableEntity() {
+        when(userTokenService.isUserTokenValid("nonVerificationToken")).thenReturn(true);
+        when(userTokenService.isTokenVerificationToken("nonVerificationToken")).thenReturn(false);
+
+        ResponseEntity<?> response = userTokenController.updateUserWithToken("nonVerificationToken");
+
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
+
+        verify(userTokenService, times(1)).isUserTokenValid(anyString());
+        verify(userTokenService, times(1)).isTokenVerificationToken(anyString());
+        verify(userTokenService, never()).isUserWithTokenVerified(anyString());
+        verify(userTokenService, never()).setUserEmailAsVerified(anyString());
     }
 }

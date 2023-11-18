@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -41,6 +43,36 @@ public class UserTokenService {
             }
 
             userTokenRepository.save(new UserToken(userTokenDTO.tokenValue(), userTokenDTO.expiryTimestamp(), tokenType.get(), userOptional.get()));
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean isUserTokenValid(String token) {
+        Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
+        return userToken.map(value -> value.getExpiryTimestamp().after(Timestamp.from(Instant.now()))).orElse(false);
+    }
+
+    public boolean isUserWithTokenVerified(String token) {
+        Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
+        return userToken.isPresent() && userToken.get().getUser().getVerified();
+    }
+
+    public boolean isTokenVerificationToken(String token) {
+        Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
+        return userToken.isPresent() && userToken.get().getTokenType().getType().equals("VERIFICATION");
+    }
+
+    public boolean setUserEmailAsVerified(String token) {
+        try {
+            Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
+            if(userToken.isEmpty() || !isTokenVerificationToken(token))
+                return false;
+
+            userToken.get().getUser().setVerified(true);
+            userTokenRepository.save(userToken.get());
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage());
