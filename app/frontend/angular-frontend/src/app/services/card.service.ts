@@ -11,6 +11,6 @@ export class CardService {
   }
 
   public getListOfDecks(): Deck[] {
-    return [new Deck("Mathe", 1), new Deck("Deutsch", 2), new Deck("LA", 3)];
+    return [new Deck("Mathe", 1,0), new Deck("Deutsch", 2, 0), new Deck("LA", 3, 0)];
   }
 }

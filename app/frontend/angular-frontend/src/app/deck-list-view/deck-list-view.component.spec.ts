@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DeckViewComponent } from './deck-view.component';
+import { DeckListViewComponent } from './deck-list-view.component';
 
 describe('DeckviewComponent', () => {
-  let component: DeckViewComponent;
-  let fixture: ComponentFixture<DeckViewComponent>;
+  let component: DeckListViewComponent;
+  let fixture: ComponentFixture<DeckListViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeckViewComponent]
+      imports: [DeckListViewComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DeckViewComponent);
+    fixture = TestBed.createComponent(DeckListViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

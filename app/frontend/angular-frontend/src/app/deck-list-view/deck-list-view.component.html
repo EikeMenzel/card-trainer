@@ -5,20 +5,20 @@
       <tr>
         <td><strong>Name</strong></td>
         <td>
-          <strong>Card Count</strong>
+          <strong>Card Left</strong>
         </td>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let deck of deckList;">
+      <tr *ngFor="let deck of deckList;" routerLink="/deck/{{deck.deckId}}">
         <td>{{deck.deckName}}</td>
-        <td>{{deck.deckId}} <i class="bi bi-arrow-right"></i></td>
+        <td>{{deck.cardsLeft}} <i class="bi bi-arrow-right"></i></td>
       </tr>
       </tbody>
     </table>
   </div>
 
   <div id="add-button-wrapper">
-    <i id="add-button" class="bi bi-plus"></i>
+    <i id="add-button" class="bi bi-list-ul"></i>
   </div>
 </app-base-page>

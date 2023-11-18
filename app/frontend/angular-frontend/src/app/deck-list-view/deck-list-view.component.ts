@@ -3,20 +3,23 @@ import { CommonModule } from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
 import {CardService} from "../services/card.service";
 import {Deck} from "../models/Deck";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 
 @Component({
-  selector: 'app-deckview',
+  selector: 'app-deck-list-view',
   standalone: true,
-  imports: [CommonModule, BasePageComponent],
-  templateUrl: './deck-view.component.html',
-  styleUrl: './deck-view.component.css'
+  imports: [CommonModule, BasePageComponent, RouterLink],
+  templateUrl: './deck-list-view.component.html',
+  styleUrl: './deck-list-view.component.css'
 })
-export class DeckViewComponent {
+export class DeckListViewComponent {
 
   private cardService: CardService;
   deckList: Deck[] | undefined;
+  private router: Router;
 
-  constructor(cardService: CardService) {
+  constructor(cardService: CardService, router: Router) {
+    this.router = router;
     this.cardService = cardService;
   }
 
