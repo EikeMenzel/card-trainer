@@ -21,8 +21,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 //@SpringBootTest
@@ -47,19 +47,19 @@ class UserTokenServiceTest {
     void testCreateUserToken_Success() {
         UserTokenDTO userTokenDTO = new UserTokenDTO("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), "VERIFICATION", 1L);
 
-        Mockito.when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.of(new TokenType("VERIFICATION")));
-        Mockito.when(userService.getUserFromId(userTokenDTO.userId())).thenReturn(Optional.of(new User("testUser", "test@example.com", "password")));
+        when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.of(new TokenType("VERIFICATION")));
+        when(userService.getUserFromId(userTokenDTO.userId())).thenReturn(Optional.of(new User("testUser", "test@example.com", "password")));
 
         assertTrue(userTokenService.createUserToken(userTokenDTO));
 
-        Mockito.verify(userTokenRepository, Mockito.times(1)).save(any(UserToken.class));
+        verify(userTokenRepository, times(1)).save(any(UserToken.class));
     }
 
     @Test
     void testCreateUserToken_InvalidTokenType() {
         UserTokenDTO userTokenDTO = new UserTokenDTO("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), "INVALID_TYPE", 1L);
 
-        Mockito.when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.empty());
+        when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.empty());
 
         assertFalse(userTokenService.createUserToken(userTokenDTO));
     }
@@ -68,8 +68,8 @@ class UserTokenServiceTest {
     void testCreateUserToken_UserNotFound() {
         UserTokenDTO userTokenDTO = new UserTokenDTO("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), "VERIFICATION", 1L);
 
-        Mockito.when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.of(new TokenType("VERIFICATION")));
-        Mockito.when(userService.getUserFromId(userTokenDTO.userId())).thenReturn(Optional.empty());
+        when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.of(new TokenType("VERIFICATION")));
+        when(userService.getUserFromId(userTokenDTO.userId())).thenReturn(Optional.empty());
 
         assertFalse(userTokenService.createUserToken(userTokenDTO));
     }
@@ -78,10 +78,72 @@ class UserTokenServiceTest {
     void testCreateUserToken_False() {
         UserTokenDTO userTokenDTO = new UserTokenDTO("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), "VERIFICATION", 1L);
 
-        Mockito.when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.of(new TokenType("VERIFICATION")));
-        Mockito.when(userService.getUserFromId(userTokenDTO.userId())).thenReturn(Optional.of(new User("testUser", "test@example.com", "password")));
-        Mockito.when(userTokenRepository.save(any(UserToken.class))).thenThrow(new RuntimeException("Error saving user token"));
+        when(tokenTypeRepository.findTokenTypeByType(userTokenDTO.tokenType())).thenReturn(Optional.of(new TokenType("VERIFICATION")));
+        when(userService.getUserFromId(userTokenDTO.userId())).thenReturn(Optional.of(new User("testUser", "test@example.com", "password")));
+        when(userTokenRepository.save(any(UserToken.class))).thenThrow(new RuntimeException("Error saving user token"));
 
         assertFalse(userTokenService.createUserToken(userTokenDTO));
+    }
+
+    @Test
+    void testIsUserTokenValid() {
+        UserToken userToken_Valid = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("VERIFICATION"), new User("testUser", "test@example.com", "password"));
+        UserToken userToken_Invalid_Timestamp = new UserToken("expired", Timestamp.from(Instant.now().minusSeconds(3600)), new TokenType("VERIFICATION"), new User("testUser", "test@example.com", "password"));
+
+        when(userTokenRepository.getUserTokenByTokenValue("tokenValue")).thenReturn(Optional.of(userToken_Valid));
+        when(userTokenRepository.getUserTokenByTokenValue("expired")).thenReturn(Optional.of(userToken_Invalid_Timestamp));
+
+        assertTrue(userTokenService.isUserTokenValid("tokenValue"));
+        assertFalse(userTokenService.isUserTokenValid("expired"));
+
+        verify(userTokenRepository, times(2)).getUserTokenByTokenValue(anyString());
+    }
+
+    @Test
+    void testIsTokenVerificationToken() {
+        UserToken userToken_Verification = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("VERIFICATION"), new User("testUser", "test@example.com", "password"));
+        UserToken userToken_Random = new UserToken("random", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("RANDOM"), new User("testUser", "test@example.com", "password"));
+
+        when(userTokenRepository.getUserTokenByTokenValue("tokenValue")).thenReturn(Optional.of(userToken_Verification));
+        when(userTokenRepository.getUserTokenByTokenValue("random")).thenReturn(Optional.of(userToken_Random));
+
+        assertTrue(userTokenService.isTokenVerificationToken("tokenValue"));
+        assertFalse(userTokenService.isTokenVerificationToken("random"));
+
+        verify(userTokenRepository, times(2)).getUserTokenByTokenValue(anyString());
+    }
+
+    @Test
+    void testSetUserEmailAsVerified() {
+        UserToken verificationToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("VERIFICATION"), new User("testUser", "test@example.com", "password"));
+
+        when(userTokenRepository.getUserTokenByTokenValue("tokenValue")).thenReturn(Optional.of(verificationToken));
+
+        assertTrue(userTokenService.setUserEmailAsVerified("tokenValue"));
+
+        verify(userTokenRepository, times(2)).getUserTokenByTokenValue(anyString());
+        verify(userTokenRepository, times(1)).save(any(UserToken.class));
+    }
+
+    @Test
+    void testSetUserEmailAsVerified_InvalidToken() {
+        when(userTokenRepository.getUserTokenByTokenValue("invalidToken")).thenReturn(Optional.empty());
+
+        assertFalse(userTokenService.setUserEmailAsVerified("invalidToken"));
+
+        verify(userTokenRepository, times(1)).getUserTokenByTokenValue(anyString());
+        verify(userTokenRepository, never()).save(any(UserToken.class));
+    }
+
+    @Test
+    void testSetUserEmailAsVerified_NonVerificationToken() {
+        UserToken randomToken = new UserToken("random", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("RANDOM"), new User("testUser", "test@example.com", "password"));
+
+        when(userTokenRepository.getUserTokenByTokenValue("random")).thenReturn(Optional.of(randomToken));
+
+        assertFalse(userTokenService.setUserEmailAsVerified("random"));
+
+        verify(userTokenRepository, times(2)).getUserTokenByTokenValue(anyString());
+        verify(userTokenRepository, never()).save(any(UserToken.class));
     }
 }

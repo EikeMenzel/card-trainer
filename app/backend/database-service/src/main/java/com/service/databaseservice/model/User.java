@@ -81,4 +81,8 @@ public class User {
     public String getLangCode() {
         return langCode;
     }
+
+    public void setVerified(Boolean verified) {
+        isVerified = verified;
+    }
 }

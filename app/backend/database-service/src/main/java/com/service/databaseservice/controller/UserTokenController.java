@@ -20,4 +20,21 @@ public class UserTokenController {
                 ? ResponseEntity.status(HttpStatus.CREATED).build()
                 : ResponseEntity.internalServerError().build();
     }
+    @PutMapping("/{token}")
+    public ResponseEntity<?> updateUserWithToken(@PathVariable String token) {
+        if(!userTokenService.isUserTokenValid(token))
+            return ResponseEntity.badRequest().build();
+
+        if(userTokenService.isTokenVerificationToken(token)) {
+            if(userTokenService.isUserWithTokenVerified(token))
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+            return userTokenService.setUserEmailAsVerified(token)
+                    ? ResponseEntity.noContent().build()
+                    : ResponseEntity.internalServerError().build();
+
+        } // else cases are share token and password reset
+
+        return ResponseEntity.unprocessableEntity().build();
+    }
 }

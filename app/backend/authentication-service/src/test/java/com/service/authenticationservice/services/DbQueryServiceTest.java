@@ -12,11 +12,13 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -236,4 +238,45 @@ class DbQueryServiceTest {
 
         assertFalse(result.isPresent());
     }
+
+    @Test
+    public void testUpdateUserWithToken_Success() {
+        // Mocking a successful response with HTTP status 200
+        ResponseEntity<Void> successResponse = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenReturn(successResponse);
+
+        assertEquals(HttpStatus.NO_CONTENT, dbQueryService.updateUserWithToken("validToken"));
+    }
+
+    @Test
+    public void testUpdateUserWithToken_Conflict() {
+        // Mocking a response with HTTP status 409 (Conflict)
+        ResponseEntity<Void> conflictResponse = new ResponseEntity<>(HttpStatus.CONFLICT);
+        when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.CONFLICT));
+
+        assertEquals(HttpStatus.CONFLICT, dbQueryService.updateUserWithToken("conflictToken"));
+    }
+
+    @Test
+    public void testUpdateUserWithToken_BadRequest() {
+        // Mocking a response with HTTP status 400 (Bad Request)
+        ResponseEntity<Void> badRequestResponse = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+        assertEquals(HttpStatus.BAD_REQUEST, dbQueryService.updateUserWithToken("badRequestToken"));
+    }
+
+    @Test
+    public void testUpdateUserWithToken_InternalServerError() {
+        // Mocking a response with HTTP status 500 (Internal Server Error)
+        ResponseEntity<Void> internalServerErrorResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
+                .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, dbQueryService.updateUserWithToken("serverErrorToken"));
+    }
+
 }

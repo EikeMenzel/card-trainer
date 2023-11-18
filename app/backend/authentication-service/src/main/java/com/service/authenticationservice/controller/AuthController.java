@@ -8,7 +8,6 @@ import com.service.authenticationservice.payload.out.MessageResponseDTO;
 import com.service.authenticationservice.payload.out.UserInfoResponseDTO;
 import com.service.authenticationservice.security.jwt.JwtUtils;
 import com.service.authenticationservice.security.services.UserDetailsImpl;
-import com.service.authenticationservice.security.services.UserDetailsServiceImpl;
 import com.service.authenticationservice.services.DbQueryService;
 import com.service.authenticationservice.services.EmailQueryService;
 import com.service.authenticationservice.services.EmailValidator;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,9 +32,9 @@ public class AuthController {
     private final DbQueryService dbQueryService;
     private final EmailQueryService emailQueryService;
     private final PasswordEncoder encoder;
-    private final AuthenticationManager authenticationManager;
+    public final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final Logger logger =  LoggerFactory.getLogger(AuthController.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.passwordSecurityService = passwordSecurityService;
@@ -50,29 +48,29 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
 
-        if(registerRequest.username().length() < 4 || registerRequest.username().length() > 30) {
+        if (registerRequest.username().length() < 4 || registerRequest.username().length() > 30) {
             return ResponseEntity.badRequest().body("Error, Username is to long or to short");
         }
 
-        if(passwordSecurityService.checkPasswordIsRainbow(registerRequest.password())) //contains check, returns true if the password is in the table
+        if (passwordSecurityService.checkPasswordIsRainbow(registerRequest.password())) //contains check, returns true if the password is in the table
             return ResponseEntity.badRequest().body(new MessageResponseDTO("Error, Password is a blocked password"));
 
-        if(!passwordSecurityService.checkPasswordSecurity(registerRequest.password())) { //false if requirements not meet
+        if (!passwordSecurityService.checkPasswordSecurity(registerRequest.password())) { //false if requirements not meet
             return ResponseEntity.badRequest().body(new MessageResponseDTO("Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/"));
         }
 
-        if(!EmailValidator.validate(registerRequest.email())) { //checks for Regex of an email + email-length
+        if (!EmailValidator.validate(registerRequest.email())) { //checks for Regex of an email + email-length
             return ResponseEntity.badRequest().body(new MessageResponseDTO("Error, invalid Email"));
         }
 
-        if(dbQueryService.doesUserWithEmailExist(registerRequest.email()).isPresent()) {
+        if (dbQueryService.doesUserWithEmailExist(registerRequest.email()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error, Email already exists");
         }
 
         HttpStatusCode resultSaveUser = dbQueryService.saveUser(new UserDTO(registerRequest.username(), registerRequest.email(), encoder.encode(registerRequest.password())));
-        if(resultSaveUser == HttpStatus.CREATED) { //send VerificationMail
+        if (resultSaveUser == HttpStatus.CREATED) { //send VerificationMail
             Optional<Long> userId = dbQueryService.getUserIdByEmail(registerRequest.email());
-            if(userId.isEmpty()) //Information could not be fetched from database
+            if (userId.isEmpty()) //Information could not be fetched from database
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
             emailQueryService.sendEmail(userId.get(), MailType.VERIFICATION);
@@ -93,7 +91,7 @@ public class AuthController {
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-            if(dbQueryService.getVerificationStateUser(userDetails.id()).isEmpty())
+            if (dbQueryService.getVerificationStateUser(userDetails.id()).isEmpty())
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: The user is not verified");
 
             ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
@@ -106,5 +104,20 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Authentication failed: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/email/verify/{token}") //Needs to be a getMapping, since mail-clients block javascript code. PUT would not be possible.
+    public ResponseEntity<?> verifyUserEmail(@PathVariable String token) {
+        var httpStatusCode = dbQueryService.updateUserWithToken(token);
+        if (httpStatusCode.equals(HttpStatus.NO_CONTENT)) {
+            return ResponseEntity.noContent().build();
+        } else if (httpStatusCode.equals(HttpStatus.CONFLICT)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO("Email is already verified"));
+        } else if (httpStatusCode.equals(HttpStatus.BAD_REQUEST)) {
+            return ResponseEntity.badRequest().body(new MessageResponseDTO("Token is not acceptable"));
+        } else if (httpStatusCode.is5xxServerError()) {
+            return ResponseEntity.internalServerError().body("An error has occurred, please try again later");
+        }
+        return ResponseEntity.unprocessableEntity().build();
     }
 }

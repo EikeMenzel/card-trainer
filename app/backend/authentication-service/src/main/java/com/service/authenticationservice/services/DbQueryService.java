@@ -1,12 +1,12 @@
 package com.service.authenticationservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.service.authenticationservice.controller.AuthController;
 import com.service.authenticationservice.payload.inc.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
@@ -92,5 +92,26 @@ public class DbQueryService {
                 new HttpEntity<>(userDTO, headers),
                 String.class);
         return responseEntity.getStatusCode();
+    }
+
+    public HttpStatusCode updateUserWithToken(String token) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                    GENERIC_DB_API_PATH + "/user-token/" + token,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(headers),
+                    Void.class
+            );
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
+            if (e.getStatusCode().equals(HttpStatus.CONFLICT)) {
+                return HttpStatus.CONFLICT;
+            } else if(e.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+                return HttpStatus.BAD_REQUEST;
+            }
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 }
