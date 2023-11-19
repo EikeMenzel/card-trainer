@@ -1,17 +1,33 @@
-<div id="nav-content-frame">
-    <div id="nav-content">
-        <div class="goto-home-wrapper">
-            <button class="house-button">
+<nav class="navbar navbar-expand-sm navbar-light bg-light" id="nav-content">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <div class="goto-home-wrapper">
+        <button class="house-button">
             <span class="house-icon">
-                <fa-icon class="nav-icon" [icon]="faHouse"></fa-icon>
-            </span>
-            </button>
-            <span id="nav-title">Test</span>
-        </div>
-        <button class="profile-button">
-            <span class="house-icon">
-                <fa-icon class="nav-icon" [icon]="faUser"></fa-icon>
+                <fa-icon class="nav-icon fa-xl" [icon]="faHouse"></fa-icon>
             </span>
         </button>
+      </div>
+    </a>
+    <div data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="text-success fa-xl">{{this.title}}</span>
     </div>
-</div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="container-fluid">
+
+      </div>
+      <div>
+            <span id="nav-username-display" class="nav-link active fa-xl text-success" aria-current="page" href="#">{{this.username}}</span>
+      </div>
+    </div>
+    <div class="profile-button">
+      <a class="navbar-link">
+                <span class="house-icon">
+                    <fa-icon class="nav-icon fa-xl" [icon]="faUser"></fa-icon>
+                </span>
+      </a>
+    </div>
+  </div>
+</nav>
+

@@ -1,0 +1,7 @@
+.card-view-wrapper {
+  margin: 40px;
+  border: 1px solid black;
+  border-radius: 50px;
+  position: relative;
+  min-height: 200px;
+}
