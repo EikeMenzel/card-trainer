@@ -2,12 +2,14 @@ package com.service.databaseservice.controller;
 
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.out.UserDTO;
+import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -50,6 +52,11 @@ public class UserController {
         return userService.isUserVerified(userId)
                 ? ResponseEntity.ok(true)
                 : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<List<UserDailyReminderDTO>> getEmailsOfUsersWithDailyLearnReminder() {
+        return ResponseEntity.ok(userService.getEmailsOfUsersWithDailyLearnReminder());
     }
 
     @PostMapping("/")

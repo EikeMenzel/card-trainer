@@ -2,21 +2,24 @@ package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.out.UserDTO;
+import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(SpringExtension.class)
 //@SpringBootTest
 @DataJpaTest
@@ -33,7 +36,7 @@ class UserServiceTest {
         Long userId = 1L;
         User mockUser = new User("testUser", "test@example.com", "password");
 
-        Mockito.when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
+        when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
 
         Optional<String> userEmail = userService.getUserEmailById(userId);
 
@@ -45,7 +48,7 @@ class UserServiceTest {
     void testGetUserEmailById_NonExistingUserId() {
         Long userId = 99L;
 
-        Mockito.when(userRepository.getUserById(userId)).thenReturn(Optional.empty());
+        when(userRepository.getUserById(userId)).thenReturn(Optional.empty());
 
         Optional<String> userEmail = userService.getUserEmailById(userId);
 
@@ -56,7 +59,7 @@ class UserServiceTest {
     void testGetUserEmailById_InvalidUserId() {
         Long invalidUserId = -1L;
 
-        Mockito.when(userRepository.getUserById(invalidUserId)).thenReturn(Optional.empty());
+        when(userRepository.getUserById(invalidUserId)).thenReturn(Optional.empty());
 
         Optional<String> userEmail = userService.getUserEmailById(invalidUserId);
 
@@ -67,7 +70,7 @@ class UserServiceTest {
     void testGetUserIdFromEmail_NonExistingUserEmail() {
         String nonExistingUserEmail = "nonexisting@example.com";
 
-        Mockito.when(userRepository.getUserByEmail(nonExistingUserEmail)).thenReturn(Optional.empty());
+        when(userRepository.getUserByEmail(nonExistingUserEmail)).thenReturn(Optional.empty());
 
         Optional<Long> userId = userService.getUserIdFromEmail(nonExistingUserEmail);
 
@@ -76,7 +79,7 @@ class UserServiceTest {
 
     @Test
     void testGetUserIdFromEmail_InvalidUserEmail() {
-        Mockito.when(userRepository.getUserByEmail(null)).thenReturn(Optional.empty());
+        when(userRepository.getUserByEmail(null)).thenReturn(Optional.empty());
 
         Optional<Long> userId = userService.getUserIdFromEmail(null);
 
@@ -87,7 +90,7 @@ class UserServiceTest {
     void testDoesEmailExist_ExistingEmail() {
         String existingEmail = "test@example.com";
 
-        Mockito.when(userRepository.existsByEmail(existingEmail)).thenReturn(true);
+        when(userRepository.existsByEmail(existingEmail)).thenReturn(true);
 
         assertTrue(userService.doesEmailExist(existingEmail));
     }
@@ -96,13 +99,13 @@ class UserServiceTest {
     void testDoesEmailExist_NonExistingEmail() {
         String nonExistingEmail = "nonexisting@example.com";
 
-        Mockito.when(userRepository.existsByEmail(nonExistingEmail)).thenReturn(false);
+        when(userRepository.existsByEmail(nonExistingEmail)).thenReturn(false);
 
         assertFalse(userService.doesEmailExist(nonExistingEmail));
     }
     @Test
     void testDoesEmailExist_InvalidEmail() {
-        Mockito.when(userRepository.existsByEmail(null)).thenReturn(false);
+        when(userRepository.existsByEmail(null)).thenReturn(false);
 
         assertFalse(userService.doesEmailExist(null));
     }
@@ -110,7 +113,7 @@ class UserServiceTest {
     @Test
     void testIsUserVerifiedWhenUserExistsAndIsVerified() {
         Long userId = 1L;
-        Mockito.when(userRepository.existsByIdAndIsVerifiedTrue(userId)).thenReturn(true);
+        when(userRepository.existsByIdAndIsVerifiedTrue(userId)).thenReturn(true);
 
         assertTrue(userService.isUserVerified(userId));
     }
@@ -118,7 +121,7 @@ class UserServiceTest {
     @Test
     void testIsUserVerifiedWhenUserDoesNotExist() {
         Long userId = 1L;
-        Mockito.when(userRepository.existsByIdAndIsVerifiedTrue(userId)).thenReturn(false);
+        when(userRepository.existsByIdAndIsVerifiedTrue(userId)).thenReturn(false);
 
         assertFalse(userService.isUserVerified(userId));
     }
@@ -128,7 +131,7 @@ class UserServiceTest {
         Long userId = 1L;
         User mockUser = new User("testUser", "test@example.com", "password");
 
-        Mockito.when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
+        when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
 
         Optional<User> user = userService.getUserFromId(userId);
 
@@ -140,7 +143,7 @@ class UserServiceTest {
     void testGetUserFromId_NonExistingUserId() {
         Long nonExistingUserId = 99L;
 
-        Mockito.when(userRepository.getUserById(nonExistingUserId)).thenReturn(Optional.empty());
+        when(userRepository.getUserById(nonExistingUserId)).thenReturn(Optional.empty());
 
         Optional<User> user = userService.getUserFromId(nonExistingUserId);
 
@@ -151,7 +154,7 @@ class UserServiceTest {
     void testGetUserFromId_InvalidUserId() {
         Long invalidUserId = -1L;
 
-        Mockito.when(userRepository.getUserById(invalidUserId)).thenReturn(Optional.empty());
+        when(userRepository.getUserById(invalidUserId)).thenReturn(Optional.empty());
 
         Optional<User> user = userService.getUserFromId(invalidUserId);
 
@@ -161,7 +164,7 @@ class UserServiceTest {
     void testCreateUser_ValidUserDTO() {
         UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password");
 
-        Mockito.when(userRepository.save(any(User.class))).thenReturn(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword()));
+        when(userRepository.save(any(User.class))).thenReturn(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword()));
 
         boolean result = userService.createUser(userDTO);
 
@@ -172,10 +175,33 @@ class UserServiceTest {
     void testCreateUser_ErrorInUserCreation() {
         UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password");
 
-        Mockito.when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Error saving user"));
+        when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Error saving user"));
 
         boolean result = userService.createUser(userDTO);
 
         assertFalse(result);
+    }
+
+    @Test
+    void testGetEmailsOfUsersWithDailyLearnReminder() {
+        User user1 = new User(1L, "username1", "email1@example.com", "password", true, true, 20, "en");
+        User user2 = new User(2L, "username2", "email2@example.com", "password", true, true, 20, "en");
+        User user3 = new User(3L, "username3", "email3@example.com", "password", true, false, 30, "de"); // This user should be excluded
+        User user4 = new User(4L, "username4", "email4@example.com", "password", false, true, 30, "de"); // This user should be excluded
+        User user5 = new User(5L, "username5", "email5@example.com", "password", false, false, 30, "de"); // This user should be excluded
+
+        userRepository.saveAll(List.of(user1, user2, user3, user4, user5));
+
+        List<User> correctUserList = Arrays.asList(user1, user2);
+
+        when(userRepository.findAllByIsVerifiedTrueAndGetsNotifiedTrue()).thenReturn(correctUserList);
+
+        List<UserDailyReminderDTO> result = userService.getEmailsOfUsersWithDailyLearnReminder();
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(UserDailyReminderDTO::username).containsExactly("username1", "username2");
+        assertThat(result).extracting(UserDailyReminderDTO::email).containsExactly("email1@example.com", "email2@example.com");
+
+        verify(userRepository, times(1)).findAllByIsVerifiedTrueAndGetsNotifiedTrue();
     }
 }

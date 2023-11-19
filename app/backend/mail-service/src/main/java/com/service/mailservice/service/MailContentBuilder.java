@@ -14,15 +14,11 @@ import java.nio.file.Files;
 public class MailContentBuilder {
     private final Logger logger =  LoggerFactory.getLogger(MailContentBuilder.class);
 
-    public String getContent(MailType mailType, String token) {
-        switch (mailType) {
-            case VERIFICATION -> {
-                return getContentFromFile("static/mail_verification.html").replace("${verificationUrl}", buildVerificationUrl(token));
-            }
-            default -> {
-                return "";
-            }
-        }
+    public String getContent(MailType mailType, String data) {
+        return switch (mailType) {
+            case VERIFICATION -> getContentFromFile("static/mail_verification.html").replace("${verificationUrl}", buildVerificationUrl(data));
+            case DAILY_REMINDER -> getContentFromFile("static/daily-learn-reminder.html").replace("${username}", data).replace("${dailyLearnUrl}", "http://localhost:4200");
+        };
     }
 
     private String getContentFromFile(String filePath) {
