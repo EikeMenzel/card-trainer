@@ -9,7 +9,7 @@ CREATE TABLE "users" (
     is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     gets_notified BOOLEAN NOT NULL DEFAULT FALSE,
     cards_per_session INTEGER NOT NULL DEFAULT 20,
-    lang_code VARCHAR(3) NOT NULL,
+    lang_code VARCHAR(3) NOT NULL DEFAULT 'EN',
 
     CONSTRAINT unique_email UNIQUE (email)
 );
