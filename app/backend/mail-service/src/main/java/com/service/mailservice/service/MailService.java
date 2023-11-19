@@ -53,13 +53,17 @@ public class MailService {
         String token = TokenService.generateToken();
         String content = mailContentBuilder.getContent(MailType.VERIFICATION, token);
 
-        HttpStatusCode httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.VERIFICATION.toString(), userId));
+        var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.VERIFICATION.toString(), userId));
         if (httpStatusCode == HttpStatus.CREATED) {
-            logger.error("Test");
             sendHtmlMail(userEmail.get(), "Verification-Mail", content);
         } else {
             logger.error("can't create user-token in database");
         }
+    }
+
+    public void sendDailyLearnReminderMail(String username, String email) {
+        String content = mailContentBuilder.getContent(MailType.DAILY_REMINDER, username);
+        sendHtmlMail(email, "DailyLearnReminder", content);
     }
 }
 

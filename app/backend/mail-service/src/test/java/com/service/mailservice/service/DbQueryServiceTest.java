@@ -1,5 +1,6 @@
 package com.service.mailservice.service;
 
+import com.service.mailservice.payload.inc.UserDailyReminderDTO;
 import com.service.mailservice.payload.out.UserTokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,14 +14,18 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-public class DbQueryServiceTest {
+class DbQueryServiceTest {
     private static final String GENERIC_DB_API_PATH = "http://localhost:8086/api/v1/db";
-    private static final String USER_TOKEN_DB_API_PATH  =  GENERIC_DB_API_PATH + "/user-token";
+    private static final String USER_TOKEN_DB_API_PATH = GENERIC_DB_API_PATH + "/user-token";
+    private static final String USER_DB_API_PATH = GENERIC_DB_API_PATH + "/users";
 
     @Mock
     private RestTemplate restTemplate;

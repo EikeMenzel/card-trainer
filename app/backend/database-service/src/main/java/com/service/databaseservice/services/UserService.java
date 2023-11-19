@@ -2,13 +2,15 @@ package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.out.UserDTO;
+import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -44,6 +46,13 @@ public class UserService {
 
     public Boolean isUserVerified(Long userId) {
         return userRepository.existsByIdAndIsVerifiedTrue(userId);
+    }
+
+    public List<UserDailyReminderDTO> getEmailsOfUsersWithDailyLearnReminder() {
+        return userRepository.findAllByIsVerifiedTrueAndGetsNotifiedTrue()
+                .stream()
+                .map(user -> new UserDailyReminderDTO(user.getUsername(), user.getEmail()))
+                .collect(Collectors.toList());
     }
 
     public boolean createUser(UserDTO userDTO) {

@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public enum MailType {
-    VERIFICATION;
-
+    VERIFICATION,
+    DAILY_REMINDER;
 
     private static final Map<String, MailType> lookup = new HashMap<>();
 
