@@ -28,6 +28,6 @@ export class AppComponent {
   }
 
   get isLoggedIn(): boolean {
-    return this.cookieService.check("user");
+    return this.cookieService.check("card-trainer-user");
   }
 }
