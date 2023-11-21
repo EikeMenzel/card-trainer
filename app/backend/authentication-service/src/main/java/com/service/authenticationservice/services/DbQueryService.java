@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.authenticationservice.payload.inc.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,20 +18,22 @@ import java.util.Optional;
 public class DbQueryService {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
+    private final String DB_API_BASE_PATH;
+    private final String USER_DB_API_PATH;
+    private final String USER_EMAIL_DB_API_PATH;
+    private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
 
-    //@Value("database.api.path")
-    private static final String GENERIC_DB_API_PATH = "http://localhost:8086/api/v1/db";
-    private static final String USER_DB_API_PATH =  GENERIC_DB_API_PATH + "/users";
-    private final Logger logger =  LoggerFactory.getLogger(DbQueryService.class);
-
-    public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate) {
+    public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath) {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
+        this.DB_API_BASE_PATH = dbPath;
+        this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
+        this.USER_EMAIL_DB_API_PATH = this.USER_DB_API_PATH + "/emails";
     }
 
     public Optional<UserDTO> getUserByEmail(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/email/" + email, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email, String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), UserDTO.class))
@@ -42,7 +46,7 @@ public class DbQueryService {
 
     public Optional<Long> getUserIdByEmail(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/email/" + email + "/id", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email + "/id", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Long.valueOf(Objects.requireNonNull(responseEntity.getBody())))
                     : Optional.empty();
@@ -53,7 +57,7 @@ public class DbQueryService {
 
     public Optional<Boolean> doesUserWithEmailExist(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/email/" + email + "/exists", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email + "/exists", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();
@@ -64,7 +68,7 @@ public class DbQueryService {
 
     public Optional<String> getUserEmailFromId(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(GENERIC_DB_API_PATH + "/users/" + userId + "/email", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/email", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.ofNullable(responseEntity.getBody())
                     : Optional.empty();
@@ -75,7 +79,7 @@ public class DbQueryService {
 
     public Optional<Boolean> getVerificationStateUser(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/"+ userId +  "/verified", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/verified", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();
@@ -99,7 +103,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<Void> responseEntity = restTemplate.exchange(
-                    GENERIC_DB_API_PATH + "/user-token/" + token,
+                    DB_API_BASE_PATH + "/user-token/" + token,
                     HttpMethod.PUT,
                     new HttpEntity<>(headers),
                     Void.class
@@ -108,7 +112,7 @@ public class DbQueryService {
         } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
             if (e.getStatusCode().equals(HttpStatus.CONFLICT)) {
                 return HttpStatus.CONFLICT;
-            } else if(e.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+            } else if (e.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
                 return HttpStatus.BAD_REQUEST;
             }
             return HttpStatus.INTERNAL_SERVER_ERROR;

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -18,16 +19,14 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest
 @DataJpaTest
 class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
-
     @InjectMocks
     private UserService userService;
 
@@ -202,6 +201,6 @@ class UserServiceTest {
         assertThat(result).extracting(UserDailyReminderDTO::username).containsExactly("username1", "username2");
         assertThat(result).extracting(UserDailyReminderDTO::email).containsExactly("email1@example.com", "email2@example.com");
 
-        verify(userRepository, times(1)).findAllByIsVerifiedTrueAndGetsNotifiedTrue();
+        verify(userRepository, Mockito.times(1)).findAllByIsVerifiedTrueAndGetsNotifiedTrue();
     }
 }

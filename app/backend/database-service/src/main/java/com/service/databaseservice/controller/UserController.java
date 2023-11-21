@@ -26,39 +26,34 @@ public class UserController {
         Optional<String> userEmail = userService.getUserEmailById(userId);
         return userEmail.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDTO> getUserFromEmail(@PathVariable String email) {
-        Optional<UserDTO> userDTO = userService.getUserByEmail(email);
-        return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-
-    @GetMapping("/email/{email}/id")
-    public ResponseEntity<Long> getIdFromUserEmail(@PathVariable String email) {
-        var userId = userService.getUserIdFromEmail(email);
-        return userId.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/email/{email}/exists")
-    public ResponseEntity<Boolean> doesEmailExist(@PathVariable String email) {
-        return userService.doesEmailExist(email)
-                ? ResponseEntity.ok(true)
-                : ResponseEntity.notFound().build();
-    }
-
     @GetMapping("/{userId}/verified")
     public ResponseEntity<Boolean> getIsUserVerified(@PathVariable Long userId) {
         return userService.isUserVerified(userId)
                 ? ResponseEntity.ok(true)
                 : ResponseEntity.notFound().build();
     }
+    @GetMapping("/emails/{email}")
+    public ResponseEntity<UserDTO> getUserFromEmail(@PathVariable String email) {
+        Optional<UserDTO> userDTO = userService.getUserByEmail(email);
+        return userDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    @GetMapping("/emails/{email}/id")
+    public ResponseEntity<Long> getIdFromUserEmail(@PathVariable String email) {
+        var userId = userService.getUserIdFromEmail(email);
+        return userId.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-    @GetMapping("/email")
+    @GetMapping("/emails/{email}/exists")
+    public ResponseEntity<Boolean> doesEmailExist(@PathVariable String email) {
+        return userService.doesEmailExist(email)
+                ? ResponseEntity.ok(true)
+                : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/emails")
     public ResponseEntity<List<UserDailyReminderDTO>> getEmailsOfUsersWithDailyLearnReminder() {
         return ResponseEntity.ok(userService.getEmailsOfUsersWithDailyLearnReminder());
     }
-
     @PostMapping("/")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user) {
         return userService.createUser(user)
