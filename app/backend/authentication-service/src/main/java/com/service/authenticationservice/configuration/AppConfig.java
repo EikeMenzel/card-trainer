@@ -16,8 +16,8 @@ public class AppConfig {
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
     private final ObjectMapper objectMapper;
 
-    //@Value("database.api.path")
-    private String dbApiPath = "http://localhost:8086/api/v1/db";
+    @Value("${db.api.path}")
+    private String DB_API_BASE_PATH;
 
     public AppConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -31,9 +31,9 @@ public class AppConfig {
     @Bean
     public RainbowListDTO queryRainbowTable() {
         try {
-            RainbowListDTO rainbowListDTO =  objectMapper.readValue(
+            var rainbowListDTO =  objectMapper.readValue(
                     restTemplate()
-                            .getForEntity(dbApiPath + "/rainbows", String.class)
+                            .getForEntity(DB_API_BASE_PATH + "/rainbows", String.class)
                             .getBody(),
                     RainbowListDTO.class
             );

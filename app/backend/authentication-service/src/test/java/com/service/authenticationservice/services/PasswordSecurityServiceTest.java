@@ -20,7 +20,6 @@ class PasswordSecurityServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Mock the RainbowListDTO dependency
         rainbowListDTO = Mockito.mock(RainbowListDTO.class);
         passwordSecurityService = new PasswordSecurityService(rainbowListDTO);
     }

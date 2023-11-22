@@ -49,7 +49,7 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
 
         if (registerRequest.username().length() < 4 || registerRequest.username().length() > 30) {
-            return ResponseEntity.badRequest().body("Error, Username is to long or to short");
+            return ResponseEntity.badRequest().body(new MessageResponseDTO("Error, Username is to long or to short"));
         }
 
         if (passwordSecurityService.checkPasswordIsRainbow(registerRequest.password())) //contains check, returns true if the password is in the table
@@ -64,18 +64,18 @@ public class AuthController {
         }
 
         if (dbQueryService.doesUserWithEmailExist(registerRequest.email()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error, Email already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO("Error, Email already exists"));
         }
 
         HttpStatusCode resultSaveUser = dbQueryService.saveUser(new UserDTO(registerRequest.username(), registerRequest.email(), encoder.encode(registerRequest.password())));
         if (resultSaveUser == HttpStatus.CREATED) { //send VerificationMail
             Optional<Long> userId = dbQueryService.getUserIdByEmail(registerRequest.email());
             if (userId.isEmpty()) //Information could not be fetched from database
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity.internalServerError().body(new MessageResponseDTO("Error, some problem occurred"));
 
             emailQueryService.sendEmail(userId.get(), MailType.VERIFICATION);
         } else {
-            return ResponseEntity.internalServerError().body("Error, some problem occurred");
+            return ResponseEntity.internalServerError().body(new MessageResponseDTO("Error, some problem occurred"));
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -92,7 +92,7 @@ public class AuthController {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
             if (dbQueryService.getVerificationStateUser(userDetails.id()).isEmpty())
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: The user is not verified");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponseDTO("Authentication failed: The user is not verified"));
 
             ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
@@ -102,7 +102,7 @@ public class AuthController {
         } catch (AuthenticationException e) {
             logger.error("Authentication failed: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Authentication failed: " + e.getMessage());
+                    .body(new MessageResponseDTO("Authentication failed: " + e.getMessage()));
         }
     }
 
@@ -116,7 +116,7 @@ public class AuthController {
         } else if (httpStatusCode.equals(HttpStatus.BAD_REQUEST)) {
             return ResponseEntity.badRequest().body(new MessageResponseDTO("Token is not acceptable"));
         } else if (httpStatusCode.is5xxServerError()) {
-            return ResponseEntity.internalServerError().body("An error has occurred, please try again later");
+            return ResponseEntity.internalServerError().body(new MessageResponseDTO("An error has occurred, please try again later"));
         }
         return ResponseEntity.unprocessableEntity().build();
     }
