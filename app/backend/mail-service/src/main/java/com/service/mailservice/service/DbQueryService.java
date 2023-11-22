@@ -1,12 +1,9 @@
-package com.service.mailservice.services;
+package com.service.mailservice.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.mailservice.payload.inc.UserDailyReminderDTO;
 import com.service.mailservice.payload.out.UserTokenDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,16 +15,11 @@ import java.util.Optional;
 public class DbQueryService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final String DB_API_BASE_PATH;
-    private final String USER_DB_API_PATH;
-    private final String USER_TOKEN_DB_API_PATH;
-    private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
-
-
-    public DbQueryService(@Value("${db.api.path}") String dbPath, RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.DB_API_BASE_PATH = dbPath;
-        this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
-        this.USER_TOKEN_DB_API_PATH = this.DB_API_BASE_PATH + "/user-token";
+    //@Value("database.api.path")
+    private static final String GENERIC_DB_API_PATH = "http://localhost:8086/api/v1/db";
+    private static final String USER_DB_API_PATH  =  GENERIC_DB_API_PATH + "/users";
+    private static final String USER_TOKEN_DB_API_PATH  =  GENERIC_DB_API_PATH + "/user-token";
+    public DbQueryService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }

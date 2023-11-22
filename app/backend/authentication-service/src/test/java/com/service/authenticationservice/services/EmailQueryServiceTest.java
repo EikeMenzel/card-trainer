@@ -1,13 +1,11 @@
 package com.service.authenticationservice.services;
 
 import com.service.authenticationservice.model.MailType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
@@ -16,17 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class EmailQueryServiceTest {
-    @Autowired
+
     private EmailQueryService emailQueryService;
-    @MockBean
     private RestTemplate restTemplate;
 
-    @Value("${email-service.api.path}")
-    private String EMAIL_SERVICE_API_PATH;
+    @BeforeEach
+    void setUp() {
+        // Mock the RestTemplate dependency
+        restTemplate = Mockito.mock(RestTemplate.class);
+        emailQueryService = new EmailQueryService(restTemplate);
+    }
+
     @Test
     void testSendVerificationEmail_Success() {
         Long userId = 123L;
-        String expectedUrl = EMAIL_SERVICE_API_PATH + "/verification";
+        String expectedUrl = "http://localhost:8081/api/v1/email/verification";
         HttpStatus expectedHttpStatus = HttpStatus.ACCEPTED;
 
         HttpHeaders headers = new HttpHeaders();
@@ -44,7 +46,7 @@ class EmailQueryServiceTest {
     @Test
     void testSendVerificationEmail_Failure() {
         Long userId = 456L;
-        String expectedUrl = EMAIL_SERVICE_API_PATH + "/verification";
+        String expectedUrl = "http://localhost:8081/api/v1/email/verification";
         HttpStatus expectedHttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         HttpHeaders headers = new HttpHeaders();

@@ -1,5 +1,6 @@
 FROM eclipse-temurin:17-jdk-jammy AS builder
 ENV JAVA_HOME=/opt/java/openjdk
+RUN echo $JAVA_HOME
 
 WORKDIR /opt/app
 COPY .mvn/ .mvn/
