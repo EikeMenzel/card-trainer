@@ -6,13 +6,11 @@ import com.service.authenticationservice.payload.inc.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -25,22 +23,20 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = "classpath:application.properties")
 class DbQueryServiceTest {
-    @MockBean
+
+    @Mock
     private RestTemplate restTemplate;
-    @MockBean
+
+    @Mock
     private ObjectMapper objectMapper;
-    @Autowired
+
+    @InjectMocks
     private DbQueryService dbQueryService;
 
-    @Value("${db.api.path}/users")
-    private String USER_DB_API_PATH;
-
-    @Value("${db.api.path}/users/emails")
-    private String USER_EMAIL_DB_API_PATH;
     @BeforeEach
     void setUp() throws JsonProcessingException {
+        // Mock the ObjectMapper behavior
         Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(UserDTO.class)))
                 .thenReturn(new UserDTO(1L, "TestUser", "password1233!", "test@example.com"));
     }
@@ -48,7 +44,9 @@ class DbQueryServiceTest {
     @Test
     void testGetUserByEmail_Success() {
         String email = "test@example.com";
-        String expectedUrl = USER_EMAIL_DB_API_PATH + "/" + email;
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/email/" + email;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>("{ \"userId\": 123, \"email\": \"test@example.com\" }", HttpStatus.OK);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -62,7 +60,9 @@ class DbQueryServiceTest {
     @Test
     void testGetUserByEmail_NotFound() {
         String email = "nonexistent@example.com";
-        String expectedUrl = USER_EMAIL_DB_API_PATH + "/" + email;
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/email/" + email;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -76,7 +76,9 @@ class DbQueryServiceTest {
     @Test
     void testGetUserIdByEmail_Success() {
         String email = "test@example.com";
-        String expectedUrl = USER_EMAIL_DB_API_PATH + "/" + email + "/id";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/email/" + email + "/id";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>("123", HttpStatus.OK);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -91,7 +93,9 @@ class DbQueryServiceTest {
     @Test
     void testGetUserIdByEmail_NotFound() {
         String email = "nonexistent@example.com";
-        String expectedUrl = USER_EMAIL_DB_API_PATH + "/" + email + "/id";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/email/" + email + "/id";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -105,7 +109,9 @@ class DbQueryServiceTest {
     @Test
     void testDoesUserWithEmailExist_True() {
         String email = "test@example.com";
-        String expectedUrl = USER_EMAIL_DB_API_PATH + "/" + email + "/exists";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/email/" + email + "/exists";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>("true", HttpStatus.OK);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -121,7 +127,9 @@ class DbQueryServiceTest {
     @Test
     void testDoesUserWithEmailExist_False() {
         String email = "nonexistent@example.com";
-        String expectedUrl = USER_EMAIL_DB_API_PATH + "/" + email + "/exists";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/email/" + email + "/exists";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -135,7 +143,9 @@ class DbQueryServiceTest {
     @Test
     void testGetUserVerificationState_True() {
         long userId = 1L;
-        String expectedUrl = USER_DB_API_PATH + "/" + userId + "/verified";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/" + userId + "/verified";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>("true", HttpStatus.OK);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -151,7 +161,9 @@ class DbQueryServiceTest {
     @Test
     void testGetUserVerificationState_False() {
         long userId = 1L;
-        String expectedUrl = USER_DB_API_PATH + "/" + userId + "/verified";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/" + userId + "/verified";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 
         Mockito.when(restTemplate.getForEntity(expectedUrl, String.class))
@@ -166,7 +178,7 @@ class DbQueryServiceTest {
     @Test
     void testSaveUser_Success() {
         UserDTO userDTO = new UserDTO(1L, "TestUser", "password1233!", "test@example.com");
-        String expectedUrl = USER_DB_API_PATH + "/";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
@@ -182,7 +194,7 @@ class DbQueryServiceTest {
     @Test
     void testSaveUser_Failure() {
         UserDTO userDTO = new UserDTO(1L, "TestUser", "password1233!", "test@example.com");
-        String expectedUrl = USER_DB_API_PATH + "/";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -199,7 +211,7 @@ class DbQueryServiceTest {
     void getUserEmailFromId_Success() {
         Long userId = 1L;
         String userEmail = "user@example.com";
-        String expectedUrl = USER_DB_API_PATH + "/";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/";
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(userEmail, HttpStatus.OK);
 
@@ -215,7 +227,7 @@ class DbQueryServiceTest {
     @Test
     void getUserEmailFromId_UserNotFound() {
         Long userId = 1L;
-        String expectedUrl = USER_DB_API_PATH + "/";
+        String expectedUrl = "http://localhost:8086/api/v1/db/users/";
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -228,7 +240,8 @@ class DbQueryServiceTest {
     }
 
     @Test
-    void testUpdateUserWithToken_Success() {
+    public void testUpdateUserWithToken_Success() {
+        // Mocking a successful response with HTTP status 200
         ResponseEntity<Void> successResponse = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenReturn(successResponse);
@@ -237,7 +250,8 @@ class DbQueryServiceTest {
     }
 
     @Test
-    void testUpdateUserWithToken_Conflict() {
+    public void testUpdateUserWithToken_Conflict() {
+        // Mocking a response with HTTP status 409 (Conflict)
         ResponseEntity<Void> conflictResponse = new ResponseEntity<>(HttpStatus.CONFLICT);
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.CONFLICT));
@@ -246,7 +260,8 @@ class DbQueryServiceTest {
     }
 
     @Test
-    void testUpdateUserWithToken_BadRequest() {
+    public void testUpdateUserWithToken_BadRequest() {
+        // Mocking a response with HTTP status 400 (Bad Request)
         ResponseEntity<Void> badRequestResponse = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
@@ -255,7 +270,8 @@ class DbQueryServiceTest {
     }
 
     @Test
-    void testUpdateUserWithToken_InternalServerError() {
+    public void testUpdateUserWithToken_InternalServerError() {
+        // Mocking a response with HTTP status 500 (Internal Server Error)
         ResponseEntity<Void> internalServerErrorResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));

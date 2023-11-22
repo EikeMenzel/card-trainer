@@ -1,46 +1,44 @@
-package com.service.mailservice.services;
+package com.service.mailservice.service;
 
+import com.service.mailservice.payload.inc.UserDailyReminderDTO;
 import com.service.mailservice.payload.out.UserTokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = "classpath:application.properties")
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
 class DbQueryServiceTest {
+    private static final String GENERIC_DB_API_PATH = "http://localhost:8086/api/v1/db";
+    private static final String USER_TOKEN_DB_API_PATH = GENERIC_DB_API_PATH + "/user-token";
+    private static final String USER_DB_API_PATH = GENERIC_DB_API_PATH + "/users";
 
-    @Value("${db.api.path}/users")
-    private String USER_DB_API_PATH;
-
-    @Value("${db.api.path}/user-token")
-    private String USER_TOKEN_DB_API_PATH;
-    @MockBean
+    @Mock
     private RestTemplate restTemplate;
-    @Autowired
+
+    @InjectMocks
     private DbQueryService dbQueryService;
+
+    private MockRestServiceServer mockServer;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        mockServer = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test
@@ -67,7 +65,7 @@ class DbQueryServiceTest {
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(userEmail, HttpStatus.OK);
 
-        when(restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/email", String.class))
+        when(restTemplate.getForEntity(GENERIC_DB_API_PATH + "/users/" + userId + "/email", String.class))
                 .thenReturn(responseEntity);
 
         Optional<String> result = dbQueryService.getUserEmailFromId(userId);
@@ -82,7 +80,7 @@ class DbQueryServiceTest {
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        when(restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/email", String.class))
+        when(restTemplate.getForEntity(GENERIC_DB_API_PATH + "/users/" + userId + "/email", String.class))
                 .thenReturn(responseEntity);
 
         Optional<String> result = dbQueryService.getUserEmailFromId(userId);

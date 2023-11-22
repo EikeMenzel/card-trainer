@@ -1,7 +1,6 @@
 package com.service.authenticationservice.services;
 
 import com.service.authenticationservice.model.MailType;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,11 +8,10 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class EmailQueryService {
     private final RestTemplate restTemplate;
-    private final String EMAIL_API_PATH;
+    private static final String EMAIL_API_PATH = "http://localhost:8081/api/v1/email";
 
-    public EmailQueryService(RestTemplate restTemplate, @Value("${email-service.api.path}") String emailServicePath) {
+    public EmailQueryService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.EMAIL_API_PATH = emailServicePath;
     }
 
     private HttpStatusCode sendVerificationEmail(Long userId) {
@@ -27,9 +25,11 @@ public class EmailQueryService {
     }
 
     public HttpStatusCode sendEmail(Long userId, MailType mailType) {
-        return switch (mailType) {
-            case VERIFICATION -> sendVerificationEmail(userId);
-            case PASSWORD_RESET -> HttpStatus.UNPROCESSABLE_ENTITY;
-        };
+        switch (mailType) {
+            case VERIFICATION -> {
+                return sendVerificationEmail(userId);
+            }
+        }
+        return HttpStatusCode.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

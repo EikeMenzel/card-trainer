@@ -1,4 +1,4 @@
-package com.service.mailservice.services;
+package com.service.mailservice.service;
 
 import org.springframework.stereotype.Service;
 

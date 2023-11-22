@@ -1,4 +1,4 @@
-package com.service.mailservice.services;
+package com.service.mailservice.service;
 
 import com.service.mailservice.payload.inc.UserDailyReminderDTO;
 import org.springframework.scheduling.annotation.Scheduled;
