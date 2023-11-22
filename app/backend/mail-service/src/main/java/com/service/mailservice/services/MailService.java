@@ -1,4 +1,4 @@
-package com.service.mailservice.service;
+package com.service.mailservice.services;
 
 import com.service.mailservice.model.MailType;
 import com.service.mailservice.payload.out.UserTokenDTO;
@@ -6,7 +6,6 @@ import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

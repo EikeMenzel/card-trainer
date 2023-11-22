@@ -4,7 +4,6 @@ stages:
   - code_quality
   - push_to_registry
 
-
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   DOCKER_DRIVER: overlay2
@@ -66,10 +65,17 @@ push_backend_to_registry: # push images to registry
     - docker login $CI_REGISTRY_URL -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
-    - cd app/backend/demo
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/demo-service:$CI_COMMIT_SHORT_SHA . #--load
-    - docker push $CI_REGISTRY_IMAGE_PATH/demo-service:$CI_COMMIT_SHORT_SHA
-
+    - cd app/backend/authentication-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/authentication-service:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE_PATH/authentication-service:$CI_COMMIT_SHORT_SHA
+    - cd ..
+    - cd database-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/database-service:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE_PATH/database-service:$CI_COMMIT_SHORT_SHA
+    - cd ..
+    - cd mail-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/mail-service:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE_PATH/mail-service:$CI_COMMIT_SHORT_SHA
 
 push_frontend_to_registry: # push images to registry
   stage: push_to_registry
@@ -86,5 +92,5 @@ push_frontend_to_registry: # push images to registry
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
     - export FRONTEND=angular-frontend;
     - cd app/frontend/$FRONTEND
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA . # --load
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA
