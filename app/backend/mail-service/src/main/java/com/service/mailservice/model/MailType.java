@@ -17,7 +17,7 @@ public enum MailType {
     }
 
     public static Optional<MailType> fromString(String value) {
-        MailType mailType = lookup.get(value.toLowerCase());
+        var mailType = lookup.get(value.toLowerCase());
         return mailType == null ?
                 Optional.empty() :
                 Optional.of(mailType);

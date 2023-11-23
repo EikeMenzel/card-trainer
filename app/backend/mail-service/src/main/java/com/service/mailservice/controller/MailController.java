@@ -1,8 +1,7 @@
 package com.service.mailservice.controller;
 
 import com.service.mailservice.model.MailType;
-import com.service.mailservice.service.MailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.service.mailservice.services.MailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

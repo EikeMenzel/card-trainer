@@ -30,7 +30,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private DbQueryService dbQueryService;
-    private final Logger logger =  LoggerFactory.getLogger(AuthTokenFilter.class);
+    private final Logger loggerAuthFilter =  LoggerFactory.getLogger(AuthTokenFilter.class);
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -49,7 +49,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication:", e);
+            loggerAuthFilter.error("Cannot set user authentication:", e);
         }
         filterChain.doFilter(request, response);
     }
