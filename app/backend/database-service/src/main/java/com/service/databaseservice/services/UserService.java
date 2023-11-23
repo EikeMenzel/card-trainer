@@ -1,6 +1,7 @@
 package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.User;
+import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
@@ -14,12 +15,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final Logger logger =  LoggerFactory.getLogger(UserService.class);
-    private final UserRepository userRepository;
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+    private final UserRepository userRepository;
 
     public Optional<String> getUserEmailById(Long id) {
         var user = userRepository.getUserById(id);
@@ -63,5 +64,30 @@ public class UserService {
             logger.error(e.getMessage());
             return false;
         }
+    }
+
+    public Optional<UserAccountInformationDTO> getAccountInformation(Long id) {
+        Optional<User> user = userRepository.getUserById(id);
+        return user.map(value -> new UserAccountInformationDTO(value.getUsername(), value.getEmail(), value.getCardsPerSession(), value.getGetsNotified(), value.getLangCode()));
+    }
+
+    public boolean updateAccountInformation(Long userId, UserAccountInformationDTO userAccountInformationDTO) {
+        try {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isEmpty()) {
+                return false;
+            }
+            var user = userOptional.get();
+            user.setUsername(userAccountInformationDTO.getUsername());
+            user.setEmail(userAccountInformationDTO.getEmail());
+            user.setGetsNotified(userAccountInformationDTO.getReceiveLearnNotification());
+            user.setCardsPerSession(userAccountInformationDTO.getCardsToLearn());
+            user.setLangCode(userAccountInformationDTO.getLangCode());
+
+            userRepository.save(user);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

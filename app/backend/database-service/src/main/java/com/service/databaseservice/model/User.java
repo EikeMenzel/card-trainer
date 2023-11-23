@@ -85,4 +85,24 @@ public class User {
     public void setVerified(Boolean verified) {
         isVerified = verified;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setGetsNotified(Boolean getsNotified) {
+        this.getsNotified = getsNotified;
+    }
+
+    public void setCardsPerSession(Integer cardsPerSession) {
+        this.cardsPerSession = cardsPerSession;
+    }
+
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
+    }
 }

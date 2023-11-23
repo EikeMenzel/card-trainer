@@ -16,8 +16,9 @@
         <module>gateway</module>
         <module>database-service</module>
         <module>mail-service</module>
-        <module>authentication-service</module>
+        <module>user-service</module>
         <module>cards-service</module>
+        <module>authentication-service</module>
         <!-- Add more modules as needed -->
     </modules>
 </project>
