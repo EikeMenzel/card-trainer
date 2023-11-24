@@ -40,6 +40,6 @@ public class JwtUtils {
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromUserId(userPrincipal.id());
         long maxAgeSecondsCookie = (long) (24 * 60) * 60 * 30;
-        return ResponseCookie.from(jwtCookieName, jwt).path("/api/v1").maxAge(maxAgeSecondsCookie).httpOnly(true).build();
+        return ResponseCookie.from(jwtCookieName, jwt).path("/").maxAge(maxAgeSecondsCookie).httpOnly(false).build();
     }
 }
