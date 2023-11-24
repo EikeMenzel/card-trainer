@@ -33,7 +33,7 @@ class UserServiceTest {
     @Test
     void testGetUserEmailById_ValidUserId() {
         Long userId = 1L;
-        User mockUser = new User("testUser", "test@example.com", "password");
+        User mockUser = new User("testUser", "test@example.com", "password", false);
 
         when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
 
@@ -128,7 +128,7 @@ class UserServiceTest {
     @Test
     void testGetUserFromId_ValidUserId() {
         Long userId = 1L;
-        User mockUser = new User("testUser", "test@example.com", "password");
+        User mockUser = new User("testUser", "test@example.com", "password", false);
 
         when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
 
@@ -161,9 +161,9 @@ class UserServiceTest {
 
     @Test
     void testCreateUser_ValidUserDTO() {
-        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password");
+        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password", false);
 
-        when(userRepository.save(any(User.class))).thenReturn(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword()));
+        when(userRepository.save(any(User.class))).thenReturn(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false));
 
         boolean result = userService.createUser(userDTO);
 
@@ -172,7 +172,7 @@ class UserServiceTest {
 
     @Test
     void testCreateUser_ErrorInUserCreation() {
-        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password");
+        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password", false);
 
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Error saving user"));
 

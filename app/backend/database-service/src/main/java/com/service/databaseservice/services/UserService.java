@@ -43,7 +43,7 @@ public class UserService {
 
     public Optional<UserDTO> getUserByEmail(String email) {
         Optional<User> user = userRepository.getUserByEmail(email);
-        return user.map(value -> new UserDTO(value.getId(), value.getUsername(), value.getEmail(), value.getPassword()));
+        return user.map(value -> new UserDTO(value.getId(), value.getUsername(), value.getEmail(), value.getPassword(), value.getVerified()));
     }
 
     public Boolean isUserVerified(Long userId) {
@@ -59,7 +59,7 @@ public class UserService {
 
     public boolean createUser(UserDTO userDTO) {
         try {
-            userRepository.save(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword()));
+            userRepository.save(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), userDTO.isVerify()));
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage());
