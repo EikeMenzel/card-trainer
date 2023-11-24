@@ -43,10 +43,11 @@ public class User {
         this.langCode = langCode;
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, boolean isVerified) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isVerified = isVerified;
     }
 
     public User() {

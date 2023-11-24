@@ -120,7 +120,7 @@ class UserControllerTest {
 
     @Test
     void testCreateUser_Success() {
-        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password", false);
 
         when(userService.createUser(userDTO)).thenReturn(true);
 
@@ -131,7 +131,7 @@ class UserControllerTest {
 
     @Test
     void testCreateUser_Failure() {
-        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password", false);
 
         when(userService.createUser(userDTO)).thenReturn(false);
 
@@ -142,7 +142,7 @@ class UserControllerTest {
 
     @Test
     void testGetUserFromEmail_UserFound() {
-        UserDTO mockUser = new UserDTO(1L, "username", "test@example.com", "password");
+        UserDTO mockUser = new UserDTO(1L, "username", "test@example.com", "password", false);
         when(userService.getUserByEmail(anyString())).thenReturn(Optional.of(mockUser));
 
         ResponseEntity<UserDTO> response = userController.getUserFromEmail("test@example.com");

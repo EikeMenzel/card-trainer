@@ -42,7 +42,7 @@ class DbQueryServiceTest {
     @BeforeEach
     void setUp() throws JsonProcessingException {
         Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(UserDTO.class)))
-                .thenReturn(new UserDTO(1L, "TestUser", "password1233!", "test@example.com"));
+                .thenReturn(new UserDTO(1L, "TestUser", "password1233!", "test@example.com", false));
     }
 
     @Test
@@ -165,7 +165,7 @@ class DbQueryServiceTest {
 
     @Test
     void testSaveUser_Success() {
-        UserDTO userDTO = new UserDTO(1L, "TestUser", "password1233!", "test@example.com");
+        UserDTO userDTO = new UserDTO(1L, "TestUser", "password1233!", "test@example.com", false);
         String expectedUrl = USER_DB_API_PATH + "/";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -181,7 +181,7 @@ class DbQueryServiceTest {
 
     @Test
     void testSaveUser_Failure() {
-        UserDTO userDTO = new UserDTO(1L, "TestUser", "password1233!", "test@example.com");
+        UserDTO userDTO = new UserDTO(1L, "TestUser", "password1233!", "test@example.com", false);
         String expectedUrl = USER_DB_API_PATH + "/";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
