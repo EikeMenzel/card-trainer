@@ -69,6 +69,10 @@ public class UserController {
 
     @PutMapping("/{userId}/account")
     public ResponseEntity<UserAccountInformationDTO> updateUserAccountInformation(@PathVariable Long userId, @RequestBody UserAccountInformationDTO userAccountInformationDTO) {
+        Optional<String> email = userService.getUserEmailById(userId);
+        if(email.isPresent() && !email.get().equals(userAccountInformationDTO.getEmail()) && userService.doesEmailExist(userAccountInformationDTO.getEmail()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
         return userService.updateAccountInformation(userId, userAccountInformationDTO)
                 ? ResponseEntity.ok(userAccountInformationDTO)
                 : ResponseEntity.internalServerError().build();

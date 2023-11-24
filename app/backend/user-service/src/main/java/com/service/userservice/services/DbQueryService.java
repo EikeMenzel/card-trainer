@@ -1,5 +1,5 @@
 package com.service.userservice.services;
-
+import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.userservice.payload.inc.UserAccountInformationDTO;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public class DbQueryService {
         return List.of();
     }
 
-    public Optional<UserAccountInformationDTO> updateAccountInformation(Long userId, UserAccountInformationDTO userAccountInformationDTO) {
+    public Pair<Optional<UserAccountInformationDTO>, HttpStatusCode> updateAccountInformation(Long userId, UserAccountInformationDTO userAccountInformationDTO) {
         try {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -65,13 +66,14 @@ public class DbQueryService {
                     String.class);
 
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                return Optional.of(objectMapper.readValue(responseEntity.getBody(), UserAccountInformationDTO.class));
+                UserAccountInformationDTO responseBody = objectMapper.readValue(responseEntity.getBody(), UserAccountInformationDTO.class);
+                return Pair.of(Optional.of(responseBody), HttpStatus.OK);
             }
+            return Pair.of(Optional.empty(), responseEntity.getStatusCode());
         } catch (HttpClientErrorException e) {
-            logger.error("HttpClientErrorException: " + e.getMessage(), e);
+            return Pair.of(Optional.empty(), e.getStatusCode());
         } catch (Exception e) {
-            logger.error("Exception occurred: " + e.getMessage(), e);
+            return Pair.of(Optional.empty(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return Optional.empty();
     }
 }

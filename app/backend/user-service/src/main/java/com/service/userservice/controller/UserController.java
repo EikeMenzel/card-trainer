@@ -4,6 +4,9 @@ import com.service.userservice.payload.inc.UserAccountInformationAchievementsDTO
 import com.service.userservice.payload.inc.UserAccountInformationDTO;
 import com.service.userservice.services.DbQueryService;
 import com.service.userservice.services.EmailValidator;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +39,9 @@ public class UserController {
         if(userId < 0 || userAccountInformationDTO.getUsername().length() < 4 || userAccountInformationDTO.getUsername().length() > 30 || !EmailValidator.validate(userAccountInformationDTO.getEmail()))
             return ResponseEntity.badRequest().build();
 
-        return dbQueryService.updateAccountInformation(userId, userAccountInformationDTO).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.internalServerError().build());
+        Pair<Optional<UserAccountInformationDTO>, HttpStatusCode> httpStatusPair = dbQueryService.updateAccountInformation(userId, userAccountInformationDTO);
+        if(httpStatusPair.getRight().is2xxSuccessful())
+            return ResponseEntity.status(httpStatusPair.getRight()).body(httpStatusPair.getLeft().get());
+        return ResponseEntity.status(httpStatusPair.getRight()).build();
     }
 }

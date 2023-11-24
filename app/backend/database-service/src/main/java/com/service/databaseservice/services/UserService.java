@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -78,6 +79,12 @@ public class UserService {
                 return false;
             }
             var user = userOptional.get();
+
+            if (!Objects.equals(user.getEmail(), userAccountInformationDTO.getEmail()) &&
+                    userRepository.existsByEmailAndIdNot(userAccountInformationDTO.getEmail(), userId)) {
+                return false;
+            }
+
             user.setUsername(userAccountInformationDTO.getUsername());
             user.setEmail(userAccountInformationDTO.getEmail());
             user.setGetsNotified(userAccountInformationDTO.getReceiveLearnNotification());
