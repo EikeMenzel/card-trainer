@@ -15,6 +15,7 @@ import com.service.authenticationservice.services.PasswordSecurityService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,9 +35,11 @@ public class AuthController {
     private final PasswordEncoder encoder;
     public final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final boolean skipVerify;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify) {
+        this.skipVerify = skipVerify.equalsIgnoreCase("true");
         this.passwordSecurityService = passwordSecurityService;
         this.dbQueryService = dbQueryService;
         this.emailQueryService = emailQueryService;
@@ -67,11 +70,17 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO("Error, Email already exists"));
         }
 
-        HttpStatusCode resultSaveUser = dbQueryService.saveUser(new UserDTO(registerRequest.username(), registerRequest.email(), encoder.encode(registerRequest.password())));
+        HttpStatusCode resultSaveUser = dbQueryService.saveUser(new UserDTO(registerRequest.username(), registerRequest.email(), encoder.encode(registerRequest.password()), skipVerify));
+        if (skipVerify) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+
         if (resultSaveUser == HttpStatus.CREATED) { //send VerificationMail
             Optional<Long> userId = dbQueryService.getUserIdByEmail(registerRequest.email());
             if (userId.isEmpty()) //Information could not be fetched from database
+            {
                 return ResponseEntity.internalServerError().body(new MessageResponseDTO("Error, some problem occurred"));
+            }
 
             emailQueryService.sendEmail(userId.get(), MailType.VERIFICATION);
         } else {

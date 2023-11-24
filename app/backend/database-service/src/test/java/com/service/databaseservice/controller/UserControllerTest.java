@@ -1,5 +1,6 @@
 package com.service.databaseservice.controller;
 
+import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.services.UserService;
 import org.junit.jupiter.api.Test;
@@ -119,7 +120,7 @@ class UserControllerTest {
 
     @Test
     void testCreateUser_Success() {
-        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password", false);
 
         when(userService.createUser(userDTO)).thenReturn(true);
 
@@ -130,7 +131,7 @@ class UserControllerTest {
 
     @Test
     void testCreateUser_Failure() {
-        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password");
+        UserDTO userDTO = new UserDTO("testUser", "test@example.com", "password", false);
 
         when(userService.createUser(userDTO)).thenReturn(false);
 
@@ -141,7 +142,7 @@ class UserControllerTest {
 
     @Test
     void testGetUserFromEmail_UserFound() {
-        UserDTO mockUser = new UserDTO(1L, "username", "test@example.com", "password");
+        UserDTO mockUser = new UserDTO(1L, "username", "test@example.com", "password", false);
         when(userService.getUserByEmail(anyString())).thenReturn(Optional.of(mockUser));
 
         ResponseEntity<UserDTO> response = userController.getUserFromEmail("test@example.com");
@@ -159,5 +160,53 @@ class UserControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertTrue(response.getBody() == null || response.getBody().getId() == null);
+    }
+
+    @Test
+    void testGetUserAccountInformation_UserFound() {
+        long userId = 1L;
+        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en");
+        when(userService.getAccountInformation(userId)).thenReturn(Optional.of(mockUser));
+
+        ResponseEntity<UserAccountInformationDTO> response = userController.getUserAccountInformation(userId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.hasBody());
+        assertEquals(mockUser, response.getBody());
+    }
+
+    @Test
+    void testGetUserAccountInformation_UserNotFound() {
+        long userId = 1L;
+        when(userService.getAccountInformation(userId)).thenReturn(Optional.empty());
+
+        ResponseEntity<UserDTO> response = userController.getUserFromEmail("nonexistent@example.com");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertTrue(response.getBody() == null || response.getBody().getId() == null);
+    }
+
+    @Test
+    void testUpdateUserAccountInformation_Success() {
+        long userId = 1L;
+        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en");
+
+        when(userService.updateAccountInformation(userId, mockUser)).thenReturn(true);
+
+        ResponseEntity<?> response = userController.updateUserAccountInformation(userId, mockUser);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void testUpdateUserAccountInformation_Failure() {
+        long userId = 1L;
+        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en");
+
+        when(userService.updateAccountInformation(userId, mockUser)).thenReturn(false);
+
+        ResponseEntity<?> response = userController.updateUserAccountInformation(userId, mockUser);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }

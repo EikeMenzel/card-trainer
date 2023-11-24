@@ -1,6 +1,7 @@
 package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.User;
+import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
@@ -19,8 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -33,7 +33,7 @@ class UserServiceTest {
     @Test
     void testGetUserEmailById_ValidUserId() {
         Long userId = 1L;
-        User mockUser = new User("testUser", "test@example.com", "password");
+        User mockUser = new User("testUser", "test@example.com", "password", false);
 
         when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
 
@@ -128,7 +128,7 @@ class UserServiceTest {
     @Test
     void testGetUserFromId_ValidUserId() {
         Long userId = 1L;
-        User mockUser = new User("testUser", "test@example.com", "password");
+        User mockUser = new User("testUser", "test@example.com", "password", false);
 
         when(userRepository.getUserById(userId)).thenReturn(Optional.of(mockUser));
 
@@ -161,9 +161,9 @@ class UserServiceTest {
 
     @Test
     void testCreateUser_ValidUserDTO() {
-        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password");
+        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password", false);
 
-        when(userRepository.save(any(User.class))).thenReturn(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword()));
+        when(userRepository.save(any(User.class))).thenReturn(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), false));
 
         boolean result = userService.createUser(userDTO);
 
@@ -172,7 +172,7 @@ class UserServiceTest {
 
     @Test
     void testCreateUser_ErrorInUserCreation() {
-        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password");
+        UserDTO userDTO = new UserDTO("newUser", "newuser@example.com", "password", false);
 
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Error saving user"));
 
@@ -202,5 +202,44 @@ class UserServiceTest {
         assertThat(result).extracting(UserDailyReminderDTO::email).containsExactly("email1@example.com", "email2@example.com");
 
         verify(userRepository, Mockito.times(1)).findAllByIsVerifiedTrueAndGetsNotifiedTrue();
+    }
+
+    @Test
+    void getAccountInformation_UserDoesNotExist_ReturnsEmpty() {
+        Long userId = 1L;
+        when(userRepository.getUserById(userId)).thenReturn(Optional.empty());
+
+        Optional<UserAccountInformationDTO> result = userService.getAccountInformation(userId);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void updateAccountInformation_UserExists_UpdatesAndReturnsTrue() {
+        Long userId = 1L;
+        User mockUser = new User(userId, "username", "email@example.com", "password", true, true, 20, "en");
+        UserAccountInformationDTO dto = new UserAccountInformationDTO("newUsername", "newEmail@example.com", 10, true, "en");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+
+        boolean result = userService.updateAccountInformation(userId, dto);
+
+        assertTrue(result);
+        verify(userRepository).save(mockUser);
+        assertEquals("newUsername", mockUser.getUsername());
+        assertEquals("newEmail@example.com", mockUser.getEmail());
+    }
+
+    @Test
+    void updateAccountInformation_UserDoesNotExist_ReturnsFalse() {
+        Long userId = 1L;
+        UserAccountInformationDTO dto = new UserAccountInformationDTO("username", "email@example.com", 10, true, "en");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        boolean result = userService.updateAccountInformation(userId, dto);
+
+        assertFalse(result);
+        verify(userRepository, never()).save(any(User.class));
     }
 }

@@ -1,6 +1,6 @@
 package com.service.databaseservice.controller;
 
-import com.service.databaseservice.model.User;
+import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.services.UserService;
@@ -58,6 +58,23 @@ public class UserController {
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user) {
         return userService.createUser(user)
                 ? ResponseEntity.status(HttpStatus.CREATED).build()
+                : ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/{userId}/account")
+    public ResponseEntity<UserAccountInformationDTO> getUserAccountInformation(@PathVariable Long userId) {
+        return userService.getAccountInformation(userId)
+                .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{userId}/account")
+    public ResponseEntity<UserAccountInformationDTO> updateUserAccountInformation(@PathVariable Long userId, @RequestBody UserAccountInformationDTO userAccountInformationDTO) {
+        Optional<String> email = userService.getUserEmailById(userId);
+        if(email.isPresent() && !email.get().equals(userAccountInformationDTO.getEmail()) && userService.doesEmailExist(userAccountInformationDTO.getEmail()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+        return userService.updateAccountInformation(userId, userAccountInformationDTO)
+                ? ResponseEntity.ok(userAccountInformationDTO)
                 : ResponseEntity.internalServerError().build();
     }
 }
