@@ -4,6 +4,8 @@ import {HttpClient, HttpClientModule, HttpStatusCode} from "@angular/common/http
 import {RouterLink} from "@angular/router";
 import {RegisterRequestDTO} from "../models/RegisterRequestDTO";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {NgIf} from "@angular/common";
+import {RegisterSuccessfulComponent} from "../register-successful/register-successful.component";
 
 @Component({
   selector: 'app-register',
@@ -12,15 +14,19 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
   imports: [
     FormsModule,
     HttpClientModule,
-    RouterLink
+    RouterLink,
+    NgIf,
+    RegisterSuccessfulComponent
   ],
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+
   email: string = '';
   username: string = '';
   password: string = '';
   passwordRepeat: string = '';
+  loginSuccess = false;
 
   private http: HttpClient
 
@@ -29,7 +35,8 @@ export class RegisterComponent {
   }
 
   onSubmit(registerForm: NgForm) {
-    const email: String = registerForm.value["email"]
+    this.loginSuccess = true;
+    const email: String = registerForm.value["_email"]
     const username: String = registerForm.value["username"]
     const password: String = registerForm.value["password"]
     const passwordRepeat: String = registerForm.value["passwordRepeat"]
@@ -57,6 +64,8 @@ export class RegisterComponent {
         })
     }
   }
+
+  protected readonly RegisterSuccessfulComponent = RegisterSuccessfulComponent;
 }
 
 
