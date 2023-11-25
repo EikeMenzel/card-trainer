@@ -1,6 +1,7 @@
-<div id="login-body">
+<ng-container *ngIf="!loginSuccess; else other">
+  <div id="login-body">
     <div class="login-container bg-green">
-        <h1>Register</h1>
+      <h1>Register</h1>
       <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
         <label>
           <input type="text" placeholder="E-Mail" name="email" [(ngModel)]="email" required>
@@ -18,6 +19,10 @@
         <button type="submit" class="btn-success">Register</button>
       </form>
       <span style="width: 100%"></span>
-        <p style=color:white>Already have an Account? <a routerLink="/login">Login</a></p>
+      <p style=color:white>Already have an Account? <a routerLink="/login">Login</a></p>
     </div>
-</div>
+  </div>
+</ng-container>
+<ng-template #other>
+  <app-register-successful [userEmail]="email"></app-register-successful>
+</ng-template>

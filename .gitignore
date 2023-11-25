@@ -45,3 +45,5 @@ build/
 app/backend/database/data
 frontend/card-trainer-app/node_modules/
 frontend/card-trainer-app/.angular/
+
+node_modules/
