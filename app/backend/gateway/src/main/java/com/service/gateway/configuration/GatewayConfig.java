@@ -24,7 +24,8 @@ public class GatewayConfig {
                         r -> r.path(
                                 "/api/v1/register",
                                 "/api/v1/login",
-                                "/api/v1/email/verify/{token}"
+                                "/api/v1/email/verify/{token}",
+                                "/api/v1/password"
                         ).uri(authenticationServiceUri))
 
                 .route("user-service",

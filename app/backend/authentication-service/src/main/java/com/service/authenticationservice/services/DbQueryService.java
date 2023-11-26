@@ -1,6 +1,7 @@
 package com.service.authenticationservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.authenticationservice.payload.inc.UpdatePasswordDTO;
 import com.service.authenticationservice.payload.inc.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,22 @@ public class DbQueryService {
                 return HttpStatus.BAD_REQUEST;
             }
             return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    public HttpStatusCode updateUserPassword(Long userId, UpdatePasswordDTO updatePasswordDTO) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                    USER_DB_API_PATH + "/" + userId + "/password",
+                    HttpMethod.PUT,
+                    new HttpEntity<>(updatePasswordDTO, headers),
+                    Void.class
+            );
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException e) {
+            return e.getStatusCode();
         }
     }
 }

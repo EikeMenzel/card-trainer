@@ -3,6 +3,7 @@ package com.service.authenticationservice.controller;
 import com.service.authenticationservice.model.MailType;
 import com.service.authenticationservice.payload.inc.LoginDTO;
 import com.service.authenticationservice.payload.inc.RegisterRequestDTO;
+import com.service.authenticationservice.payload.inc.UpdatePasswordDTO;
 import com.service.authenticationservice.payload.inc.UserDTO;
 import com.service.authenticationservice.payload.out.MessageResponseDTO;
 import com.service.authenticationservice.payload.out.UserInfoResponseDTO;
@@ -37,6 +38,8 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final boolean skipVerify;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private final String passwordBlockedPasswordMessage ="Error, Password is a blocked password";
+    private final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/";
 
     public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify) {
         this.skipVerify = skipVerify.equalsIgnoreCase("true");
@@ -55,11 +58,11 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponseDTO(2, "Error, Username is to long or to short"));
         }
 
-        if (passwordSecurityService.checkPasswordIsRainbow(registerRequest.password())) //contains check, returns true if the password is in the table
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, "Error, Password is a blocked password"));
+        if (passwordSecurityService.checkPasswordIsInRainbowTable(registerRequest.password())) //contains check, returns true if the password is in the table
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
 
         if (!passwordSecurityService.checkPasswordSecurity(registerRequest.password())) { //false if requirements not meet
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/"));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
         }
 
         if (!EmailValidator.validate(registerRequest.email())) { //checks for Regex of an email + email-length
@@ -129,4 +132,17 @@ public class AuthController {
         }
         return ResponseEntity.unprocessableEntity().build();
     }
+
+    @PutMapping("/password")
+    public ResponseEntity<?> updateUserPassword(@RequestHeader Long userId, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+        if (passwordSecurityService.checkPasswordIsInRainbowTable(updatePasswordDTO.password())) //contains check, returns true if the password is in the table
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
+
+        if (!passwordSecurityService.checkPasswordSecurity(updatePasswordDTO.password())) { //false if requirements not meet
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
+        }
+
+        return ResponseEntity.status(dbQueryService.updateUserPassword(userId, updatePasswordDTO)).build();
+    }
+
 }
