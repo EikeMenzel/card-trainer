@@ -1,6 +1,7 @@
 package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.User;
+import com.service.databaseservice.payload.inc.UpdatePasswordDTO;
 import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
@@ -94,6 +95,25 @@ public class UserService {
             user.setCardsPerSession(userAccountInformationDTO.getCardsToLearn());
             user.setLangCode(userAccountInformationDTO.getLangCode());
 
+            userRepository.save(user);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Transactional
+    public boolean updateUserPassword(Long userId, UpdatePasswordDTO updatePasswordDTO) {
+        try {
+            Optional<User> userOptional = userRepository.getUserById(userId);
+            if(userOptional.isEmpty())
+                return false;
+
+            var user = userOptional.get();
+            if(updatePasswordDTO.password() == null || updatePasswordDTO.password().equals(""))
+                return false;
+
+            user.setPassword(updatePasswordDTO.password());
             userRepository.save(user);
         } catch (Exception e) {
             return false;

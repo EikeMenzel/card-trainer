@@ -108,4 +108,8 @@ public class User {
     public void setLangCode(String langCode) {
         this.langCode = langCode;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

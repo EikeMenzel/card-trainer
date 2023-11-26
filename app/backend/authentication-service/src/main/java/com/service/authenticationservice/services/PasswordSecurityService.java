@@ -45,7 +45,7 @@ public class PasswordSecurityService {
         return hasDigit && hasUppercase && hasLowercase && hasSymbole && !hasUnknownChar;
     }
 
-    public boolean checkPasswordIsRainbow(String password) {
+    public boolean checkPasswordIsInRainbowTable(String password) {
         return queryRainbowTable.rainBowList().contains(password);
     }
 }
