@@ -1,8 +1,9 @@
+
 :root {
     --bs-primary-rgb: #72bb53;
 }
 
-.login-container {
+.register-container {
     margin: 60px auto;
     width: 400px;
     /*min-width: 400px;*/
@@ -11,8 +12,8 @@
     border-radius: 8px;
     border-style: solid;
     border-width: 1px;
-    border-color: green;
-    background-color: green;
+    border-color:  var(--primary-color);
+    background-color:  var(--primary-color);
     /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
 }
 
@@ -25,21 +26,15 @@ h1 {
 form input {
     width: 90%;
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
+    /*margin: 10px 0;*/
+    border: 3px solid #ccc;
     border-radius: 4px;
-}
-
-#remember-me {
-    position: relative;
-    left: 0;
-    text-align: left;
-    width: 10px;
 }
 
 button {
     width: 95%;
     background-color: white;
+    margin-top: 15px;
     padding: 10px 20px;
     border-style: solid;
     border-width: 1px;
@@ -50,12 +45,9 @@ button {
 }
 
 button:hover {
-    background-color: white;
+  background-color: white;
 }
 
-p {
-    margin-top: 10px;
-}
 
 a {
     color: #80d2f4;
@@ -66,10 +58,17 @@ a:hover {
     text-decoration: underline;
 }
 
-#remember-me-container {
-    display: inline-block;
-    width: 100%;
+p {
+  margin: 0;
 }
 
-#login-body {
+#register-body {
+}
+input {
+  display: block;
+}
+
+#headline_password,#headline_repeat,#headline_email,#headline_username{
+text-align: left;
+margin-top: 5px;
 }
