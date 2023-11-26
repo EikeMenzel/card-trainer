@@ -21,12 +21,12 @@ public class UserController {
         this.dbQueryService = dbQueryService;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<UserAccountInformationAchievementsDTO> getAccountInformation(@RequestHeader Long userId) {
         Optional<UserAccountInformationDTO> userAccountInformationDTO = dbQueryService.getAccountInformation(userId);
         return userAccountInformationDTO.map(accountInformationDTO -> ResponseEntity.ok(new UserAccountInformationAchievementsDTO(
                 accountInformationDTO.getUsername(),
-                accountInformationDTO.getUsername(),
+                accountInformationDTO.getEmail(),
                 accountInformationDTO.getCardsToLearn(),
                 accountInformationDTO.getReceiveLearnNotification(),
                 accountInformationDTO.getLangCode(),
@@ -34,7 +34,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<UserAccountInformationDTO> updateAccountInformation(@RequestHeader Long userId, @RequestBody UserAccountInformationDTO userAccountInformationDTO) {
         if(userId < 0 || userAccountInformationDTO.getUsername().length() < 4 || userAccountInformationDTO.getUsername().length() > 30 || !EmailValidator.validate(userAccountInformationDTO.getEmail()))
             return ResponseEntity.badRequest().build();
