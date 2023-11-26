@@ -1,20 +1,25 @@
+<app-toaster></app-toaster>
 <ng-container *ngIf="!loginSuccess; else other">
-  <div id="login-body">
-    <div class="login-container bg-green">
+  <div id="register-body" class="d-flex justify-content-center align-items-center" style="min-height: 100vh; width: 100%;">
+    <div class="register-container bg-green">
       <h1>Register</h1>
       <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
         <label>
-          <input type="text" placeholder="E-Mail" name="email" [(ngModel)]="email" required>
+          <p id="headline_email">E-Mail</p>
+          <input [style.border-color]="emailBorder" type="text" placeholder="E-Mail" name="email" [(ngModel)]="email" required>
         </label>
         <label>
-          <input type="text" placeholder="Username" name="username" [(ngModel)]="username" required>
+          <p id="headline_username">Username</p>
+          <input [style.border-color]="usernameBorder" type="text" placeholder="Username" name="username" [(ngModel)]="username" required>
         </label>
         <br>
         <label>
-          <input type="password" placeholder="Password" name="password" [(ngModel)]="password" required>
+          <p id="headline_password">Password</p>
+          <input [style.border-color]="passwordBorder" type="password" placeholder="Password" name="password" [(ngModel)]="password" required>
         </label>
         <label>
-          <input type="password" placeholder="Repeat Password" name="passwordRepeat" [(ngModel)]="passwordRepeat" required>
+          <p id="headline_repeat">Repeat Password</p>
+          <input [style.border-color]="passwordRepeatBorder" type="password" placeholder="Repeat Password" name="passwordRepeat" [(ngModel)]="passwordRepeat" required>
         </label>
         <button type="submit" class="btn-success">Register</button>
       </form>
