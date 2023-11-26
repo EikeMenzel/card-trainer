@@ -19,7 +19,7 @@ CREATE TABLE "user_login_tracker" (
     date TIMESTAMP NOT NULL,
     user_id BIGINT NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(u_id)
+    FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "token_type" (
@@ -43,7 +43,7 @@ CREATE TABLE "user_token" (
     CONSTRAINT unique_token_value UNIQUE (token_value),
 
     FOREIGN KEY (token_type) REFERENCES token_type(tt_id),
-    FOREIGN KEY (user_id) REFERENCES users(u_id)
+    FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "achievement" (
@@ -76,7 +76,7 @@ CREATE TABLE "user_achievement" (
     achievement_id INTEGER NOT NULL,
     achieved_at TIMESTAMP NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(u_id),
+    FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE,
     FOREIGN KEY (achievement_id) REFERENCES achievement(a_id)
 );
 
@@ -85,7 +85,7 @@ CREATE TABLE "deck" (
     name VARCHAR(128) NOT NULL,
     owner_id BIGINT NOT NULL,
 
-    FOREIGN KEY (owner_id) REFERENCES users(u_id)
+    FOREIGN KEY (owner_id) REFERENCES users(u_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "card_type" (
@@ -105,7 +105,7 @@ CREATE TABLE "card" (
     deck_id BIGINT NOT NULL,
     card_type_id INTEGER NOT NULL,
 
-    FOREIGN KEY (deck_id) REFERENCES deck(d_id),
+    FOREIGN KEY (deck_id) REFERENCES deck(d_id) ON DELETE CASCADE ,
     FOREIGN KEY (card_type_id) REFERENCES card_type(ct_id)
 );
 
@@ -114,13 +114,13 @@ CREATE TABLE "text_answer_card" (
     answer TEXT NOT NULL,
     image_path TEXT,
 
-    FOREIGN KEY (c_id) REFERENCES card(c_id)
+    FOREIGN KEY (c_id) REFERENCES card(c_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "multiple_choice_card" (
     c_id BIGINT PRIMARY KEY,
 
-    FOREIGN KEY (c_id) REFERENCES card(c_id)
+    FOREIGN KEY (c_id) REFERENCES card(c_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "choice_answer" (
@@ -130,7 +130,7 @@ CREATE TABLE "choice_answer" (
     is_correct BOOLEAN NOT NULL,
     c_id BIGINT NOT NULL,
 
-    FOREIGN KEY (c_id) REFERENCES multiple_choice_card(c_id)
+    FOREIGN KEY (c_id) REFERENCES multiple_choice_card(c_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "status_type" (
@@ -159,8 +159,8 @@ CREATE TABLE "learn_session" (
     user_id BIGINT NOT NULL,
 
     FOREIGN KEY (status_id) REFERENCES status_type(st_id),
-    FOREIGN KEY (deck_id) REFERENCES deck(d_id),
-    FOREIGN KEY (user_id) REFERENCES users(u_id)
+    FOREIGN KEY (deck_id) REFERENCES deck(d_id) ON DELETE CASCADE ,
+    FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "peek_session" (
@@ -172,8 +172,8 @@ CREATE TABLE "peek_session" (
     user_id BIGINT NOT NULL,
 
     FOREIGN KEY (status_id) REFERENCES status_type(st_id),
-    FOREIGN KEY (deck_id) REFERENCES deck(d_id),
-    FOREIGN KEY (user_id) REFERENCES users(u_id)
+    FOREIGN KEY (deck_id) REFERENCES deck(d_id) ON DELETE CASCADE ,
+    FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE
 );
 
 
@@ -182,8 +182,8 @@ CREATE TABLE "peek_session_cards" (
     card_id BIGINT NOT NULL,
     peek_session_id BIGINT NOT NULL,
 
-    FOREIGN KEY (card_id) REFERENCES card(c_id),
-    FOREIGN KEY (peek_session_id) REFERENCES peek_session(ps_id)
+    FOREIGN KEY (card_id) REFERENCES card(c_id) ON DELETE CASCADE,
+    FOREIGN KEY (peek_session_id) REFERENCES peek_session(ps_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "repetition" (
@@ -193,9 +193,10 @@ CREATE TABLE "repetition" (
     prev_interval INTEGER NOT NULL,
     user_id BIGINT NOT NULL,
     card_id BIGINT NOT NULL,
+    next_learn_timestamp TIMESTAMP NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(u_id),
-    FOREIGN KEY (card_id) REFERENCES card(c_id)
+    FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE,
+    FOREIGN KEY (card_id) REFERENCES card(c_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "rainbow" (
@@ -204,10 +205,46 @@ CREATE TABLE "rainbow" (
 
     CONSTRAINT unique_password UNIQUE (password)
 );
+-- users
+CREATE INDEX email_index ON "users"(email);
+CREATE INDEX password_index ON "users"(password);
+CREATE INDEX verified_index ON "users"(is_verified);
 
--- rainbow table inserts
+-- User_Login_Tracker
+CREATE INDEX ult_user_fk_index ON "user_login_tracker"(user_id);
+
+-- Deck
+CREATE INDEX d_d_index ON "deck"(d_id);
+CREATE INDEX d_owner_fk_index ON "deck"(owner_id);
+
+-- Card
+CREATE INDEX c_c_index ON "card"(c_id);
+CREATE INDEX c_deck_fk_index ON "card"(deck_id);
+
+-- Choice_Answer
+CREATE INDEX ca_c_index ON "choice_answer"(c_id);
+
+-- Repetition
+CREATE INDEX r_card_fk_index ON "repetition"(card_id);
+
+-- Peek_Session
+CREATE INDEX ps_deck_fk_index ON "peek_session"(deck_id);
+CREATE INDEX ps_user_fk_index ON "peek_session"(user_id);
+
+-- Learn_Session
+CREATE INDEX ls_deck_fk_index ON "learn_session"(deck_id);
+CREATE INDEX ls_user_fk_index ON "learn_session"(user_id);
+
+-- User_Achievement
+CREATE INDEX ua_user_fk_index ON "user_achievement"(user_id);
+
+--Peek_Session_Cards
+CREATE INDEX psc_p_index ON peek_session_cards(peek_session_id);
+
+-- Rainbow
 CREATE INDEX idx_password ON rainbow (password);
 
+-- rainbow table inserts
 INSERT INTO rainbow VALUES (0, 'password');
 INSERT INTO rainbow VALUES (1, '123456');
 INSERT INTO rainbow VALUES (2, '12345678');

@@ -5,6 +5,7 @@ import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public boolean createUser(UserDTO userDTO) {
         try {
             userRepository.save(new User(userDTO.getUsername(), userDTO.getEmail(), userDTO.getPassword(), userDTO.isVerify()));
@@ -72,6 +74,7 @@ public class UserService {
         return user.map(value -> new UserAccountInformationDTO(value.getUsername(), value.getEmail(), value.getCardsPerSession(), value.getGetsNotified(), value.getLangCode()));
     }
 
+    @Transactional
     public boolean updateAccountInformation(Long userId, UserAccountInformationDTO userAccountInformationDTO) {
         try {
             Optional<User> userOptional = userRepository.findById(userId);

@@ -14,6 +14,9 @@ public class GatewayConfig {
 
     @Value("${user-service.api.path}")
     private String userServiceUri;
+
+    @Value("${cards-service.api.path}")
+    private String cardsServiceUri;
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -28,7 +31,13 @@ public class GatewayConfig {
                         r -> r.path(
                                 "/api/v1/account"
                         ).uri(userServiceUri)
+                )
 
+                .route("cards-service",
+                        r -> r.path(
+                                "/api/v1/decks",
+                                "/api/v1/decks/{deckId}"
+                        ).uri(cardsServiceUri)
                 )
 
                 .route("fallback-route", r -> r.path("/**")

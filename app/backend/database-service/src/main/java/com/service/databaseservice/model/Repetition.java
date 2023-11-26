@@ -3,6 +3,8 @@ package com.service.databaseservice.model;
 import com.service.databaseservice.model.cards.Card;
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "repetition")
 public class Repetition {
@@ -21,14 +23,14 @@ public class Repetition {
     @Column(name = "prev_interval", nullable = false)
     private Integer prevInterval;
 
+    @Column(name = "next_learn_timestamp", nullable = false)
+    private Timestamp nextLearnTimestamp;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
     @ManyToOne
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
-
     public Repetition(Long id, Integer quality, Float prevEaseFactor, Integer prevInterval, User user, Card card) {
         this.id = id;
         this.quality = quality;
@@ -63,5 +65,9 @@ public class Repetition {
 
     public Card getCard() {
         return card;
+    }
+
+    public Timestamp getNextLearnTimestamp() {
+        return nextLearnTimestamp;
     }
 }
