@@ -3,23 +3,31 @@
     <h1>Login</h1>
 
     <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
-      <label>
-        <input type="email" placeholder="E-Mail" name="email" ngModel>
-      </label>
-      <br>
-      <label>
-        <input type="password" placeholder="Password" name="password" required ngModel minlength="8">
-      </label>
-      <div id="remember-me-container">
-        <label for="remember-me">
-          <input value="false" [defaultChecked]="true" name="remember" type="checkbox" id="remember-me" ngModel>
-          <span>
-                Remember Me
-            </span>
+      <div style="display: flex; flex-direction: column;">
+        <label style="width: 100%;">
+          <input type="email" placeholder="E-Mail" name="email" ngModel>
         </label>
+        <br>
+        <label style="width: 100%;">
+          <input type="password" placeholder="Password" name="password" required ngModel minlength="8">
+        </label>
+
+        <div id="remember-me-container" style="display: flex; align-items: center; justify-content: space-between;">
+          <label for="remember-me" style="display: flex; align-items: center;">
+            <input value="false" [defaultChecked]="true" name="remember" type="checkbox" id="remember-me" ngModel>
+            <span style="margin-left: 5px;">
+              Remember Me
+            </span>
+          </label>
+          <p style="margin: 0;">
+            <a routerLink="/forgot-password" routerLinkActive= "active" style="text-decoration: none;">Forgot your password?</a>
+          </p>
+        </div>
+
+        <button type="submit" class="btn-success" style="width: 100%;">Login</button>
       </div>
-      <button type="submit" class="btn-success">Login</button>
     </form>
+
     <span style="width: 100%"></span>
     <p>Are you new here? <a routerLink="/register">Register here</a></p>
   </div>
