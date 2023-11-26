@@ -1,10 +1,30 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import {ActivatedRoute, Router} from "@angular/router";
+import {ToastComponent} from "./toast/toast.component";
+import {ToasterComponent} from "./toaster/toaster.component";
+import {AuthService} from "./services/auth-service/auth-service";
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, ToastComponent, ToasterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'angular-frontend';
+
+  constructor(private authService: AuthService,
+              private route: ActivatedRoute,
+              private router: Router) {
+
+  }
+
+  ngOnInit() {
+    if (!this.authService.isLoggedIn) {
+      this.router.navigate(["/login"]);
+    }
+  }
 }
