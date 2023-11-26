@@ -1,0 +1,28 @@
+<ng-container *ngIf="!loginSuccess; else other">
+  <div id="login-body">
+    <div class="login-container bg-green">
+      <h1>Register</h1>
+      <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+        <label>
+          <input type="text" placeholder="E-Mail" name="email" [(ngModel)]="email" required>
+        </label>
+        <label>
+          <input type="text" placeholder="Username" name="username" [(ngModel)]="username" required>
+        </label>
+        <br>
+        <label>
+          <input type="password" placeholder="Password" name="password" [(ngModel)]="password" required>
+        </label>
+        <label>
+          <input type="password" placeholder="Repeat Password" name="passwordRepeat" [(ngModel)]="passwordRepeat" required>
+        </label>
+        <button type="submit" class="btn-success">Register</button>
+      </form>
+      <span style="width: 100%"></span>
+      <p style=color:white>Already have an Account? <a routerLink="/login">Login</a></p>
+    </div>
+  </div>
+</ng-container>
+<ng-template #other>
+  <app-register-successful [userEmail]="email"></app-register-successful>
+</ng-template>
