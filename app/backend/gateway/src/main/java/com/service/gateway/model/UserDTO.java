@@ -1,11 +1,13 @@
 package com.service.gateway.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
     private Long id;
     private String username;
     private String email;
     private String password;
-
     public UserDTO(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
