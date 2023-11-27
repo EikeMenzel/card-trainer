@@ -20,6 +20,7 @@ public class JwtTokenResolveFilter implements WebFilter {
         this.excludedRoutes = new HashSet<>();
         this.excludedRoutes.add("/api/v1/register");
         this.excludedRoutes.add("/api/v1/login");
+        this.excludedRoutes.add("/api/v1/password/reset");
 
     }
 

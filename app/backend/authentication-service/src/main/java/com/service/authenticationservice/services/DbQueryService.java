@@ -6,7 +6,6 @@ import com.service.authenticationservice.payload.inc.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -89,6 +88,15 @@ public class DbQueryService {
         }
     }
 
+    public Boolean isTokenValid(String token) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(DB_API_BASE_PATH + "/user-token/" + token+ "/valid", String.class);
+            return responseEntity.getStatusCode() == HttpStatus.NO_CONTENT;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public HttpStatusCode saveUser(UserDTO userDTO) {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -99,7 +107,7 @@ public class DbQueryService {
         return responseEntity.getStatusCode();
     }
 
-    public HttpStatusCode updateUserWithToken(String token) {
+    public HttpStatusCode setVerificationStateToTrue(String token) {
         try {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -131,6 +139,22 @@ public class DbQueryService {
                     Void.class
             );
             return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException e) {
+            return e.getStatusCode();
+        }
+    }
+
+    public HttpStatusCode deleteUserToken(Long userId, String token) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            return restTemplate.exchange(
+                    DB_API_BASE_PATH + "/user-token/invalidate/" + userId + "/" + token,
+                    HttpMethod.DELETE,
+                    entity,
+                    String.class).getStatusCode();
         } catch (HttpClientErrorException e) {
             return e.getStatusCode();
         }

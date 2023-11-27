@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -60,15 +61,15 @@ public class UserTokenService {
         return userToken.isPresent() && userToken.get().getUser().getVerified();
     }
 
-    public boolean isTokenVerificationToken(String token) {
+    public boolean areTokenTypesIdentical(String token, String tokenType) {
         Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
-        return userToken.isPresent() && userToken.get().getTokenType().getType().equals("VERIFICATION");
+        return userToken.isPresent() && userToken.get().getTokenType().getType().equals(tokenType);
     }
 
     public boolean setUserEmailAsVerified(String token) {
         try {
             Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
-            if(userToken.isEmpty() || !isTokenVerificationToken(token))
+            if(userToken.isEmpty() || !areTokenTypesIdentical(token, "VERIFICATION"))
                 return false;
 
             userToken.get().getUser().setVerified(true);
@@ -78,5 +79,14 @@ public class UserTokenService {
             logger.error(e.getMessage());
             return false;
         }
+    }
+
+    public boolean deleteToken(Long userId, String token) {
+        Optional<UserToken> userTokenOptional = userTokenRepository.getUserTokenByTokenValue(token);
+        if(userTokenOptional.isPresent() && Objects.equals(userTokenOptional.get().getUser().getId(), userId)) {
+            userTokenRepository.delete(userTokenOptional.get());
+            return true;
+        }
+        return false;
     }
 }

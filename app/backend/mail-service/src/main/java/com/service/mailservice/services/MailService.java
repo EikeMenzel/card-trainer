@@ -60,6 +60,19 @@ public class MailService {
         }
     }
 
+    public void sendPasswordResetMail(Long userId) {
+        Optional<String> userEmailOptional = dbQueryService.getUserEmailFromId(userId);
+        userEmailOptional.ifPresent(userEmail -> {
+            String token = TokenService.generateToken();
+            String content = mailContentBuilder.getContent(MailType.PASSWORD_RESET, token, userEmail);
+
+            var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.PASSWORD_RESET.toString(), userId));
+            if (httpStatusCode == HttpStatus.CREATED) {
+                sendHtmlMail(userEmail, "Password-Reset-Mail", content);
+            }
+        });
+    }
+
     public void sendDailyLearnReminderMail(String username, String email) {
         String content = mailContentBuilder.getContent(MailType.DAILY_REMINDER, username);
         sendHtmlMail(email, "DailyLearnReminder", content);

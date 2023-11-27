@@ -15,14 +15,17 @@ import java.nio.file.Files;
 public class MailContentBuilder {
     private final Logger logger =  LoggerFactory.getLogger(MailContentBuilder.class);
     private final String AUTH_API_BASE_PATH;
+    private final String FRONTEND_PATH;
 
-    public MailContentBuilder(@Value("${auth-service.api.path}") String authServiceApiPath) {
+    public MailContentBuilder(@Value("${auth-service.api.path}") String authServiceApiPath, @Value("${frontend.path}") String frontendPath) {
         this.AUTH_API_BASE_PATH = authServiceApiPath;
+        this.FRONTEND_PATH = frontendPath;
     }
-    public String getContent(MailType mailType, String data) {
+    public String getContent(MailType mailType, String... data) {
         return switch (mailType) {
-            case VERIFICATION -> getContentFromFile("static/mail_verification.html").replace("${verificationUrl}", buildVerificationUrl(data));
-            case DAILY_REMINDER -> getContentFromFile("static/daily-learn-reminder.html").replace("${username}", data).replace("${dailyLearnUrl}", "http://localhost:4200");
+            case VERIFICATION -> getContentFromFile("static/mail_verification.html").replace("${verificationUrl}", buildVerificationUrl(data[0]));
+            case DAILY_REMINDER -> getContentFromFile("static/daily-learn-reminder.html").replace("${username}", data[1]).replace("${dailyLearnUrl}", "http://localhost:4200");
+            case PASSWORD_RESET -> getContentFromFile("static/mail_password_reset.html").replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]));
         };
     }
 
@@ -38,6 +41,12 @@ public class MailContentBuilder {
     private String buildVerificationUrl(String token) {
         return UriComponentsBuilder.fromHttpUrl(AUTH_API_BASE_PATH)
                 .path("/api/v1/email/verify/" + token)
+                .toUriString();
+    }
+
+    private String buildPasswordResetUrl(String token, String email) {
+        return UriComponentsBuilder.fromHttpUrl(FRONTEND_PATH)
+                .path("/reset-password" + "?token=" + token + "&email=" + email)
                 .toUriString();
     }
 }
