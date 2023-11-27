@@ -5,6 +5,7 @@ import com.service.mailservice.payload.out.UserTokenDTO;
 import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,6 +23,9 @@ public class MailService {
     private final DbQueryService dbQueryService;
     private final MailContentBuilder mailContentBuilder;
 
+    @Value("${mail.username}")
+    private String sendFrom;
+
     public MailService(JavaMailSender mailSender, DbQueryService dbQueryService, MailContentBuilder mailContentBuilder) {
         this.mailSender = mailSender;
         this.dbQueryService = dbQueryService;
@@ -35,6 +39,7 @@ public class MailService {
 
             message.setSubject(subject);
             helper.setTo(to);
+            helper.setFrom(sendFrom);
             helper.setText(content, true);
             mailSender.send(message);
         } catch (MessagingException messagingException) {
