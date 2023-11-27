@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {CommonModule} from "@angular/common";
 
@@ -15,11 +16,15 @@ export class ForgotPasswordComponent {
   userNotFound: boolean = false;
   userEmail: string = '';
   errorMessage: string = '';
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  }
+
+  goBackToLogin() {
+    this.router.navigate(['/login']);
   }
 
   onContinue(email: string) {
