@@ -13,7 +13,6 @@ import {CommonModule} from "@angular/common";
 
 export class ForgotPasswordComponent {
   emailSent: boolean = false;
-  userNotFound: boolean = false;
   userEmail: string = '';
   errorMessage: string = '';
   constructor(private http: HttpClient, private router: Router) { }
@@ -34,22 +33,21 @@ export class ForgotPasswordComponent {
 
     this.userEmail = email;
 
-    this.http.post<any>("/api/v1/forgot-password", { email: this.userEmail }, { observe: 'response' })
+    this.http.post<any>("/api/v1/password/reset", { email: this.userEmail }, { observe: 'response' })
       .subscribe({
         next: (data) => {
-          if (data.status === 200) {
+          if (data.status === 202) {
             this.emailSent = true;
-            this.userNotFound = false;
-            this.errorMessage = ''; // Reset error message
-          } else {
-            this.userNotFound = true;
+            this.errorMessage = '';           // Reset error message
+          } else if (data.status === 500) {
             this.emailSent = false;
-            this.errorMessage = 'User not found';
+            this.errorMessage = 'Service not available';
+          } else {
+            this.emailSent = false;
           }
       },
       error: (err) => {
         console.error(err);
-        this.userNotFound = true; // Assuming any error means user not found
         this.emailSent = false;
         this.errorMessage = 'An error occurred';
       }
