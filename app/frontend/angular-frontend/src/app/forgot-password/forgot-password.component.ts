@@ -9,6 +9,7 @@ import {CommonModule} from "@angular/common";
   styleUrls: ['./forgot-password.component.css'],
   imports: [HttpClientModule, CommonModule]
 })
+
 export class ForgotPasswordComponent {
   emailSent: boolean = false;
   userNotFound: boolean = false;
@@ -17,10 +18,8 @@ export class ForgotPasswordComponent {
   constructor(private http: HttpClient) { }
 
   isValidEmail(email: string): boolean {
-    // Hier könntest du eine einfache Validierung für die Email-Adresse implementieren
-    // Zum Beispiel:
-    // return /\S+@\S+\.\S+/.test(email);
-    return true; // Dummy-Validierung für das Beispiel
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   onContinue(email: string) {
@@ -35,7 +34,7 @@ export class ForgotPasswordComponent {
         if (data.status === 200) {
           this.emailSent = true;
           this.userNotFound = false;
-        } else if (data.status === 404) {
+        } else {
           this.userNotFound = true;
           this.emailSent = false;
         }
