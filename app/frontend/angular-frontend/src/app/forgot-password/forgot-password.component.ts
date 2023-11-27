@@ -14,7 +14,7 @@ export class ForgotPasswordComponent {
   emailSent: boolean = false;
   userNotFound: boolean = false;
   userEmail: string = '';
-
+  errorMessage: string = '';
   constructor(private http: HttpClient) { }
 
   isValidEmail(email: string): boolean {
@@ -29,20 +29,24 @@ export class ForgotPasswordComponent {
 
     this.userEmail = email;
 
-    this.http.post<any>("/api/v1/forgot-password", { email: this.userEmail }, { observe: 'response' }).subscribe({
-      next: (data) => {
-        if (data.status === 200) {
-          this.emailSent = true;
-          this.userNotFound = false;
-        } else {
-          this.userNotFound = true;
-          this.emailSent = false;
-        }
+    this.http.post<any>("/api/v1/forgot-password", { email: this.userEmail }, { observe: 'response' })
+      .subscribe({
+        next: (data) => {
+          if (data.status === 200) {
+            this.emailSent = true;
+            this.userNotFound = false;
+            this.errorMessage = ''; // Reset error message
+          } else {
+            this.userNotFound = true;
+            this.emailSent = false;
+            this.errorMessage = 'User not found';
+          }
       },
       error: (err) => {
         console.error(err);
         this.userNotFound = true; // Assuming any error means user not found
         this.emailSent = false;
+        this.errorMessage = 'An error occurred';
       }
     });
   }
