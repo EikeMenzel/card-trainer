@@ -23,6 +23,10 @@ public class Deck {
         this.name = name;
         this.owner = owner;
     }
+    public Deck(String name, User owner) {
+        this.name = name;
+        this.owner = owner;
+    }
 
     public Deck() {
     }
@@ -37,5 +41,9 @@ public class Deck {
 
     public User getOwner() {
         return owner;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

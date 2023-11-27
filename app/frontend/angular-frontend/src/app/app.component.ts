@@ -1,33 +1,30 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import {CookieService} from "ngx-cookie-service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ToastComponent} from "./toast/toast.component";
+import {ToasterComponent} from "./toaster/toaster.component";
+import {AuthService} from "./services/auth-service/auth-service";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, ToastComponent, ToasterComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'angular-frontend';
 
-  constructor(private cookieService: CookieService,
+  constructor(private authService: AuthService,
               private route: ActivatedRoute,
               private router: Router) {
 
   }
 
   ngOnInit() {
-    return;
-    if (!this.isLoggedIn) {
+    if (!this.authService.isLoggedIn) {
       this.router.navigate(["/login"]);
     }
-  }
-
-  get isLoggedIn(): boolean {
-    return this.cookieService.check("card-trainer-user");
   }
 }

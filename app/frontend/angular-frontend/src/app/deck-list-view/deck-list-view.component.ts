@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
-import {CardService} from "../services/card.service";
-import {Deck} from "../models/Deck";
+import {CardService} from "../services/card-service/card.service";
+import {DeckDTO} from "../models/DeckDTO";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 
 @Component({
@@ -14,13 +14,9 @@ import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 })
 export class DeckListViewComponent {
 
-  private cardService: CardService;
-  deckList: Deck[] | undefined;
-  private router: Router;
+  deckList: DeckDTO[] = [];
 
-  constructor(cardService: CardService, router: Router) {
-    this.router = router;
-    this.cardService = cardService;
+  constructor(private cardService: CardService, private router: Router) {
   }
 
   ngOnInit() {

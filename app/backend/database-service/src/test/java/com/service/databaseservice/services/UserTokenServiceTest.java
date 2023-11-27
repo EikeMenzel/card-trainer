@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -100,8 +99,8 @@ class UserTokenServiceTest {
         when(userTokenRepository.getUserTokenByTokenValue("tokenValue")).thenReturn(Optional.of(userToken_Verification));
         when(userTokenRepository.getUserTokenByTokenValue("random")).thenReturn(Optional.of(userToken_Random));
 
-        assertTrue(userTokenService.isTokenVerificationToken("tokenValue"));
-        assertFalse(userTokenService.isTokenVerificationToken("random"));
+        assertTrue(userTokenService.areTokenTypesIdentical("tokenValue", "VERIFICATION"));
+        assertFalse(userTokenService.areTokenTypesIdentical("random", "VERIFICATION"));
 
         verify(userTokenRepository, times(2)).getUserTokenByTokenValue(anyString());
     }

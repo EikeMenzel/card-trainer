@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NavbarComponent} from "../navbar/navbar.component";
 
 @Component({
@@ -11,10 +11,6 @@ import {NavbarComponent} from "../navbar/navbar.component";
   styleUrls: ['./base-page.component.css']
 })
 export class BasePageComponent {
-  PageTitle: string = "Mert";
-  Username: string = "Gürken"
-
-  ngOnInit() {
-
-  }
+  @Input() PageTitle: string = "Card Trainer";
+  @Input() Username: string = "Max Mustermann"
 }

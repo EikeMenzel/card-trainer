@@ -93,12 +93,12 @@ class PasswordSecurityServiceTest {
     @Test
     void testCheckPasswordIsRainbow_InRainbowTable() {
         Mockito.when(rainbowListDTO.rainBowList()).thenReturn(new HashSet<>(List.of("password1", "password2", "password3")));
-        assertTrue(passwordSecurityService.checkPasswordIsRainbow("password2"));
+        assertTrue(passwordSecurityService.checkPasswordIsInRainbowTable("password2"));
     }
 
     @Test
     void testCheckPasswordIsRainbow_NotInRainbowTable() {
         Mockito.when(rainbowListDTO.rainBowList()).thenReturn(new HashSet<>(List.of("password1", "password2", "password3")));
-        assertFalse(passwordSecurityService.checkPasswordIsRainbow("notInRainbowTable"));
+        assertFalse(passwordSecurityService.checkPasswordIsInRainbowTable("notInRainbowTable"));
     }
 }

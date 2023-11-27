@@ -1,3 +1,3 @@
 package com.service.authenticationservice.payload.out;
 
-public record MessageResponseDTO(String message){}
+public record MessageResponseDTO(Integer status, String message){}

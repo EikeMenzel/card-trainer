@@ -1,5 +1,7 @@
 package com.service.databaseservice.controller;
 
+import com.service.databaseservice.model.User;
+import com.service.databaseservice.payload.inc.UpdatePasswordDTO;
 import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
@@ -76,5 +78,12 @@ public class UserController {
         return userService.updateAccountInformation(userId, userAccountInformationDTO)
                 ? ResponseEntity.ok(userAccountInformationDTO)
                 : ResponseEntity.internalServerError().build();
+    }
+
+    @PutMapping("/{userId}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable Long userId, @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+        return userService.updateUserPassword(userId, updatePasswordDTO)
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.notFound().build();
     }
 }

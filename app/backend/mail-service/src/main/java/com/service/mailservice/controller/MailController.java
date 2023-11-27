@@ -25,11 +25,16 @@ public class MailController {
         switch (optionalMailType.get()) {
             case VERIFICATION: {
                 mailService.sendVerificationMail(userId);
-                return ResponseEntity.accepted().build();
+                break;
+            }
+            case PASSWORD_RESET: {
+                mailService.sendPasswordResetMail(userId);
+                break;
             }
             default: {
                 return ResponseEntity.internalServerError().build();
             }
         }
+        return ResponseEntity.accepted().build();
     }
 }

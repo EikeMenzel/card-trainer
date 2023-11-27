@@ -233,7 +233,7 @@ class DbQueryServiceTest {
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenReturn(successResponse);
 
-        assertEquals(HttpStatus.NO_CONTENT, dbQueryService.updateUserWithToken("validToken"));
+        assertEquals(HttpStatus.NO_CONTENT, dbQueryService.setVerificationStateToTrue("validToken"));
     }
 
     @Test
@@ -242,7 +242,7 @@ class DbQueryServiceTest {
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.CONFLICT));
 
-        assertEquals(HttpStatus.CONFLICT, dbQueryService.updateUserWithToken("conflictToken"));
+        assertEquals(HttpStatus.CONFLICT, dbQueryService.setVerificationStateToTrue("conflictToken"));
     }
 
     @Test
@@ -251,7 +251,7 @@ class DbQueryServiceTest {
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
-        assertEquals(HttpStatus.BAD_REQUEST, dbQueryService.updateUserWithToken("badRequestToken"));
+        assertEquals(HttpStatus.BAD_REQUEST, dbQueryService.setVerificationStateToTrue("badRequestToken"));
     }
 
     @Test
@@ -260,7 +260,7 @@ class DbQueryServiceTest {
         when(restTemplate.exchange(any(String.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, dbQueryService.updateUserWithToken("serverErrorToken"));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, dbQueryService.setVerificationStateToTrue("serverErrorToken"));
     }
 
 }

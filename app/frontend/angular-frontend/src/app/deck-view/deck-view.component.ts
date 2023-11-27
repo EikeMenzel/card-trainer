@@ -12,16 +12,14 @@ import {BasePageComponent} from "../base-page/base-page.component";
 })
 export class DeckViewComponent {
 
-  public deckId: string | null = "";
+  public deckId: string = "";
 
-  private activatedRoute: ActivatedRoute;
-  constructor(activatedRoute: ActivatedRoute) {
-    this.activatedRoute = activatedRoute;
+  constructor(private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((params) => {
-      this.deckId = params.get('deck-id');
+      this.deckId = params.get('deck-id') ?? "";
     });
 
     console.log(this.deckId);
