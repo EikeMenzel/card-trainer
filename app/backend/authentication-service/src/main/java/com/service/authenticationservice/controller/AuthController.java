@@ -1,10 +1,7 @@
 package com.service.authenticationservice.controller;
 
 import com.service.authenticationservice.model.MailType;
-import com.service.authenticationservice.payload.inc.LoginDTO;
-import com.service.authenticationservice.payload.inc.RegisterRequestDTO;
-import com.service.authenticationservice.payload.inc.UpdatePasswordDTO;
-import com.service.authenticationservice.payload.inc.UserDTO;
+import com.service.authenticationservice.payload.inc.*;
 import com.service.authenticationservice.payload.out.MessageResponseDTO;
 import com.service.authenticationservice.payload.out.UserInfoResponseDTO;
 import com.service.authenticationservice.security.jwt.JwtUtils;
@@ -38,7 +35,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final boolean skipVerify;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    private final String passwordBlockedPasswordMessage ="Error, Password is a blocked password";
+    private final String passwordBlockedPasswordMessage = "Error, Password is a blocked password";
     private final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/";
 
     public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify) {
@@ -118,9 +115,10 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/email/verify/{token}") //Needs to be a getMapping, since mail-clients block javascript code. PUT would not be possible.
+    @GetMapping("/email/verify/{token}")
+    //Needs to be a getMapping, since mail-clients block javascript code. PUT would not be possible.
     public ResponseEntity<?> verifyUserEmail(@PathVariable String token) {
-        var httpStatusCode = dbQueryService.updateUserWithToken(token);
+        var httpStatusCode = dbQueryService.setVerificationStateToTrue(token);
         if (httpStatusCode.equals(HttpStatus.NO_CONTENT)) {
             return ResponseEntity.noContent().build();
         } else if (httpStatusCode.equals(HttpStatus.CONFLICT)) {
@@ -142,7 +140,36 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
         }
 
-        return ResponseEntity.status(dbQueryService.updateUserPassword(userId, updatePasswordDTO)).build();
+        return ResponseEntity.status(dbQueryService.updateUserPassword(userId, new UpdatePasswordDTO(encoder.encode(updatePasswordDTO.password())))).build();
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<?> sendPasswordResetMail(@RequestBody MailDTO mailDTO) {
+        Optional<Long> optionalUserId = dbQueryService.getUserIdByEmail(mailDTO.email());
+        optionalUserId.ifPresent(userId -> emailQueryService.sendEmail(userId, MailType.PASSWORD_RESET));
+
+        return ResponseEntity.accepted().build();
+    }
+
+    @PutMapping("/password/reset")
+    public ResponseEntity<?> updateUserPasswordUnauthenticated(@Valid @RequestBody PasswordResetDTO passwordResetDTO) {
+        if (passwordSecurityService.checkPasswordIsInRainbowTable(passwordResetDTO.password())) //contains check, returns true if the password is in the table
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
+
+        if (!passwordSecurityService.checkPasswordSecurity(passwordResetDTO.password())) { //false if requirements not meet
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
+        }
+
+        if (!dbQueryService.isTokenValid(passwordResetDTO.token())) {
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(5, "Token is invalid, expired or used"));
+        }
+
+        Optional<Long> userIdOptional = dbQueryService.getUserIdByEmail(passwordResetDTO.email());
+        if (userIdOptional.isEmpty())
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(-1, "No user found with this E-Mail-Address"));
+
+        dbQueryService.deleteUserToken(userIdOptional.get(), passwordResetDTO.token());
+        return ResponseEntity.status(dbQueryService.updateUserPassword(userIdOptional.get(), new UpdatePasswordDTO(encoder.encode(passwordResetDTO.password())))).build();
     }
 
 }

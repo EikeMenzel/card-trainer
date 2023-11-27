@@ -34,7 +34,8 @@ public class WebSecurityConfig {
                         .pathMatchers(
                                 "/api/v1/register",
                                 "/api/v1/login",
-                                "/api/v1/email/verify/{token}"
+                                "/api/v1/email/verify/{token}",
+                                "/api/v1/password/reset"
                         ).permitAll()
                         .anyExchange().authenticated())
                 .addFilterAfter(authTokenFilter, SecurityWebFiltersOrder.AUTHENTICATION)

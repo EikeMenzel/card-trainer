@@ -6,7 +6,8 @@ import java.util.Optional;
 
 public enum MailType {
     VERIFICATION,
-    DAILY_REMINDER;
+    DAILY_REMINDER,
+    PASSWORD_RESET;
 
     private static final Map<String, MailType> lookup = new HashMap<>();
 

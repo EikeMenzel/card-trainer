@@ -25,16 +25,30 @@ public class UserTokenController {
         if(!userTokenService.isUserTokenValid(token))
             return ResponseEntity.badRequest().build();
 
-        if(userTokenService.isTokenVerificationToken(token)) {
+        if(userTokenService.areTokenTypesIdentical(token, "VERIFICATION")) {
             if(userTokenService.isUserWithTokenVerified(token))
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
 
             return userTokenService.setUserEmailAsVerified(token)
                     ? ResponseEntity.noContent().build()
                     : ResponseEntity.internalServerError().build();
-
-        } // else cases are share token and password reset
+        }
 
         return ResponseEntity.unprocessableEntity().build();
     }
+
+    @DeleteMapping("/invalidate/{userId}/{token}")
+    public ResponseEntity<?> deleteUserTokenByTokenAndUserId(@PathVariable Long userId, @PathVariable String token) {
+        return userTokenService.deleteToken(userId, token)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{token}/valid")
+    public ResponseEntity<?> isUserTokenValid(@PathVariable String token) {
+        return userTokenService.isUserTokenValid(token)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.badRequest().build();
+    }
+
 }

@@ -16,11 +16,11 @@ public class EmailQueryService {
         this.EMAIL_API_PATH = emailServicePath;
     }
 
-    private HttpStatusCode sendVerificationEmail(Long userId) {
+    private HttpStatusCode sendEmailToService(Long userId, String type) {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                EMAIL_API_PATH + "/verification",
+                EMAIL_API_PATH + "/" + type,
                 new HttpEntity<>(userId, headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -28,8 +28,8 @@ public class EmailQueryService {
 
     public HttpStatusCode sendEmail(Long userId, MailType mailType) {
         return switch (mailType) {
-            case VERIFICATION -> sendVerificationEmail(userId);
-            case PASSWORD_RESET -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case VERIFICATION -> sendEmailToService(userId, "verification");
+            case PASSWORD_RESET -> sendEmailToService(userId, "password_reset");
         };
     }
 }
