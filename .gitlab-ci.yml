@@ -66,16 +66,28 @@ push_backend_to_registry: # push images to registry
   script:
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
     - cd app/backend/authentication-service
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/authentication-service:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE_PATH/authentication-service:$CI_COMMIT_SHORT_SHA
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/authentication-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/authentication-service:latest
     - cd ..
     - cd database-service
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/database-service:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE_PATH/database-service:$CI_COMMIT_SHORT_SHA
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/database-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/database-service:latest
     - cd ..
     - cd mail-service
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/mail-service:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE_PATH/mail-service:$CI_COMMIT_SHORT_SHA
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/mail-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/mail-service:latest
+    - cd ..
+    - cd cards-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/cards-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/cards-service:latest
+    - cd ..
+    - cd user-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/user-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/user-service:latest
+    - cd ..
+    - cd gateway
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/gateway:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/gateway:latest
 
 push_frontend_to_registry: # push images to registry
   stage: push_to_registry
@@ -92,5 +104,5 @@ push_frontend_to_registry: # push images to registry
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
     - export FRONTEND=angular-frontend;
     - cd app/frontend/$FRONTEND
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA .
-    - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest
