@@ -45,6 +45,7 @@ export class ForgotPasswordComponent {
           } else {
             this.emailSent = false;
           }
+          this.openConfirmationPopup()
       },
       error: (err) => {
         console.error(err);
@@ -52,5 +53,15 @@ export class ForgotPasswordComponent {
         this.errorMessage = 'An error occurred';
       }
     });
+  }
+
+  openConfirmationPopup() {
+    const confirmationText = `If your email matches an existing account we will send you a password reset email to ${this.userEmail}. Please follow the steps provided in the email to reset your password.`;
+    const popupWindow = window.open('', '_blank', 'width=600,height=400');
+    if (popupWindow) {
+      popupWindow.document.write(`<html><body><p>${confirmationText}</p></body></html>`);
+    } else {
+      alert('Popup blocked. Please allow popups for this site to see the confirmation.');
+    }
   }
 }
