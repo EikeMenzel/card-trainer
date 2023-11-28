@@ -10,7 +10,7 @@ import {SessionRenewalModalComponent} from "../../session-renewal-modal/session-
 })
 
 export class AuthService {
-  private sessionTimeoutMinutes = 1;
+  private sessionTimeoutMinutes = 30;
   private sessionTimer: any;
   private cookieName: string = "swtp-project";
   constructor(private cookieService: CookieService, private modalService: NgbModal, private router: Router, public dialog: MatDialog) {
