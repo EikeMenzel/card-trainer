@@ -63,6 +63,7 @@ export class LoginComponent {
         }
 
         this.toastService.showSuccessToast("Login", "Login successes")
+        this.authService.updateUserInfo()
         this.router.navigate(["/"])
       },
       error: err => {
