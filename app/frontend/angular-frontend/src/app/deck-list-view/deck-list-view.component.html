@@ -1,24 +1,60 @@
-<app-base-page>
+<app-base-page [PageTitle]="'Your Decks'">
   <div class="success-container">
-    <table class="table">
+    <table class="table container" id="list">
       <thead>
       <tr>
         <td><strong>Name</strong></td>
-        <td>
+        <td class="deck-card-left">
           <strong>Card Left</strong>
         </td>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let deck of deckList;" routerLink="/deck/{{deck.deckId}}">
-        <td>{{deck.deckName}}</td>
-        <td>{{deck.cardsLeft}} <i class="bi bi-arrow-right"></i></td>
-      </tr>
+      <ng-container *ngFor="let deck of deckList;">
+        <ng-container *ngIf="deck.deckId != -1; else newItem">
+          <tr routerLink="/deck/{{deck.deckId}}">
+            <td>{{deck.deckName}}</td>
+            <td class="deck-card-left">
+              <a class="delete-button" *ngIf="this.showDelete" (click)="deleteItem($event, deck.deckId)">
+                <i class="bi-trash-fill text-danger"></i>
+              </a>
+              <span>{{deck.cardsToLearn}}  </span>
+              <i class="bi bi-arrow-right"></i>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #newItem>
+          <tr>
+            <td>
+              <form (ngSubmit)="addedNewDeck()">
+                <input id="add-new-item-field" class="form-control" type="text" placeholder="Enter Deck Name"
+                       maxlength="255">
+              </form>
+            </td>
+            <td></td>
+          </tr>
+        </ng-template>
+      </ng-container>
       </tbody>
     </table>
   </div>
 
-  <div id="add-button-wrapper">
-    <i id="add-button" class="bi bi-list-ul"></i>
+  <div class="menu-wrapper">
+    <div *ngIf="showOptions" class="options-panel">
+      <!-- Place your options here -->
+      <button class="btn menu-item menu-circle sub-menu-circle sub-add-button" (click)="addItem()">
+        <i class="bi-plus text-white"></i>
+      </button>
+      <button class="btn btn-primary menu-item menu-circle sub-menu-circle">
+        <i class="bi-upload text-white"></i>
+      </button>
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()">
+        <i class="bi-trash-fill text-white"></i>
+      </button>
+    </div>
+    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button"
+            (click)="toggleOptions()"><i class="bi-list-ul"></i></button>
   </div>
+
+  <!--<app-option-button [menu]="menuList" (menuOptionClicked)="menuClicked($event)"></app-option-button>-->
 </app-base-page>
