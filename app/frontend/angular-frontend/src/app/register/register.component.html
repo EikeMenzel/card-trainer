@@ -3,7 +3,7 @@
   <div id="register-body" class="d-flex justify-content-center align-items-center" style="min-height: 100vh; width: 100%;">
     <div class="register-container bg-green">
       <h1>Register</h1>
-      <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+      <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" >
         <label>
           <p id="headline_email">E-Mail</p>
           <input [style.border-color]="emailBorder" type="text" placeholder="E-Mail" name="email" [(ngModel)]="email" required>
