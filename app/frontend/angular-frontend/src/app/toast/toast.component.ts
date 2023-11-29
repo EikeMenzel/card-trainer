@@ -8,7 +8,7 @@ import {NgClass} from "@angular/common";
   selector: 'app-toast',
   standalone: true,
   templateUrl: './toast.component.html',
-  styleUrls: ['./toast.component.scss'],
+  styleUrls: ['./toast.component.css'],
   imports: [
     NgClass
   ]
@@ -37,11 +37,7 @@ export class ToastComponent implements OnInit {
   show() {
     this.toast = new Toast(
       this.toastEl.nativeElement,
-      this.type === EventTypes.Error
-        ? {
-          autohide: false,
-        }
-        : {
+      {
           delay: 5000,
         }
     );
