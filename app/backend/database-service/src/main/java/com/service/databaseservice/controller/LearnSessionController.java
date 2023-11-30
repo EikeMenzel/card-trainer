@@ -1,6 +1,7 @@
 package com.service.databaseservice.controller;
 
 import com.service.databaseservice.payload.out.HistoryDTO;
+import com.service.databaseservice.payload.out.HistoryDetailDTO;
 import com.service.databaseservice.services.LearnSessionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +26,17 @@ public class LearnSessionController {
     }
 
     @GetMapping("/users/{userId}/histories")
-    public ResponseEntity<?> getAllLearnSessionsFromUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<HistoryDTO>> getAllLearnSessionsFromUserId(@PathVariable Long userId) {
         List<HistoryDTO> historyDTOS = learnSessionService.getAllHistoryFromUserId(userId);
         return historyDTOS.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(historyDTOS);
     }
+
+    @GetMapping("/users/{userId}/histories/{historyId}")
+    public ResponseEntity<HistoryDetailDTO> getLearnSessionDetailsFromUserIdAndSessionId(@PathVariable Long userId, @PathVariable Long historyId) {
+        return learnSessionService.getHistoryDetailsFromHistoryIdAndUserId(historyId, userId)
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
 }

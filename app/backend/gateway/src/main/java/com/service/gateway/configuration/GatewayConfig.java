@@ -39,7 +39,8 @@ public class GatewayConfig {
                         r -> r.path(
                                 "/api/v1/decks",
                                 "/api/v1/decks/{deckId}",
-                                "/api/v1/histories"
+                                "/api/v1/histories",
+                                "/api/v1/histories/{historyId}"
                         ).uri(cardsServiceUri)
                 )
 
