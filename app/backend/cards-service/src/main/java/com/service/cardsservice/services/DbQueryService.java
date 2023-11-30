@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.cardsservice.payload.in.DeckDTO;
 import com.service.cardsservice.payload.in.DeckNameDTO;
 import com.service.cardsservice.payload.in.HistoryDTO;
+import com.service.cardsservice.payload.in.HistoryDetailDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -170,6 +171,17 @@ public class DbQueryService {
                     : List.of();
         } catch (Exception e) {
             return List.of();
+        }
+    }
+
+    public Optional<HistoryDetailDTO> getDetailsHistoryByUserIdAndHistoryId(Long userId, Long historyId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/histories/" + historyId, String.class);
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+            ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<HistoryDetailDTO>>() {})
+            : Optional.empty();
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 }
