@@ -1,12 +1,10 @@
 package com.service.cardsservice.controller;
 
 import com.service.cardsservice.payload.in.HistoryDTO;
+import com.service.cardsservice.payload.in.HistoryDetailDTO;
 import com.service.cardsservice.services.DbQueryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +23,11 @@ public class HistoryController {
         return historyDTOS.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(historyDTOS);
+    }
+
+    @GetMapping("/histories/{historyId}")
+    public ResponseEntity<HistoryDetailDTO> getHistoryDetailsByUserIdAndHistoryId(@RequestHeader Long userId, @PathVariable Long historyId) {
+        return dbQueryService.getDetailsHistoryByUserIdAndHistoryId(userId, historyId)
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }
