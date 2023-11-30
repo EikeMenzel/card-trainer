@@ -46,7 +46,9 @@ public class MailContentBuilder {
 
     private String buildPasswordResetUrl(String token, String email) {
         return UriComponentsBuilder.fromHttpUrl(FRONTEND_PATH)
-                .path("/reset-password" + "?token=" + token + "&email=" + email)
+                .path("/reset-password")
+                .queryParam("token", token)
+                .queryParam("email", email)
                 .toUriString();
     }
 }
