@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.cardsservice.payload.in.DeckDTO;
 import com.service.cardsservice.payload.in.DeckNameDTO;
+import com.service.cardsservice.payload.in.HistoryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -158,6 +159,17 @@ public class DbQueryService {
             return responseEntity.getStatusCode();
         } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
             return e.getStatusCode();
+        }
+    }
+
+    public List<HistoryDTO> getAllHistoriesByUserId(Long userId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/histories", String.class);
+            return responseEntity.getStatusCode() == HttpStatus.OK
+                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<HistoryDTO>>(){})
+                    : List.of();
+        } catch (Exception e) {
+            return List.of();
         }
     }
 }
