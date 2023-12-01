@@ -5,10 +5,17 @@ import com.service.cardsservice.payload.out.DeckDetailInformationDTO;
 import com.service.cardsservice.payload.out.DeckInformationDTO;
 import com.service.cardsservice.services.DbQueryService;
 import com.service.cardsservice.services.DeckService;
+import com.service.cardsservice.services.ExportService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +24,13 @@ import java.util.Optional;
 public class DeckController {
     private final DeckService deckService;
     private final DbQueryService dbQueryService;
+    private final ExportService exportService;
+    private final Logger logger = LoggerFactory.getLogger(DeckController.class);
 
-    public DeckController(DeckService deckService, DbQueryService dbQueryService) {
+    public DeckController(DeckService deckService, DbQueryService dbQueryService, ExportService exportService) {
         this.deckService = deckService;
         this.dbQueryService = dbQueryService;
+        this.exportService = exportService;
     }
 
     @GetMapping("")
@@ -54,5 +64,24 @@ public class DeckController {
         Optional<DeckDetailInformationDTO> deckDetailInformationDTO = deckService.getDetailInformationDeck(userId, deckId);
         return deckDetailInformationDTO
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{deckId}/export")
+    public ResponseEntity<ByteArrayResource> exportDeck(@RequestHeader Long userId, @PathVariable Long deckId) throws IOException {
+        byte[] zipData = exportService.zipDeck(userId, deckId);
+
+        if(zipData == null || zipData.length == 0)
+            return ResponseEntity.notFound().build();
+
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=card-trainer.zip");
+
+        var resource = new ByteArrayResource(zipData);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(zipData.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 }

@@ -101,7 +101,7 @@ INSERT INTO card_type VALUES (2, 'MULTIPLE_CHOICE');
 CREATE TABLE "card" (
     c_id BIGSERIAL PRIMARY KEY,
     question TEXT NOT NULL,
-    image_path TEXT,
+    image_data bytea,
     deck_id BIGINT NOT NULL,
     card_type_id INTEGER NOT NULL,
 
@@ -112,7 +112,7 @@ CREATE TABLE "card" (
 CREATE TABLE "text_answer_card" (
     c_id BIGINT PRIMARY KEY,
     answer TEXT NOT NULL,
-    image_path TEXT,
+    image_data bytea,
 
     FOREIGN KEY (c_id) REFERENCES card(c_id) ON DELETE CASCADE
 );
@@ -126,7 +126,7 @@ CREATE TABLE "multiple_choice_card" (
 CREATE TABLE "choice_answer" (
     ca_id BIGSERIAL PRIMARY KEY,
     answer TEXT NOT NULL,
-    image_path TEXT,
+    image_data bytea,
     is_correct BOOLEAN NOT NULL,
     c_id BIGINT NOT NULL,
 

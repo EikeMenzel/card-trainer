@@ -6,6 +6,7 @@ import com.service.cardsservice.payload.in.DeckDTO;
 import com.service.cardsservice.payload.in.DeckNameDTO;
 import com.service.cardsservice.payload.in.HistoryDTO;
 import com.service.cardsservice.payload.in.HistoryDetailDTO;
+import com.service.cardsservice.payload.in.export.ExportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -160,6 +161,18 @@ public class DbQueryService {
             return responseEntity.getStatusCode();
         } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
             return e.getStatusCode();
+        }
+    }
+
+    public Optional<ExportDTO> getCardExportDTOsForExportDeck(Long userId, Long deckId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/export", String.class);
+            return responseEntity.getStatusCode() == HttpStatus.OK
+                    ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<ExportDTO>(){}))
+                    : Optional.empty();
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return Optional.empty();
         }
     }
 
