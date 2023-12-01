@@ -2,6 +2,12 @@ package com.service.databaseservice.model.cards;
 
 import com.service.databaseservice.model.Deck;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.springframework.context.annotation.Lazy;
+
+import java.sql.Blob;
+import java.sql.Types;
 
 @Entity
 @Table(name = "card")
@@ -15,8 +21,11 @@ public class Card {
     @Column(name = "question", columnDefinition = "TEXT", nullable = false)
     private String question;
 
-    @Column(name = "image_path")
-    private String imagePath;
+    @Lob
+    @JdbcTypeCode(Types.BINARY)
+    @Lazy
+    @Column(name = "image_data", columnDefinition = "bytea")
+    private Blob imageData;
 
     @ManyToOne
     @JoinColumn(name = "deck_id", nullable = false)
@@ -26,10 +35,9 @@ public class Card {
     @JoinColumn(name = "card_type_id", nullable = false)
     private CardType cardType;
 
-    public Card(Long id, String question, String imagePath, Deck deck, CardType cardType) {
-        this.id = id;
+    public Card(String question, Blob imageData, Deck deck, CardType cardType) {
         this.question = question;
-        this.imagePath = imagePath;
+        this.imageData = imageData;
         this.deck = deck;
         this.cardType = cardType;
     }
@@ -45,8 +53,8 @@ public class Card {
         return question;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Blob getImageData() {
+        return imageData;
     }
 
     public Deck getDeck() {
