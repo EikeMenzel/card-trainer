@@ -2,8 +2,12 @@ package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.User;
+import com.service.databaseservice.model.cards.CardType;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
+import com.service.databaseservice.payload.out.export.CardDTO;
+import com.service.databaseservice.payload.out.export.CardExportDTO;
+import com.service.databaseservice.payload.out.export.TextAnswerDTO;
 import com.service.databaseservice.repository.DeckRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +41,10 @@ public class DeckService {
                 .map(deck -> new DeckDTO(deck.getId(), deck.getName()));
     }
 
+    public Optional<String> getDeckNameByIdAndUserId(Long userId, Long deckId) {
+        return deckRepository.getDeckByIdAndOwnerId(deckId, userId).map(Deck::getName);
+    }
+    
     public Boolean existsByDeckIdAndUserId(Long deckId, Long userId) {
         return deckRepository.existsDeckByIdAndOwnerId(deckId, userId);
     }
@@ -72,6 +80,7 @@ public class DeckService {
                 .map(deck -> {
                     deck.setName(deckNameDTO.deckName());
                     return true;
-                }).orElse(false);
+                })
+                .orElse(false);
     }
 }

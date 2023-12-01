@@ -2,8 +2,11 @@ package com.service.databaseservice.controller;
 
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
+import com.service.databaseservice.payload.out.export.CardExportDTO;
+import com.service.databaseservice.payload.out.export.ExportDTO;
 import com.service.databaseservice.services.CardService;
 import com.service.databaseservice.services.DeckService;
+import com.service.databaseservice.services.ExportService;
 import com.service.databaseservice.services.RepetitionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,11 +27,13 @@ public class DeckController {
     private final DeckService deckService;
     private final CardService cardService;
     private final RepetitionService repetitionService;
+    private final ExportService exportService;
 
-    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService) {
+    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService) {
         this.deckService = deckService;
         this.cardService = cardService;
         this.repetitionService = repetitionService;
+        this.exportService = exportService;
     }
 
     @GetMapping("/users/{userId}/decks")
@@ -105,5 +110,17 @@ public class DeckController {
         return deckService.updateDeckInformation(userId, deckId, deckNameDTO)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
+    }
+    @GetMapping("/users/{userId}/decks/{deckId}/cards/export")
+    public ResponseEntity<ExportDTO> getCardsForExport(@PathVariable Long userId, @PathVariable Long deckId) {
+        Optional<String> deckName = deckService.getDeckNameByIdAndUserId(userId, deckId);
+        Optional<List<CardExportDTO>> cardExportDTOS = exportService.getDeckForExport(userId, deckId);
+        if(cardExportDTOS.isEmpty() || deckName.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        if(cardExportDTOS.get().isEmpty())
+            return ResponseEntity.ok(new ExportDTO(deckName.get(), List.of()));
+
+        return ResponseEntity.ok(new ExportDTO(deckName.get(), cardExportDTOS.get()));
     }
 }
