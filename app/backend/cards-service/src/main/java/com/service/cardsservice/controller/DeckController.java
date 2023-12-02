@@ -1,5 +1,6 @@
 package com.service.cardsservice.controller;
 
+import com.service.cardsservice.payload.in.CardDTO;
 import com.service.cardsservice.payload.in.DeckNameDTO;
 import com.service.cardsservice.payload.out.DeckDetailInformationDTO;
 import com.service.cardsservice.payload.out.DeckInformationDTO;
@@ -7,12 +8,11 @@ import com.service.cardsservice.services.DbQueryService;
 import com.service.cardsservice.services.DeckService;
 import com.service.cardsservice.services.ExportService;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -83,5 +83,17 @@ public class DeckController {
                 .contentLength(zipData.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    @GetMapping("/{deckId}/cards")
+    public ResponseEntity<List<CardDTO>> getAllCards(@RequestHeader Long userId, @PathVariable Long deckId) {
+        Pair<List<CardDTO>, HttpStatusCode> pair = dbQueryService.getAllCardsByDeckIdAndUserId(userId, deckId);
+        if(pair.getRight() == HttpStatus.NOT_FOUND)
+            return ResponseEntity.notFound().build();
+
+        if(pair.getRight() == HttpStatus.NO_CONTENT)
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(pair.getLeft());
     }
 }
