@@ -22,4 +22,4 @@ WORKDIR /opt/app
 EXPOSE 8080
 COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
 
-ENTRYPOINT ["dockerize", "-wait", "tcp://db-service:8086", "-timeout", "60s", "java", "-jar", "/opt/app/*.jar" ]
+ENTRYPOINT ["dockerize", "-wait", "tcp://db-service:8086", "-timeout", "60s", "java", "-Dspring.profiles.active=local", "-jar", "/opt/app/*.jar" ]
