@@ -1,11 +1,9 @@
 package com.service.cardsservice.services;
 
+import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.service.cardsservice.payload.in.DeckDTO;
-import com.service.cardsservice.payload.in.DeckNameDTO;
-import com.service.cardsservice.payload.in.HistoryDTO;
-import com.service.cardsservice.payload.in.HistoryDetailDTO;
+import com.service.cardsservice.payload.in.*;
 import com.service.cardsservice.payload.in.export.ExportDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,6 +193,17 @@ public class DbQueryService {
             : Optional.empty();
         } catch (Exception e) {
             return Optional.empty();
+        }
+    }
+
+    public Pair<List<CardDTO>, HttpStatusCode> getAllCardsByDeckIdAndUserId(Long userId, Long deckId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards", String.class);
+            return responseEntity.getStatusCode() == HttpStatus.OK
+                    ? Pair.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<CardDTO>>(){}), responseEntity.getStatusCode())
+                    : Pair.of(List.of(), responseEntity.getStatusCode());
+        } catch (Exception e) {
+            return Pair.of(List.of(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

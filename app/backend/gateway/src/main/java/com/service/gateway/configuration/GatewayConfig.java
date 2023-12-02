@@ -41,7 +41,8 @@ public class GatewayConfig {
                                 "/api/v1/decks/{deckId}",
                                 "/api/v1/histories",
                                 "/api/v1/histories/{historyId}",
-                                "/api/v1/decks/{deckId}/export"
+                                "/api/v1/decks/{deckId}/export",
+                                "/api/v1/decks/{deckId}/cards"
                         ).uri(cardsServiceUri)
                 )
 
