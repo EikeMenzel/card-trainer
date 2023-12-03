@@ -3,12 +3,10 @@ package com.service.cardsservice.payload.in.export;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class TextAnswerDTO extends CardExportDTO {
-    @JsonProperty("imagePath")
-    private String imagePath;
-
     @JsonProperty("textAnswer")
     private String textAnswer;
-
+    @JsonProperty("imagePath")
+    private String imagePath;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private byte[] image;
 
