@@ -2,10 +2,10 @@ package com.service.cardsservice.payload.in.export;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 public final class CardDTO {
-    @JsonProperty("imagePath")
-    private String imagePath;
     @JsonProperty("question")
     private final String question;
+    @JsonProperty("imagePath")
+    private String imagePath;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final byte[] image;
     @JsonProperty("cardTypeId")
