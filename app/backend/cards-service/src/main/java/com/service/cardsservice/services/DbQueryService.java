@@ -206,4 +206,20 @@ public class DbQueryService {
             return Pair.of(List.of(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public HttpStatusCode deleteCard(Long userId, Long deckId, Long cardId) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            return restTemplate.exchange(
+                    USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/" + cardId,
+                    HttpMethod.DELETE,
+                    entity,
+                    String.class).getStatusCode();
+        } catch (HttpClientErrorException e) {
+            return e.getStatusCode();
+        }
+    }
 }
