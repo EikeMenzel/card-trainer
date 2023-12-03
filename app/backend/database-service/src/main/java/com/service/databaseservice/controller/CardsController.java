@@ -4,10 +4,7 @@ import com.service.databaseservice.payload.out.CardDTO;
 import com.service.databaseservice.services.CardService;
 import com.service.databaseservice.services.DeckService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +28,15 @@ public class CardsController {
         return cardDTOList.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(cardDTOList);
+    }
+
+    @DeleteMapping("/users/{userId}/decks/{deckId}/cards/{cardId}")
+    public ResponseEntity<?> deleteCard(@PathVariable Long userId, @PathVariable Long deckId, @PathVariable Long cardId) {
+        if(!deckService.existsByDeckIdAndUserId(deckId, userId))
+            return ResponseEntity.notFound().build();
+
+        return cardService.deleteCard(cardId)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }
