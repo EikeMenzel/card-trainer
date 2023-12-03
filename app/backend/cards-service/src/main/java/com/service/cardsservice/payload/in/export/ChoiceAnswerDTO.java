@@ -15,7 +15,7 @@ public final class ChoiceAnswerDTO {
     public ChoiceAnswerDTO(
             @JsonProperty("answer") String answer,
             @JsonProperty("image") byte[] image,
-            @JsonProperty("is_correct") boolean isCorrect
+            @JsonProperty("isCorrect") boolean isCorrect
     ) {
         this.answer = answer;
         this.image = image;
@@ -32,8 +32,8 @@ public final class ChoiceAnswerDTO {
         return image;
     }
 
-    @JsonProperty("is_correct")
-    public boolean is_correct() {
+    @JsonProperty("isCorrect")
+    public boolean isCorrect() {
         return isCorrect;
     }
 
