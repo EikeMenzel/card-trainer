@@ -37,11 +37,15 @@ export class RegisterComponent {
   public passwordBorder: string = "white";
   public passwordRepeatBorder: string = "white"
 
+  public buttonIsPressed:boolean = false;
+
   constructor(http: HttpClient, private toastService: ToastService) {
     this.http = http;
   }
 
   onSubmit(registerForm: NgForm) {
+    this.buttonIsPressed = true;
+
     const email: String = registerForm.value["email"]
     const username: String = registerForm.value["username"]
     const password: String = registerForm.value["password"]
@@ -89,6 +93,7 @@ export class RegisterComponent {
             }
             if (statusCode == HttpStatusCode.InternalServerError)
               this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.buttonIsPressed = false;
           }
         })
     } else {
@@ -109,6 +114,7 @@ export class RegisterComponent {
         this.passwordRepeatBorder = "red"
         this.toastService.showWarningToast("Warning", "Passwords do not match");
       }
+      this.buttonIsPressed = false;
     }
   }
 }
