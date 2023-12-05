@@ -14,7 +14,7 @@ public class PasswordSecurityService {
     }
 
     public boolean checkPasswordSecurity(String password) {
-        var minLength = 6;
+        var minLength = 8;
         var maxLength = 72;
 
         if (password.length() < minLength || password.length() > maxLength) {
