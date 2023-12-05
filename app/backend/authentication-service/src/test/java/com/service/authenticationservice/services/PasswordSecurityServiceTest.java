@@ -48,12 +48,12 @@ class PasswordSecurityServiceTest {
 
     @Test
     void testCheckPasswordSecurity_TooShort() {
-        assertFalse(passwordSecurityService.checkPasswordSecurity("Sho1!"));
+        assertFalse(passwordSecurityService.checkPasswordSecurity("Short1!"));
     }
 
     @Test
     void testCheckPasswordSecurity_MinimumLength() {
-        assertTrue(passwordSecurityService.checkPasswordSecurity("Shor1!"));
+        assertTrue(passwordSecurityService.checkPasswordSecurity("ShortW1!"));
     }
     @Test
     void testCheckPasswordSecurity_MaximumLength() {
