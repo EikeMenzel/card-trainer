@@ -1,8 +1,11 @@
 package com.service.databaseservice.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.service.databaseservice.payload.out.CardDTO;
 import com.service.databaseservice.services.CardService;
 import com.service.databaseservice.services.DeckService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +41,15 @@ public class CardsController {
         return cardService.deleteCard(cardId)
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/users/{userId}/decks/{deckId}/cards")
+    public ResponseEntity<?> saveCard(@PathVariable Long userId, @PathVariable Long deckId, @Valid @RequestBody JsonNode cardNode) { //TESTING
+        if(!deckService.existsByDeckIdAndUserId(deckId, userId))
+            return ResponseEntity.notFound().build();
+
+        return cardService.saveCard(cardNode, userId, deckId)
+                ? ResponseEntity.status(HttpStatus.CREATED).build()
+                : ResponseEntity.internalServerError().build();
     }
 }
