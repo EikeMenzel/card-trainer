@@ -14,11 +14,14 @@ public class Repetition {
     @Column(name = "r_id")
     private Long id;
 
-    @Column(name = "quality", nullable = false)
+    @Column(name = "repetition", nullable = false)
+    private Integer repetition;
+
+    @Column(name = "quality")
     private Integer quality;
 
     @Column(name = "prev_ease_factor", nullable = false)
-    private Float prevEaseFactor;
+    private double prevEaseFactor;
 
     @Column(name = "prev_interval", nullable = false)
     private Integer prevInterval;
@@ -31,11 +34,12 @@ public class Repetition {
     @ManyToOne
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
-    public Repetition(Long id, Integer quality, Float prevEaseFactor, Integer prevInterval, User user, Card card) {
-        this.id = id;
+    public Repetition(Integer repetition, Integer quality, double prevEaseFactor, Integer prevInterval, Timestamp nextLearnTimestamp, User user, Card card) {
+        this.repetition = repetition;
         this.quality = quality;
         this.prevEaseFactor = prevEaseFactor;
         this.prevInterval = prevInterval;
+        this.nextLearnTimestamp = nextLearnTimestamp;
         this.user = user;
         this.card = card;
     }
@@ -51,7 +55,7 @@ public class Repetition {
         return quality;
     }
 
-    public Float getPrevEaseFactor() {
+    public double getPrevEaseFactor() {
         return prevEaseFactor;
     }
 
@@ -69,5 +73,9 @@ public class Repetition {
 
     public Timestamp getNextLearnTimestamp() {
         return nextLearnTimestamp;
+    }
+
+    public Integer getRepetition() {
+        return repetition;
     }
 }

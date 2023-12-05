@@ -159,7 +159,7 @@ CREATE TABLE "learn_session" (
     user_id BIGINT NOT NULL,
 
     FOREIGN KEY (status_id) REFERENCES status_type(st_id),
-    FOREIGN KEY (deck_id) REFERENCES deck(d_id) ON DELETE CASCADE ,
+    FOREIGN KEY (deck_id) REFERENCES deck(d_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(u_id) ON DELETE CASCADE
 );
 
@@ -188,7 +188,8 @@ CREATE TABLE "peek_session_cards" (
 
 CREATE TABLE "repetition" (
     r_id BIGSERIAL PRIMARY KEY,
-    quality INTEGER NOT NULL,
+    repetition INTEGER NOT NULL,
+    quality INTEGER,
     prev_ease_factor FLOAT NOT NULL,
     prev_interval INTEGER NOT NULL,
     user_id BIGINT NOT NULL,

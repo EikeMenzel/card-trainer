@@ -12,8 +12,7 @@ import java.sql.Types;
 public class TextAnswerCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "c_id", insertable=false, updatable=false)
+    @Column(name = "c_id", updatable = false)
     private Long id;
 
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
