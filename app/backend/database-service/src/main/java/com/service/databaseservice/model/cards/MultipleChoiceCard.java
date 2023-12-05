@@ -9,8 +9,7 @@ import java.util.List;
 public class MultipleChoiceCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "c_id", insertable=false, updatable=false)
+    @Column(name = "c_id", updatable=false)
     private Long id;
 
     @OneToMany(mappedBy = "multipleChoiceCard", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -21,6 +20,9 @@ public class MultipleChoiceCard {
         this.choiceAnswerList = choiceAnswerList;
     }
 
+    public MultipleChoiceCard(Long id) {
+        this.id = id;
+    }
     public MultipleChoiceCard() {
     }
 
