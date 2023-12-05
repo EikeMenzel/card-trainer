@@ -189,7 +189,7 @@ CREATE TABLE "peek_session_cards" (
 CREATE TABLE "repetition" (
     r_id BIGSERIAL PRIMARY KEY,
     repetition INTEGER NOT NULL,
-    quality INTEGER,
+    quality INTEGER NOT NULL,
     prev_ease_factor FLOAT NOT NULL,
     prev_interval INTEGER NOT NULL,
     user_id BIGINT NOT NULL,

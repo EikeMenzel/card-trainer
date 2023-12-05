@@ -85,7 +85,7 @@ public class DeckController {
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return ResponseEntity.ok(
-                IntStream.rangeClosed(0, 5)
+                IntStream.rangeClosed(-1, 5)
                         .mapToObj(i -> qualityCount.getOrDefault(i, 0L).intValue())
                         .collect(Collectors.toList())
         );
