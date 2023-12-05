@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
 import {CardService} from "../services/card-service/card.service";
@@ -7,6 +7,7 @@ import {Router, RouterLink} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
+import {AuthService} from "../services/auth-service/auth-service";
 
 @Component({
   selector: 'app-deck-list-view',
@@ -15,7 +16,7 @@ import {ToasterComponent} from "../toaster/toaster.component";
   templateUrl: './deck-list-view.component.html',
   styleUrl: './deck-list-view.component.css'
 })
-export class DeckListViewComponent {
+export class DeckListViewComponent implements OnInit {
 
   deckList: DeckDTO[] = [];
   showOptions: boolean = false;
@@ -26,10 +27,14 @@ export class DeckListViewComponent {
     document.getElementById("")?.classList.toggle("show")
   }
 
-  constructor(private cardService: CardService, private router: Router, private toast: ToastService) {
+  constructor(private cardService: CardService, private router: Router, private toast: ToastService, private userService: AuthService) {
   }
 
   ngOnInit() {
+    if (!this.userService.isLoggedIn) {
+      this.router.navigate(["/login"])
+      return;
+    }
     this.updateDecks()
   }
 
@@ -46,6 +51,7 @@ export class DeckListViewComponent {
       }
     })
   }
+
   addItem() {
 
     const deck1: DeckDTO = {
@@ -57,7 +63,7 @@ export class DeckListViewComponent {
   }
 
   addedNewDeck() {
-    var newDeckName = (document.getElementById("add-new-item-field") as HTMLInputElement).value
+    const newDeckName = (document.getElementById("add-new-item-field") as HTMLInputElement).value;
     if (newDeckName == "") {
       return
     }

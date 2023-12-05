@@ -1,5 +1,3 @@
-<app-toaster></app-toaster>
-
 <div id="login-body">
   <div class="login-container container">
     <h1>Login</h1>
@@ -10,7 +8,8 @@
       </label>
       <br>
       <label>
-        <input [style.border-color]="passwordBorder" type="password" placeholder="Password" name="password" required ngModel minlength="8">
+        <input [style.border-color]="passwordBorder" type="password" placeholder="Password" name="password" required
+               ngModel minlength="8">
       </label>
       <div id="remember-me-container">
         <label for="remember-me">
@@ -19,6 +18,10 @@
                 Remember Me
             </span>
         </label>
+        <p style="margin: 0;">
+          <a routerLink="/forgot-password" routerLinkActive="active" style="text-decoration: none;">Forgot your
+            password?</a>
+        </p>
       </div>
       <button type="submit" class="btn-success">Login</button>
     </form>
