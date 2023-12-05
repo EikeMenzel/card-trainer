@@ -26,7 +26,7 @@ public class RepetitionService {
         if(card == null || user == null)
             return false;
         try {
-            repetitionRepository.save(new Repetition(0, null, 2.5, 0, Timestamp.from(Instant.now()), user, card));
+            repetitionRepository.save(new Repetition(0, -1, 2.5, 0, Timestamp.from(Instant.now()), user, card));
             return true;
         } catch (Exception e) {
             return false;
