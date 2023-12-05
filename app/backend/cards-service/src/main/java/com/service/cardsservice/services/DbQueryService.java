@@ -1,5 +1,6 @@
 package com.service.cardsservice.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -221,5 +223,15 @@ public class DbQueryService {
         } catch (HttpClientErrorException e) {
             return e.getStatusCode();
         }
+    }
+
+    public HttpStatusCode saveCardByDeckIdAndUserId(Long userId, Long deckId, Object cardNode) {
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards",
+                new HttpEntity<>(cardNode, headers),
+                String.class);
+        return responseEntity.getStatusCode();
     }
 }

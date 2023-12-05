@@ -31,8 +31,7 @@ public class ChoiceAnswer {
     @JoinColumn(name = "c_id", nullable = false)
     private MultipleChoiceCard multipleChoiceCard;
 
-    public ChoiceAnswer(Long id, String answer, Blob imageData, Boolean isCorrect, MultipleChoiceCard multipleChoiceCard) {
-        this.id = id;
+    public ChoiceAnswer(String answer, Blob imageData, Boolean isCorrect, MultipleChoiceCard multipleChoiceCard) {
         this.answer = answer;
         this.imageData = imageData;
         this.isCorrect = isCorrect;
