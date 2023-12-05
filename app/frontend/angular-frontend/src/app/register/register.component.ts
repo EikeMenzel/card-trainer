@@ -90,6 +90,8 @@ export class RegisterComponent {
                   this.passwordRepeatBorder = "red";
                   break;
               }
+
+              return;
             }
             if (statusCode == HttpStatusCode.InternalServerError)
               this.toastService.showErrorToast("Error", "Server cannot be reached");
