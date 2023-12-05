@@ -4,7 +4,7 @@ import {
   FormsModule,
   FormControl, FormGroup, Validators, NgForm
 } from '@angular/forms';
-import {Router, RouterLink} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {HttpClient, HttpClientModule, HttpStatusCode} from "@angular/common/http";
 import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
@@ -16,7 +16,7 @@ import {AuthService} from "../services/auth-service/auth-service";
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, HttpClientModule, ToasterComponent]
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, HttpClientModule, ToasterComponent, RouterLinkActive]
 })
 export class LoginComponent {
 

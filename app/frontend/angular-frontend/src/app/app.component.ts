@@ -22,10 +22,4 @@ export class AppComponent {
               private router: Router) {
 
   }
-
-  ngOnInit() {
-    if (!this.authService.isLoggedIn) {
-      this.router.navigate(["/login"]);
-    }
-  }
 }
