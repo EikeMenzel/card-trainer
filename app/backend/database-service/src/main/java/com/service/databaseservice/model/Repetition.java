@@ -17,8 +17,8 @@ public class Repetition {
     @Column(name = "repetition", nullable = false)
     private Integer repetition;
 
-    @Column(name = "quality")
-    private Integer quality;
+    @Column(name = "quality", nullable = false)
+    private Integer quality = -1;
 
     @Column(name = "prev_ease_factor", nullable = false)
     private double prevEaseFactor;
