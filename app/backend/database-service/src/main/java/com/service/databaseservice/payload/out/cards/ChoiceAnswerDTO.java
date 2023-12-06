@@ -1,22 +1,27 @@
 package com.service.databaseservice.payload.out.cards;
 
-public class ChoiceAnswerDTO {
-    private final String answer;
-    private final boolean isCorrect;
-    private final byte[] imageData;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public ChoiceAnswerDTO(String answer, boolean isCorrect, byte[] imageData) {
+public class ChoiceAnswerDTO {
+    private String answer;
+    private boolean isRightAnswer;
+    private byte[] imageData;
+
+    public ChoiceAnswerDTO(@JsonProperty("answer") String answer, boolean isRightAnswer, @JsonProperty("imageData") byte[] imageData) {
         this.answer = answer;
-        this.isCorrect = isCorrect;
+        this.isRightAnswer = isRightAnswer;
         this.imageData = imageData;
+    }
+
+    public ChoiceAnswerDTO() {
     }
 
     public String getAnswer() {
         return answer;
     }
-
-    public boolean isCorrect() {
-        return isCorrect;
+    @JsonProperty("rightAnswer")
+    public boolean getIsRightAnswer() {
+        return isRightAnswer;
     }
 
     public byte[] getImageData() {

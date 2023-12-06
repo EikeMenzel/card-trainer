@@ -83,4 +83,8 @@ public class DeckService {
                 })
                 .orElse(false);
     }
+
+    public Optional<Deck> findTopByOwnerIdAndNameOrderByIdDesc(Long userId, String deckName) {
+        return deckRepository.findTopByOwnerIdAndNameOrderByIdDesc(userId, deckName);
+    }
 }
