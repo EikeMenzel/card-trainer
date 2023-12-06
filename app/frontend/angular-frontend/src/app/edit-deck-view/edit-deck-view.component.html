@@ -1,0 +1,45 @@
+<app-base-page [PageTitle]="'Edit Deck'">
+  <div class="container">
+    <table class="table container" id="list">
+      <thead>
+      <tr>
+        <td><strong>Question</strong></td>
+        <td class="card-type-row">
+          <strong>Question Type</strong>
+        </td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let card of cards" routerLink="/deck/{{deckId}}/card/{{card.id}}/edit">
+        <td>
+          <span class="text-truncate d-inline-block" style="max-width: 40em;">{{card.question}}</span>
+        </td>
+        <td class="card-type-row">
+          <span>{{card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card"}}
+            <ng-container *ngIf="showDelete">
+               <a class="delete-button" *ngIf="this.showDelete" (click)="deleteItem($event, card.id)">
+                <i class="bi-trash-fill text-danger"></i>
+              </a>
+            </ng-container></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="menu-wrapper">
+    <div *ngIf="showOptions" class="options-panel">
+      <!-- Place your options here -->
+      <button class="btn menu-item menu-circle sub-menu-circle sub-add-button"
+              routerLink="/deck/{{deckId}}/card/new/edit">
+        <i class="bi-plus text-white"></i>
+      </button>
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()">
+        <i class="bi-trash-fill text-white"></i>
+      </button>
+    </div>
+    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button"
+            (click)="toggleOptions()"><i class="bi-list-ul"></i></button>
+  </div>
+</app-base-page>
