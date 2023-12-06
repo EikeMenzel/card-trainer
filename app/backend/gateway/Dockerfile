@@ -10,6 +10,6 @@ RUN ./mvnw clean install
 
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /opt/app
-EXPOSE 8079
+EXPOSE 80
 COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
 ENTRYPOINT ["java", "-Dspring.profiles.active=local", "-jar", "/opt/app/*.jar" ]

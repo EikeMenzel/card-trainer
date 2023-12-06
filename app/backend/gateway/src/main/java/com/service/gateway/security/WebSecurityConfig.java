@@ -37,7 +37,9 @@ public class WebSecurityConfig {
                                 "/api/v1/email/verify/{token}",
                                 "/api/v1/password/reset"
                         ).permitAll()
-                        .anyExchange().authenticated())
+                        .pathMatchers("/api/**")
+                        .authenticated()
+                        .anyExchange().permitAll())
                 .addFilterAfter(authTokenFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .addFilterAfter(jwtTokenResolveFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
