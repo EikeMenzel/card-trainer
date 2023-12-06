@@ -3,18 +3,21 @@ package com.service.cardsservice.payload.in.export;
 import com.fasterxml.jackson.annotation.JsonProperty;
 public final class CardDTO {
     @JsonProperty("question")
-    private final String question;
+    private String question;
     @JsonProperty("imagePath")
     private String imagePath;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private final byte[] image;
+    private byte[] image;
     @JsonProperty("cardTypeId")
-    private final Long cardTypeId;
+    private Long cardTypeId;
 
     public CardDTO(String question, byte[] image, Long cardTypeId) {
         this.question = question;
         this.image = image;
         this.cardTypeId = cardTypeId;
+    }
+
+    public CardDTO() {
     }
 
     public String question() {
@@ -35,5 +38,9 @@ public final class CardDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }
