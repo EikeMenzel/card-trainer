@@ -36,6 +36,7 @@ services:
     volumes:
       - ./database/servers.json:/pgadmin4/servers.json
       - ./database/devdbpass:/pgadmin4/devdbpass
+
 networks:
   postgres-network:
     driver: bridge

@@ -17,6 +17,10 @@ public class GatewayConfig {
 
     @Value("${cards-service.api.path}")
     private String cardsServiceUri;
+
+    @Value("${frontend.path}")
+    private String frontendServiceUri;
+
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -47,9 +51,15 @@ public class GatewayConfig {
                         ).uri(cardsServiceUri)
                 )
 
-                .route("fallback-route", r -> r.path("/**")
-                        .filters(f -> f.setStatus(HttpStatus.NOT_FOUND))
-                        .uri("no://op"))
+                .route("fallback",
+                        r -> r.path("/api/**").filters(f -> f.setStatus(HttpStatus.NOT_FOUND))
+                                .uri("no://op"))
+
+                .route("frontend",
+                        r -> r.path("/**")
+                        .and().not(predicateSpec -> predicateSpec.path("/api/**"))
+                        .uri(frontendServiceUri))
+
                 .build();
     }
 }
