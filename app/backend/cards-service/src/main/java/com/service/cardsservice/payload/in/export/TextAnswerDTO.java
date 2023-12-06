@@ -10,12 +10,6 @@ public final class TextAnswerDTO extends CardExportDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private byte[] image;
 
-    public TextAnswerDTO(CardDTO cardDTO, String textAnswer, byte[] image) {
-        super(cardDTO);
-        this.textAnswer = textAnswer;
-        this.image = image;
-    }
-
     public String getTextAnswer() {
         return textAnswer;
     }
@@ -30,5 +24,9 @@ public final class TextAnswerDTO extends CardExportDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

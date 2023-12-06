@@ -15,6 +15,9 @@ public class CardExportDTO {
         this.cardDTO = cardDTO;
     }
 
+    public CardExportDTO() {
+    }
+
     public CardDTO getCardDTO() {
         return cardDTO;
     }

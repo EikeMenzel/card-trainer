@@ -1,7 +1,7 @@
 package com.service.databaseservice.payload.out.export;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-public record CardDTO(@JsonProperty("question") String question, @JsonProperty("image") byte[] image,
+public record CardDTO(@JsonProperty("question") String question, @JsonProperty(namespace = "image", access = JsonProperty.Access.AUTO) byte[] image,
                       @JsonProperty("cardTypeId") Long cardTypeId) {
     public CardDTO(String question, byte[] image, Long cardTypeId) {
         this.question = question;

@@ -8,18 +8,18 @@ public final class ChoiceAnswerDTO {
     @JsonProperty("answer")
     private final String answer;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private final byte[] image;
-    @JsonProperty("isCorrect")
-    private final boolean isCorrect;
+    private byte[] image;
+    @JsonProperty("isRightAnswer")
+    private final boolean isRightAnswer;
 
     public ChoiceAnswerDTO(
             @JsonProperty("answer") String answer,
             @JsonProperty("image") byte[] image,
-            @JsonProperty("isCorrect") boolean isCorrect
+            @JsonProperty("isRightAnswer") boolean isRightAnswer
     ) {
         this.answer = answer;
         this.image = image;
-        this.isCorrect = isCorrect;
+        this.isRightAnswer = isRightAnswer;
     }
 
     @JsonProperty("answer")
@@ -32,9 +32,9 @@ public final class ChoiceAnswerDTO {
         return image;
     }
 
-    @JsonProperty("isCorrect")
-    public boolean isCorrect() {
-        return isCorrect;
+    @JsonProperty("isRightAnswer")
+    public boolean isRightAnswer() {
+        return isRightAnswer;
     }
 
     public String getImagePath() {
@@ -43,5 +43,9 @@ public final class ChoiceAnswerDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }
