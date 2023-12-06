@@ -24,7 +24,7 @@ public class MailContentBuilder {
     public String getContent(MailType mailType, String... data) {
         return switch (mailType) {
             case VERIFICATION -> getContentFromFile("static/mail_verification.html").replace("${verificationUrl}", buildVerificationUrl(data[0]));
-            case DAILY_REMINDER -> getContentFromFile("static/daily-learn-reminder.html").replace("${username}", data[1]).replace("${dailyLearnUrl}", "http://localhost:4200");
+            case DAILY_REMINDER -> getContentFromFile("static/daily-learn-reminder.html").replace("${username}", data[1]).replace("${dailyLearnUrl}", "http://localhost");
             case PASSWORD_RESET -> getContentFromFile("static/mail_password_reset.html").replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]));
         };
     }
