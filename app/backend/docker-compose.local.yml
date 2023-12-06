@@ -74,7 +74,7 @@ services:
     container_name: gateway-service
     image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/gateway:latest
     ports:
-      - "8079:8079"
+      - "80:80"
     networks:
       - postgres-network
     depends_on:
@@ -106,6 +106,22 @@ services:
     depends_on:
       - db-service
     restart: unless-stopped
+
+  frontend:
+    container_name: frontend
+    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/angular-frontend:latest
+    ports:
+      - "4200:4200"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+      - cards
+      - gateway
+      - user
+      - auth
+      - email
+
 networks:
   postgres-network:
     driver: bridge
