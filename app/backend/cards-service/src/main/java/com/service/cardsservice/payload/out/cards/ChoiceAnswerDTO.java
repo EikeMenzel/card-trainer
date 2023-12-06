@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ChoiceAnswerDTO {
     private final String answer;
-    private final boolean isCorrect;
+    private final boolean isRightAnswer;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String imagePath;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private byte[] imageData;
-    public ChoiceAnswerDTO(String answer, boolean isCorrect, byte[] imageData) {
+    public ChoiceAnswerDTO(String answer, boolean isRightAnswer, byte[] imageData) {
         this.answer = answer;
-        this.isCorrect = isCorrect;
+        this.isRightAnswer = isRightAnswer;
         this.imageData = imageData;
     }
 
@@ -19,8 +19,9 @@ public class ChoiceAnswerDTO {
         return answer;
     }
 
-    public boolean isCorrect() {
-        return isCorrect;
+    @JsonProperty("rightAnswer")
+    public boolean getIsRightAnswer(){
+        return isRightAnswer;
     }
 
     public byte[] getImageData() {

@@ -2,6 +2,7 @@ package com.service.databaseservice.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.databaseservice.controller.DeckController;
 import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.cards.*;
 import com.service.databaseservice.payload.out.CardDTO;
@@ -12,6 +13,8 @@ import com.service.databaseservice.repository.DeckRepository;
 import com.service.databaseservice.repository.cards.*;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,7 +107,6 @@ public class CardService {
 
         try {
             var card = cardRepository.save(new Card(multipleChoiceCardDTO.getCardDTO().getQuestion(), generateBlob(multipleChoiceCardDTO.getCardDTO().getImageData()), optionalDeck.get(), optionalCardType.get()));
-
             var multipleChoiceCard = multipleChoiceCardRepository.save(new MultipleChoiceCard(card.getId()));
             choiceAnswerRepository.saveAll(choiceAnswersBuilder(multipleChoiceCardDTO.getChoiceAnswers(), multipleChoiceCard));
 
@@ -117,7 +119,7 @@ public class CardService {
     private List<ChoiceAnswer> choiceAnswersBuilder(List<ChoiceAnswerDTO> choiceAnswerDTOList, MultipleChoiceCard multipleChoiceCard) {
         return choiceAnswerDTOList
                 .stream()
-                .map(choiceAnswerDTO -> new ChoiceAnswer(choiceAnswerDTO.getAnswer(), generateBlob(choiceAnswerDTO.getImageData()), choiceAnswerDTO.isCorrect(), multipleChoiceCard))
+                .map(choiceAnswerDTO -> new ChoiceAnswer(choiceAnswerDTO.getAnswer(), generateBlob(choiceAnswerDTO.getImageData()), choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard))
                 .collect(Collectors.toList());
     }
     private Blob generateBlob(byte[] data) {

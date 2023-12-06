@@ -234,4 +234,14 @@ public class DbQueryService {
                 String.class);
         return responseEntity.getStatusCode();
     }
+
+    public HttpStatusCode importDeck(Long userId, ExportDTO exportDTO) {
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                USER_DB_API_PATH + "/" + userId + "/decks/import",
+                new HttpEntity<>(exportDTO, headers),
+                String.class);
+        return responseEntity.getStatusCode();
+    }
 }

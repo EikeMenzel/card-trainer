@@ -1,14 +1,25 @@
 package com.service.databaseservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
+import com.service.databaseservice.payload.out.cards.CardDTO;
+import com.service.databaseservice.payload.out.cards.ChoiceAnswerDTO;
+import com.service.databaseservice.payload.out.cards.TextAnswerCardDTO;
 import com.service.databaseservice.payload.out.export.CardExportDTO;
 import com.service.databaseservice.payload.out.export.ExportDTO;
+import com.service.databaseservice.payload.out.export.MultipleChoiceCardDTO;
+import com.service.databaseservice.payload.out.export.TextAnswerDTO;
 import com.service.databaseservice.services.CardService;
 import com.service.databaseservice.services.DeckService;
 import com.service.databaseservice.services.ExportService;
 import com.service.databaseservice.services.RepetitionService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +39,14 @@ public class DeckController {
     private final CardService cardService;
     private final RepetitionService repetitionService;
     private final ExportService exportService;
+    private final ObjectMapper objectMapper;
 
-    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService) {
+    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService, ObjectMapper objectMapper) {
         this.deckService = deckService;
         this.cardService = cardService;
         this.repetitionService = repetitionService;
         this.exportService = exportService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/users/{userId}/decks")
@@ -74,7 +87,7 @@ public class DeckController {
 
     @GetMapping("/users/{userId}/decks/{deckId}/learn-state")
     public ResponseEntity<List<Integer>> countCardValues(@PathVariable Long userId, @PathVariable Long deckId) {
-        if(!deckService.existsByDeckIdAndUserId(deckId, userId))
+        if (!deckService.existsByDeckIdAndUserId(deckId, userId))
             return ResponseEntity.notFound().build();
 
         Map<Integer, Long> qualityCount = cardService.getCardsByDeckId(deckId)
@@ -111,16 +124,38 @@ public class DeckController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
+
     @GetMapping("/users/{userId}/decks/{deckId}/cards/export")
     public ResponseEntity<ExportDTO> getCardsForExport(@PathVariable Long userId, @PathVariable Long deckId) {
         Optional<String> deckName = deckService.getDeckNameByIdAndUserId(userId, deckId);
         Optional<List<CardExportDTO>> cardExportDTOS = exportService.getDeckForExport(userId, deckId);
-        if(cardExportDTOS.isEmpty() || deckName.isEmpty())
+        if (cardExportDTOS.isEmpty() || deckName.isEmpty())
             return ResponseEntity.notFound().build();
 
-        if(cardExportDTOS.get().isEmpty())
+        if (cardExportDTOS.get().isEmpty())
             return ResponseEntity.ok(new ExportDTO(deckName.get(), List.of()));
 
         return ResponseEntity.ok(new ExportDTO(deckName.get(), cardExportDTOS.get()));
+    }
+
+    @PostMapping("/users/{userId}/decks/import")
+    public ResponseEntity<?> importDeck(@PathVariable Long userId, @RequestBody ExportDTO exportDTO) {
+        if (!deckService.createDeck(userId, new DeckNameDTO(exportDTO.deckName())))
+            return ResponseEntity.internalServerError().build();
+
+        Optional<Deck> deck = deckService.findTopByOwnerIdAndNameOrderByIdDesc(userId, exportDTO.deckName());
+        if (deck.isEmpty())
+            return ResponseEntity.internalServerError().build();
+
+        exportDTO.cardExportDTOList().forEach(dto -> {
+            if (dto instanceof TextAnswerDTO textAnswerDTO)
+                cardService.saveCard(objectMapper.valueToTree(new TextAnswerCardDTO(new CardDTO(textAnswerDTO.getCardDTO().question(), textAnswerDTO.getCardDTO().image()), textAnswerDTO.getTextAnswer(), textAnswerDTO.getImage())), 1L, deck.get().getId());
+            else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
+                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.out.cards.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
+                        multipleChoiceCardDTO.getChoiceAnswers().stream().map(choiceAnswerDTO -> new ChoiceAnswerDTO(choiceAnswerDTO.answer(), choiceAnswerDTO.getIsRightAnswer(), choiceAnswerDTO.image())).collect(Collectors.toList())));
+                cardService.saveCard(jsonNode, userId, deck.get().getId());
+            }
+        });
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
