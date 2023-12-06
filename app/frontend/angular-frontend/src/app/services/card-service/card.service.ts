@@ -2,6 +2,7 @@ import {Injectable, Input} from '@angular/core';
 import {DeckDTO} from "../../models/DeckDTO";
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {CardDTO} from "../../models/CardDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,13 @@ export class CardService {
 
   deleteDeck(id: number) {
     return this.http.delete<any>("api/v1/decks/" + id.toString())
+  }
+
+  getAllCardsByDeck(deckId: string) {
+    return this.http.get<CardDTO[]>("api/v1/decks/" + deckId + "/cards", {observe: "response"})
+  }
+
+  deleteCard(deckId: string, cardId: number) {
+    return this.http.delete("api/v1/decks/" + deckId + "/cards/" + cardId, {observe: "response"})
   }
 }
