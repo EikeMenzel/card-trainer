@@ -1,8 +1,5 @@
 package com.service.gateway.security.jwt;
 
-import com.service.gateway.security.services.DbQueryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -26,7 +23,7 @@ public class JwtTokenResolveFilter implements WebFilter {
         this.excludedRoutes.add("/api/v1/password/reset");
 
     }
-    
+
     @NonNull
     public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         if(isRouteInExcludedList(exchange.getRequest().getURI().getPath()))
@@ -56,6 +53,6 @@ public class JwtTokenResolveFilter implements WebFilter {
             return true;
         }
         // Handle pattern matching
-        return pathMatcher.match("/api/v1/email/verify/*", path);
+        return pathMatcher.match("/api/v1/email/verify/*", path) || !path.startsWith("/api");
     }
 }
