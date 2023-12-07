@@ -1,6 +1,7 @@
 package com.service.gateway.security.jwt;
 
 import com.service.gateway.security.services.UserDetailsServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -38,7 +39,11 @@ public class AuthTokenFilter implements WebFilter {
                                 Mono.just(new SecurityContextImpl(new UsernamePasswordAuthenticationToken(
                                         userDetails, null, userDetails.getAuthorities()
                                 )))
-                        )));
+                        )))
+                .onErrorResume(UsernameNotFoundException.class,e -> {
+                    exchange.getResponse().setStatusCode(HttpStatus.PRECONDITION_FAILED);
+                    return exchange.getResponse().setComplete();
+                });
     }
 
 }
