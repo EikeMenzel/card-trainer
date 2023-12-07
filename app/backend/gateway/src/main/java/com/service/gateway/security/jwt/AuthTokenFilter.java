@@ -40,9 +40,12 @@ public class AuthTokenFilter implements WebFilter {
                                         userDetails, null, userDetails.getAuthorities()
                                 )))
                         )))
-                .onErrorResume(UsernameNotFoundException.class,e -> {
-                    exchange.getResponse().setStatusCode(HttpStatus.PRECONDITION_FAILED);
-                    return exchange.getResponse().setComplete();
+                .onErrorResume(UsernameNotFoundException.class, e -> {
+                    if(exchange.getRequest().getURI().getPath().startsWith("/api")) {
+                        exchange.getResponse().setStatusCode(HttpStatus.PRECONDITION_FAILED);
+                        return exchange.getResponse().setComplete();
+                    } else
+                        return chain.filter(exchange);
                 });
     }
 
