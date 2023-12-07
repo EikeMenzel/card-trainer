@@ -14,11 +14,11 @@ import java.nio.file.Files;
 @Service
 public class MailContentBuilder {
     private final Logger logger =  LoggerFactory.getLogger(MailContentBuilder.class);
-    private final String AUTH_API_BASE_PATH;
+    private final String GATEWAY_PATH;
     private final String FRONTEND_PATH;
 
-    public MailContentBuilder(@Value("${auth-service.api.path}") String authServiceApiPath, @Value("${frontend.path}") String frontendPath) {
-        this.AUTH_API_BASE_PATH = authServiceApiPath;
+    public MailContentBuilder(@Value("${gateway.api.path}") String gatewayPath, @Value("${frontend.path}") String frontendPath) {
+        this.GATEWAY_PATH = gatewayPath;
         this.FRONTEND_PATH = frontendPath;
     }
     public String getContent(MailType mailType, String... data) {
@@ -39,7 +39,7 @@ public class MailContentBuilder {
     }
 
     private String buildVerificationUrl(String token) {
-        return UriComponentsBuilder.fromHttpUrl(AUTH_API_BASE_PATH)
+        return UriComponentsBuilder.fromHttpUrl(GATEWAY_PATH)
                 .path("/api/v1/email/verify/" + token)
                 .toUriString();
     }
