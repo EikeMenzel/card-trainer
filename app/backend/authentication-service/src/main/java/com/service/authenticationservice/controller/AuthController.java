@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -35,10 +36,10 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final boolean skipVerify;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    private final String passwordBlockedPasswordMessage = "Error, Password is a blocked password";
-    private final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/";
-
-    public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify) {
+    private static final String passwordBlockedPasswordMessage = "Error, Password is a blocked password";
+    private static final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/";
+    private final String GATEWAY_PATH;
+    public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify, @Value("${gateway.path}") String gatewayPath) {
         this.skipVerify = skipVerify.equalsIgnoreCase("true");
         this.passwordSecurityService = passwordSecurityService;
         this.dbQueryService = dbQueryService;
@@ -46,6 +47,7 @@ public class AuthController {
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        GATEWAY_PATH = gatewayPath;
     }
 
     @PostMapping("/register")
@@ -120,7 +122,7 @@ public class AuthController {
     public ResponseEntity<?> verifyUserEmail(@PathVariable String token) {
         var httpStatusCode = dbQueryService.setVerificationStateToTrue(token);
         if (httpStatusCode.equals(HttpStatus.NO_CONTENT)) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(GATEWAY_PATH + "/verify-successful")).build();
         } else if (httpStatusCode.equals(HttpStatus.CONFLICT)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(1, "Email is already verified"));
         } else if (httpStatusCode.equals(HttpStatus.BAD_REQUEST)) {
