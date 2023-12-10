@@ -44,4 +44,7 @@ public class TextAnswerCard {
     public Blob getImageData() {
         return imageData;
     }
+    public TextAnswerCard cloneTextAnswercard(Long cardId) {
+        return new TextAnswerCard(cardId, this.answer, this.imageData);
+    }
 }

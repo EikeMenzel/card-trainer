@@ -1,6 +1,7 @@
 package com.service.authenticationservice.services;
 
 import com.service.authenticationservice.model.MailType;
+import com.service.authenticationservice.payload.out.EmailRequestDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class EmailQueryService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 EMAIL_API_PATH + "/" + type,
-                new HttpEntity<>(userId, headers),
+                new HttpEntity<>(EmailRequestDTO.withUserIdOnly(userId), headers),
                 String.class);
         return responseEntity.getStatusCode();
     }

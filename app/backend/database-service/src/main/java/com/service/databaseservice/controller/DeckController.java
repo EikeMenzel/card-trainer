@@ -1,9 +1,8 @@
 package com.service.databaseservice.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.databaseservice.model.Deck;
+import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
 import com.service.databaseservice.payload.out.cards.CardDTO;
@@ -13,13 +12,8 @@ import com.service.databaseservice.payload.out.export.CardExportDTO;
 import com.service.databaseservice.payload.out.export.ExportDTO;
 import com.service.databaseservice.payload.out.export.MultipleChoiceCardDTO;
 import com.service.databaseservice.payload.out.export.TextAnswerDTO;
-import com.service.databaseservice.services.CardService;
-import com.service.databaseservice.services.DeckService;
-import com.service.databaseservice.services.ExportService;
-import com.service.databaseservice.services.RepetitionService;
+import com.service.databaseservice.services.*;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,13 +34,16 @@ public class DeckController {
     private final RepetitionService repetitionService;
     private final ExportService exportService;
     private final ObjectMapper objectMapper;
-
-    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService, ObjectMapper objectMapper) {
+    private final UserService userService;
+    private final UserTokenService userTokenService;
+    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService, ObjectMapper objectMapper, UserService userService, UserTokenService userTokenService) {
         this.deckService = deckService;
         this.cardService = cardService;
         this.repetitionService = repetitionService;
         this.exportService = exportService;
         this.objectMapper = objectMapper;
+        this.userService = userService;
+        this.userTokenService = userTokenService;
     }
 
     @GetMapping("/users/{userId}/decks")
@@ -63,6 +60,11 @@ public class DeckController {
         return deckDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
+    @GetMapping("/decks/{deckId}/name")
+    public ResponseEntity<String> getDeckName(@PathVariable Long deckId) {
+        Optional<String> deckDTO = deckService.getDeckNameById(deckId);
+        return deckDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
+    }
 
     @GetMapping("/users/{userId}/decks/{deckId}/cards/count")
     public ResponseEntity<Integer> getAmountOfCardsInDeck(@PathVariable Long userId, @PathVariable Long deckId) {
@@ -157,5 +159,31 @@ public class DeckController {
             }
         });
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/users/{userId}/decks/{deckId}/exists")
+    public ResponseEntity<?> existsDeckByUserIdAndDeckId(@PathVariable Long userId, @PathVariable Long deckId) {
+        return deckService.existsByDeckIdAndUserId(deckId, userId)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/decks/share/{token}")
+    public ResponseEntity<?> cloneSharedDeck(@PathVariable String token) {
+        Optional<User> userOptional =userTokenService.getUserByUserToken(token);
+        if(userOptional.isEmpty() || !userTokenService.isUserTokenValid(token))
+            return ResponseEntity.notFound().build();
+
+        Optional<Long> deckId = userTokenService.getDeckIdByUserToken(token);
+
+        if(deckId.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        boolean wasCloned = deckService.cloneSharedDeck(userOptional.get().getId(), deckId.get());
+
+        if(wasCloned && userTokenService.deleteToken(userOptional.get().getId(), token))
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        else
+            return ResponseEntity.internalServerError().build();
     }
 }

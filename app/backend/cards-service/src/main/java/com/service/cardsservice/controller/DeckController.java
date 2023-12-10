@@ -2,6 +2,7 @@ package com.service.cardsservice.controller;
 
 import com.service.cardsservice.payload.in.CardDTO;
 import com.service.cardsservice.payload.in.DeckNameDTO;
+import com.service.cardsservice.payload.in.MailDTO;
 import com.service.cardsservice.payload.out.DeckDetailInformationDTO;
 import com.service.cardsservice.payload.out.DeckInformationDTO;
 import com.service.cardsservice.services.DbQueryService;
@@ -12,12 +13,14 @@ import jakarta.validation.Valid;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,12 +33,14 @@ public class DeckController {
     private final ExportService exportService;
     private final ImportService importService;
     private final Logger logger = LoggerFactory.getLogger(DeckController.class);
+    private final String GATEWAY_PATH;
 
-    public DeckController(DeckService deckService, DbQueryService dbQueryService, ExportService exportService, ImportService importService) {
+    public DeckController(DeckService deckService, DbQueryService dbQueryService, ExportService exportService, ImportService importService,  @Value("${gateway.path}") String gatewayPath) {
         this.deckService = deckService;
         this.dbQueryService = dbQueryService;
         this.exportService = exportService;
         this.importService = importService;
+        this.GATEWAY_PATH = gatewayPath;
     }
 
     @GetMapping("")
@@ -108,5 +113,23 @@ public class DeckController {
             return ResponseEntity.unprocessableEntity().build();
 
         return ResponseEntity.status(importService.processZipFile(multipartFile, userId)).build();
+    }
+
+    @PostMapping("/{deckId}/share")
+    public ResponseEntity<?> sendShareDeckEmail(@RequestHeader Long userId, @PathVariable Long deckId, @RequestBody MailDTO mailDTO) {
+        if(dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.status(dbQueryService.sendShareDeckEmail(mailDTO.email(), deckId)).build();
+    }
+
+    //Needs to be a get-mapping, because you can't execute Javascript code in a e-mail
+    @GetMapping("/share/{token}")
+    public ResponseEntity<?> copySharedDeck(@PathVariable String token) {
+        var httpStatusCode = dbQueryService.shareDeck(token);
+        if(httpStatusCode == HttpStatus.CREATED)
+            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(GATEWAY_PATH + "/")).build();
+
+        return ResponseEntity.status(httpStatusCode).build();
     }
 }
