@@ -9,6 +9,8 @@ public class TokenService {
     public static String generateToken() {
         return UUID.randomUUID().toString();
     }
-
+    public static String generateShareDeckToken(Long deckId) {
+        return deckId + "-" + UUID.randomUUID();
+    }
     private TokenService() {}
 }

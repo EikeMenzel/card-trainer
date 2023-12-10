@@ -33,4 +33,18 @@ public class MultipleChoiceCard {
     public List<ChoiceAnswer> getChoiceAnswerList() {
         return choiceAnswerList;
     }
+
+    private void setChoiceAnswerList(List<ChoiceAnswer> choiceAnswerList) {
+        this.choiceAnswerList = choiceAnswerList;
+    }
+
+    public MultipleChoiceCard cloneMultipleChoiceCard(Long cardId) {
+        var multipleChoiceCard = new MultipleChoiceCard(cardId);
+        List<ChoiceAnswer> newChoiceAnswers = choiceAnswerList
+                .stream()
+                .map(choiceAnswer -> choiceAnswer.cloneWithDifferentMultipleChoiceCard(multipleChoiceCard))
+                .toList();
+        multipleChoiceCard.setChoiceAnswerList(newChoiceAnswers);
+        return multipleChoiceCard;
+    }
 }

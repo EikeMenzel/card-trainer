@@ -53,6 +53,6 @@ public class JwtTokenResolveFilter implements WebFilter {
             return true;
         }
         // Handle pattern matching
-        return pathMatcher.match("/api/v1/email/verify/*", path) || !path.startsWith("/api");
+        return pathMatcher.match("/api/v1/email/verify/*", path) || !path.startsWith("/api") || pathMatcher.match("/api/v1/decks/share/*", path);
     }
 }
