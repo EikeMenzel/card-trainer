@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.context.annotation.Lazy;
 
+import java.awt.*;
 import java.sql.Blob;
 import java.sql.Types;
 
@@ -59,5 +60,8 @@ public class ChoiceAnswer {
 
     public MultipleChoiceCard getMultipleChoiceCard() {
         return multipleChoiceCard;
+    }
+    public ChoiceAnswer cloneWithDifferentMultipleChoiceCard(MultipleChoiceCard newMultipleChoiceCard) {
+        return new ChoiceAnswer(this.answer, this.imageData, this.isCorrect, newMultipleChoiceCard);
     }
 }

@@ -1,6 +1,7 @@
 package com.service.mailservice.services;
 
 import com.service.mailservice.model.MailType;
+import com.service.mailservice.payload.inc.UserAccountInformationDTO;
 import com.service.mailservice.payload.out.UserTokenDTO;
 import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
@@ -77,7 +78,21 @@ public class MailService {
             }
         });
     }
+    public void sendShareDeckMail(Long userId, Long deckId) {
+        Optional<UserAccountInformationDTO> userAccountInformationDTOOptional = dbQueryService.getAccountInformation(userId);
+        userAccountInformationDTOOptional.ifPresent(userAccountInformationDTO -> {
+            Optional<String> optionalDeckDTO = dbQueryService.getDeckNameByDeckId(deckId);
+            optionalDeckDTO.ifPresent(deckName -> {
+                String token = TokenService.generateShareDeckToken(deckId);
+                String content = mailContentBuilder.getContent(MailType.SHARE_DECK, token, deckName, userAccountInformationDTO.getUsername());
 
+                var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofDays(7))), MailType.SHARE_DECK.toString(), userId));
+                if (httpStatusCode == HttpStatus.CREATED) {
+                    sendHtmlMail(userAccountInformationDTO.getEmail(), "Share-Deck-Mail", content);
+                }
+            });
+        });
+    }
     public void sendDailyLearnReminderMail(String username, String email) {
         String content = mailContentBuilder.getContent(MailType.DAILY_REMINDER, username);
         sendHtmlMail(email, "DailyLearnReminder", content);

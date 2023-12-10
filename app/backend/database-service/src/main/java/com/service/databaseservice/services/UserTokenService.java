@@ -89,4 +89,21 @@ public class UserTokenService {
         }
         return false;
     }
+
+    public Optional<Long> getDeckIdByUserToken(String token) {
+        Optional<UserToken> userTokenOptional = userTokenRepository.getUserTokenByTokenValue(token);
+        if(userTokenOptional.isPresent() && Objects.equals(userTokenOptional.get().getTokenType().getType(), "SHARE_DECK")) {
+            String tokenValue = userTokenOptional.get().getTokenValue();
+            var tokenValueSplit = tokenValue.split("-");
+            return Optional.of(Long.valueOf(tokenValueSplit[0]));
+        }
+        return Optional.empty();
+    }
+    public Optional<User> getUserByUserToken(String token) {
+        Optional<UserToken> userTokenOptional = userTokenRepository.getUserTokenByTokenValue(token);
+        if(userTokenOptional.isPresent() && Objects.equals(userTokenOptional.get().getTokenType().getType(), "SHARE_DECK")) {
+            return Optional.of(userTokenOptional.get().getUser());
+        }
+        return Optional.empty();
+    }
 }

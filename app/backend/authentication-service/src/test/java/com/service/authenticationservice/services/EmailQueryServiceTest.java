@@ -1,6 +1,7 @@
 package com.service.authenticationservice.services;
 
 import com.service.authenticationservice.model.MailType;
+import com.service.authenticationservice.payload.out.EmailRequestDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -33,7 +34,7 @@ class EmailQueryServiceTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Email sent successfully", HttpStatus.ACCEPTED);
-        Mockito.when(restTemplate.postForEntity(expectedUrl, new HttpEntity<>(userId, headers), String.class))
+        Mockito.when(restTemplate.postForEntity(expectedUrl, new HttpEntity<>(EmailRequestDTO.withUserIdOnly(userId), headers), String.class))
                 .thenReturn(responseEntity);
 
         HttpStatusCode result = emailQueryService.sendEmail(userId, MailType.VERIFICATION);
@@ -51,7 +52,7 @@ class EmailQueryServiceTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Error sending email", HttpStatus.INTERNAL_SERVER_ERROR);
-        Mockito.when(restTemplate.postForEntity(expectedUrl, new HttpEntity<>(userId, headers), String.class))
+        Mockito.when(restTemplate.postForEntity(expectedUrl, new HttpEntity<>(EmailRequestDTO.withUserIdOnly(userId), headers), String.class))
                 .thenReturn(responseEntity);
 
         HttpStatusCode result = emailQueryService.sendEmail(userId, MailType.VERIFICATION);

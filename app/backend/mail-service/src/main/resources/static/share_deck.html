@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .content {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #4CAF50;
+            color: #fff;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SWTP Deck Teilen</h1>
+    </div>
+
+    <div class="content">
+        <p>${senderName} hat ein Deck mit dem Name '${deckName}' mit Ihnen geteilt.</p>
+        <a href="${shareDeckUrl}">
+            <button class="button">Deck integrieren</button>
+        </a>
+        <p>Falls Sie keine Decks erwarten, ignorieren Sie bitte diese E-Mail.</p>
+    </div>
+
+    <div class="footer">
+        <p>SWTP-Projekt von Tim Martin Süllner, Eike Torben Menzel, Maria Kazim und Gürkan Deniz</p>
+    </div>
+</body>
+</html>

@@ -46,4 +46,8 @@ public class Deck {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Deck cloneDeck(User newUser) {
+        return new Deck(this.name, newUser);
+    }
 }
