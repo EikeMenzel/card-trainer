@@ -64,4 +64,8 @@ public class Card {
     public CardType getCardType() {
         return cardType;
     }
+
+    public Card cloneWithDifferentDeck(Deck newDeck) {
+        return new Card(this.question, this.imageData, newDeck, this.cardType);
+    }
 }

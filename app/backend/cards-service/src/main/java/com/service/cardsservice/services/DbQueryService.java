@@ -1,11 +1,11 @@
 package com.service.cardsservice.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.cardsservice.payload.in.*;
 import com.service.cardsservice.payload.in.export.ExportDTO;
+import com.service.cardsservice.payload.out.EmailRequestDTO;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
@@ -27,15 +26,15 @@ public class DbQueryService {
     private final RestTemplate restTemplate;
     private final String DB_API_BASE_PATH;
     private final String USER_DB_API_PATH;
-    private final String DECK_DB_API_PATH;
+    private final String EMAIL_API_PATH;
     private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
 
-    public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath) {
+    public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath, @Value("${email-service.api.path}") String emailServicePath) {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
         this.DB_API_BASE_PATH = dbPath;
         this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
-        this.DECK_DB_API_PATH = this.DB_API_BASE_PATH + "/decks";
+        this.EMAIL_API_PATH = emailServicePath;
     }
 
     public Integer getCardsAmountByDeck(Long userId, Long deckId) {
@@ -241,6 +240,49 @@ public class DbQueryService {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 USER_DB_API_PATH + "/" + userId + "/decks/import",
                 new HttpEntity<>(exportDTO, headers),
+                String.class);
+        return responseEntity.getStatusCode();
+    }
+
+    public HttpStatusCode sendShareDeckEmail(String email, Long deckId) {
+        Optional<Long> userId = getUserIdByEmail(email);
+        if(userId.isEmpty())
+            return ResponseEntity.notFound().build().getStatusCode();
+
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                EMAIL_API_PATH + "/SHARE_DECK",
+                new HttpEntity<>(new EmailRequestDTO(userId.get(), deckId), headers),
+                String.class);
+        return responseEntity.getStatusCode();
+    }
+    public Optional<Long> getUserIdByEmail(String email) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/emails/" + email + "/id", String.class);
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+                    ? Optional.of(Long.valueOf(Objects.requireNonNull(responseEntity.getBody())))
+                    : Optional.empty();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public HttpStatusCode existsDeckByUserIdAndDeckId(Long userId, Long deckId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/exists", String.class);
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException e) {
+            return e.getStatusCode();
+        }
+    }
+
+    public HttpStatusCode shareDeck(String token) {
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                DB_API_BASE_PATH + "/decks/share/" + token,
+                new HttpEntity<>(headers),
                 String.class);
         return responseEntity.getStatusCode();
     }

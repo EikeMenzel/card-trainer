@@ -2,6 +2,7 @@ package com.service.mailservice.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.mailservice.payload.inc.UserAccountInformationDTO;
 import com.service.mailservice.payload.inc.UserDailyReminderDTO;
 import com.service.mailservice.payload.out.UserTokenDTO;
 import org.slf4j.Logger;
@@ -60,6 +61,35 @@ public class DbQueryService {
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<>() {}))
                     : Optional.empty();
         } catch (Exception e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    //necessary for deckName
+    public Optional<String> getDeckNameByDeckId(Long deckId) {
+        try {
+            String url = DB_API_BASE_PATH + "/decks/" + deckId + "/name";
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+                    ? Optional.ofNullable(responseEntity.getBody())
+                    : Optional.empty();
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    //necessary for username
+    public Optional<UserAccountInformationDTO> getAccountInformation(Long userId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/account", String.class);
+
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+                    ? Optional.of(objectMapper.readValue(responseEntity.getBody(), UserAccountInformationDTO.class))
+                    : Optional.empty();
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
             return Optional.empty();
         }
     }

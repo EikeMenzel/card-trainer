@@ -15,17 +15,23 @@ import java.nio.file.Files;
 public class MailContentBuilder {
     private final Logger logger =  LoggerFactory.getLogger(MailContentBuilder.class);
     private final String GATEWAY_PATH;
-    private final String FRONTEND_PATH;
 
-    public MailContentBuilder(@Value("${gateway.api.path}") String gatewayPath, @Value("${frontend.path}") String frontendPath) {
+    public MailContentBuilder(@Value("${gateway.api.path}") String gatewayPath) {
         this.GATEWAY_PATH = gatewayPath;
-        this.FRONTEND_PATH = frontendPath;
     }
     public String getContent(MailType mailType, String... data) {
         return switch (mailType) {
-            case VERIFICATION -> getContentFromFile("static/mail_verification.html").replace("${verificationUrl}", buildVerificationUrl(data[0]));
-            case DAILY_REMINDER -> getContentFromFile("static/daily-learn-reminder.html").replace("${username}", data[1]).replace("${dailyLearnUrl}", "http://localhost");
-            case PASSWORD_RESET -> getContentFromFile("static/mail_password_reset.html").replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]));
+            case VERIFICATION -> getContentFromFile("static/mail_verification.html")
+                    .replace("${verificationUrl}", buildVerificationUrl(data[0]));
+            case DAILY_REMINDER -> getContentFromFile("static/daily_learn_reminder.html")
+                    .replace("${username}", data[1])
+                    .replace("${dailyLearnUrl}", GATEWAY_PATH);
+            case PASSWORD_RESET -> getContentFromFile("static/mail_password_reset.html")
+                    .replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]));
+            case SHARE_DECK -> getContentFromFile("static/share_deck.html")
+                    .replace("${shareDeckUrl}", buildShareDeckUrl(data[0]))
+                    .replace("${deckName}", data[1])
+                    .replace("${senderName}", data[2]);
         };
     }
 
@@ -45,10 +51,16 @@ public class MailContentBuilder {
     }
 
     private String buildPasswordResetUrl(String token, String email) {
-        return UriComponentsBuilder.fromHttpUrl(FRONTEND_PATH)
+        return UriComponentsBuilder.fromHttpUrl(GATEWAY_PATH)
                 .path("/reset-password")
                 .queryParam("token", token)
                 .queryParam("email", email)
+                .toUriString();
+    }
+
+    private String buildShareDeckUrl(String token) {
+        return UriComponentsBuilder.fromHttpUrl(GATEWAY_PATH)
+                .path("/api/v1/decks/share/" + token)
                 .toUriString();
     }
 }
