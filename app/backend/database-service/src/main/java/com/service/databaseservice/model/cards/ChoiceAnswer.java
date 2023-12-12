@@ -1,5 +1,6 @@
 package com.service.databaseservice.model.cards;
 
+import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.context.annotation.Lazy;
@@ -20,11 +21,9 @@ public class ChoiceAnswer {
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
 
-    @Lob
-    @JdbcTypeCode(Types.BINARY)
-    @Lazy
-    @Column(name = "image_data", columnDefinition = "bytea")
-    private Blob imageData;
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image imageData;
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;
 
@@ -32,7 +31,7 @@ public class ChoiceAnswer {
     @JoinColumn(name = "c_id", nullable = false)
     private MultipleChoiceCard multipleChoiceCard;
 
-    public ChoiceAnswer(String answer, Blob imageData, Boolean isCorrect, MultipleChoiceCard multipleChoiceCard) {
+    public ChoiceAnswer(String answer, Image imageData, Boolean isCorrect, MultipleChoiceCard multipleChoiceCard) {
         this.answer = answer;
         this.imageData = imageData;
         this.isCorrect = isCorrect;
@@ -50,7 +49,7 @@ public class ChoiceAnswer {
         return answer;
     }
 
-    public Blob getImageData() {
+    public Image getImageData() {
         return imageData;
     }
 
