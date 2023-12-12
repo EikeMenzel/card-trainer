@@ -1,5 +1,6 @@
 package com.service.databaseservice.model.cards;
 
+import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.context.annotation.Lazy;
@@ -18,13 +19,11 @@ public class TextAnswerCard {
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
 
-    @Lob
-    @JdbcTypeCode(Types.BINARY)
-    @Lazy
-    @Column(name = "image_data", columnDefinition = "bytea")
-    private Blob imageData;
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image imageData;
 
-    public TextAnswerCard(Long id, String answer, Blob imageData) {
+    public TextAnswerCard(Long id, String answer, Image imageData) {
         this.id = id;
         this.answer = answer;
         this.imageData = imageData;
@@ -41,7 +40,7 @@ public class TextAnswerCard {
         return answer;
     }
 
-    public Blob getImageData() {
+    public Image getImageData() {
         return imageData;
     }
     public TextAnswerCard cloneTextAnswercard(Long cardId) {
