@@ -1,13 +1,20 @@
 package com.service.cardsservice.payload.in.export;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.service.cardsservice.payload.Views;
+
 public final class CardDTO {
+    @JsonView({Views.Database.class, Views.Export.class})
     @JsonProperty("question")
     private String question;
+
+    @JsonView({Views.Database.class, Views.Export.class})
     @JsonProperty("imagePath")
     private String imagePath;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonView({Views.Database.class})
     private byte[] image;
+    @JsonView({Views.Database.class, Views.Export.class})
     @JsonProperty("cardTypeId")
     private Long cardTypeId;
 

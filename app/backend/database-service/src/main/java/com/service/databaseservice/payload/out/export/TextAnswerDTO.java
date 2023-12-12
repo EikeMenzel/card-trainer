@@ -1,6 +1,7 @@
 package com.service.databaseservice.payload.out.export;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 public final class TextAnswerDTO extends CardExportDTO {
     @JsonProperty("textAnswer")
     private String textAnswer;

@@ -14,11 +14,14 @@ import com.service.databaseservice.payload.out.export.MultipleChoiceCardDTO;
 import com.service.databaseservice.payload.out.export.TextAnswerDTO;
 import com.service.databaseservice.services.*;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,15 +37,14 @@ public class DeckController {
     private final RepetitionService repetitionService;
     private final ExportService exportService;
     private final ObjectMapper objectMapper;
-    private final UserService userService;
     private final UserTokenService userTokenService;
+
     public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService, ObjectMapper objectMapper, UserService userService, UserTokenService userTokenService) {
         this.deckService = deckService;
         this.cardService = cardService;
         this.repetitionService = repetitionService;
         this.exportService = exportService;
         this.objectMapper = objectMapper;
-        this.userService = userService;
         this.userTokenService = userTokenService;
     }
 
@@ -150,8 +152,9 @@ public class DeckController {
             return ResponseEntity.internalServerError().build();
 
         exportDTO.cardExportDTOList().forEach(dto -> {
-            if (dto instanceof TextAnswerDTO textAnswerDTO)
+            if (dto instanceof TextAnswerDTO textAnswerDTO) {
                 cardService.saveCard(objectMapper.valueToTree(new TextAnswerCardDTO(new CardDTO(textAnswerDTO.getCardDTO().question(), textAnswerDTO.getCardDTO().image()), textAnswerDTO.getTextAnswer(), textAnswerDTO.getImage())), 1L, deck.get().getId());
+            }
             else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
                 var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.out.cards.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
                         multipleChoiceCardDTO.getChoiceAnswers().stream().map(choiceAnswerDTO -> new ChoiceAnswerDTO(choiceAnswerDTO.answer(), choiceAnswerDTO.getIsRightAnswer(), choiceAnswerDTO.image())).collect(Collectors.toList())));

@@ -1,6 +1,7 @@
 package com.service.cardsservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.cardsservice.payload.Views;
 import com.service.cardsservice.payload.in.export.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,8 @@ public class ExportService {
 
     private void saveJsonToFile(ExportDTO exportDTO, File uniqueDir) {
         try {
-            objectMapper.writeValue(new File(Path.of(uniqueDir.getAbsolutePath(), "data.json").toUri()), exportDTO);
+            var outputFile = new File(Path.of(uniqueDir.getAbsolutePath(), "data.json").toUri());
+            objectMapper.writerWithView(Views.Export.class).writeValue(outputFile, exportDTO);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
