@@ -1,7 +1,9 @@
 package com.service.cardsservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.cardsservice.payload.Views;
 import com.service.cardsservice.payload.in.*;
 import com.service.cardsservice.payload.in.export.ExportDTO;
 import com.service.cardsservice.payload.out.EmailRequestDTO;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -45,7 +48,7 @@ public class DbQueryService {
                     ? Integer.parseInt(Objects.requireNonNull(responseEntity.getBody()))
                     : 0;
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
             return 0;
         }
     }
@@ -59,8 +62,7 @@ public class DbQueryService {
                     ? Integer.parseInt(Objects.requireNonNull(responseEntity.getBody()))
                     : 0;
         } catch (Exception e) {
-            logger.info(e.getMessage());
-
+            logger.debug(e.getMessage());
             return 0;
         }
     }
@@ -77,8 +79,7 @@ public class DbQueryService {
                         .map(odt -> Timestamp.from(odt.toInstant()))
                     : Optional.empty();
         } catch (Exception e) {
-            logger.info(e.getMessage());
-
+            logger.debug(e.getMessage());
             return Optional.empty();
         }
     }
@@ -92,8 +93,7 @@ public class DbQueryService {
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Integer>>(){})
                     : List.of();
         } catch (Exception e) {
-            logger.info(e.getMessage());
-
+            logger.debug(e.getMessage());
             return List.of();
         }
     }
@@ -105,6 +105,7 @@ public class DbQueryService {
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<DeckDTO>>(){})
                     : List.of();
         } catch (Exception e) {
+            logger.debug(e.getMessage());
             return List.of();
         }
     }
@@ -116,8 +117,7 @@ public class DbQueryService {
                     ? Optional.ofNullable(objectMapper.readValue(responseEntity.getBody(), DeckDTO.class))
                     : Optional.empty();
         } catch (Exception e) {
-            logger.info(e.getMessage());
-
+            logger.debug(e.getMessage());
             return Optional.empty();
         }
     }
@@ -143,6 +143,7 @@ public class DbQueryService {
                     entity,
                     String.class).getStatusCode();
         } catch (HttpClientErrorException e) {
+            logger.debug(e.getMessage());
             return e.getStatusCode();
         }
     }
@@ -159,6 +160,7 @@ public class DbQueryService {
             );
             return responseEntity.getStatusCode();
         } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
+            logger.debug(e.getMessage());
             return e.getStatusCode();
         }
     }
@@ -170,7 +172,7 @@ public class DbQueryService {
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<ExportDTO>(){}))
                     : Optional.empty();
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
             return Optional.empty();
         }
     }
@@ -182,6 +184,7 @@ public class DbQueryService {
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<HistoryDTO>>(){})
                     : List.of();
         } catch (Exception e) {
+            logger.debug(e.getMessage());
             return List.of();
         }
     }
@@ -193,6 +196,7 @@ public class DbQueryService {
             ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<HistoryDetailDTO>>() {})
             : Optional.empty();
         } catch (Exception e) {
+            logger.debug(e.getMessage());
             return Optional.empty();
         }
     }
@@ -204,6 +208,7 @@ public class DbQueryService {
                     ? Pair.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<CardDTO>>(){}), responseEntity.getStatusCode())
                     : Pair.of(List.of(), responseEntity.getStatusCode());
         } catch (Exception e) {
+            logger.debug(e.getMessage());
             return Pair.of(List.of(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -220,6 +225,7 @@ public class DbQueryService {
                     entity,
                     String.class).getStatusCode();
         } catch (HttpClientErrorException e) {
+            logger.debug(e.getMessage());
             return e.getStatusCode();
         }
     }
@@ -235,13 +241,19 @@ public class DbQueryService {
     }
 
     public HttpStatusCode importDeck(Long userId, ExportDTO exportDTO) {
-        var headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                USER_DB_API_PATH + "/" + userId + "/decks/import",
-                new HttpEntity<>(exportDTO, headers),
-                String.class);
-        return responseEntity.getStatusCode();
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                    USER_DB_API_PATH + "/" + userId + "/decks/import",
+                    new HttpEntity<>(objectMapper.writerWithView(Views.Database.class).writeValueAsString(exportDTO), headers),
+                    String.class);
+
+            return responseEntity.getStatusCode();
+        } catch (JsonProcessingException | HttpServerErrorException exception) {
+            logger.debug(exception.getMessage());
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 
     public HttpStatusCode sendShareDeckEmail(String email, Long deckId) {
@@ -264,6 +276,7 @@ public class DbQueryService {
                     ? Optional.of(Long.valueOf(Objects.requireNonNull(responseEntity.getBody())))
                     : Optional.empty();
         } catch (Exception e) {
+            logger.debug(e.getMessage());
             return Optional.empty();
         }
     }
@@ -273,6 +286,7 @@ public class DbQueryService {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/exists", String.class);
             return responseEntity.getStatusCode();
         } catch (HttpClientErrorException e) {
+            logger.debug(e.getMessage());
             return e.getStatusCode();
         }
     }

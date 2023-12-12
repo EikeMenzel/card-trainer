@@ -1,5 +1,6 @@
 package com.service.databaseservice.services;
 
+import com.service.databaseservice.model.Image;
 import com.service.databaseservice.model.cards.Card;
 import com.service.databaseservice.model.cards.MultipleChoiceCard;
 import com.service.databaseservice.model.cards.TextAnswerCard;
@@ -82,12 +83,12 @@ public class ExportService {
         });
     }
 
-    private byte[] extractBlobData(Blob blob) {
-        if (blob == null)
+    private byte[] extractBlobData(Image image) {
+        if (image == null)
             return null;
 
         try {
-            return blob.getBytes(1, (int) blob.length());
+            return image.getData().getBytes(1, (int) image.getData().length());
         } catch (SQLException e) {
             return null;
         }

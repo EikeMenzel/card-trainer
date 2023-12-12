@@ -1,6 +1,7 @@
 package com.service.databaseservice.model.cards;
 
 import com.service.databaseservice.model.Deck;
+import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
@@ -21,11 +22,9 @@ public class Card {
     @Column(name = "question", columnDefinition = "TEXT", nullable = false)
     private String question;
 
-    @Lob
-    @JdbcTypeCode(Types.BINARY)
-    @Lazy
-    @Column(name = "image_data", columnDefinition = "bytea")
-    private Blob imageData;
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image imageData;
 
     @ManyToOne
     @JoinColumn(name = "deck_id", nullable = false)
@@ -35,7 +34,7 @@ public class Card {
     @JoinColumn(name = "card_type_id", nullable = false)
     private CardType cardType;
 
-    public Card(String question, Blob imageData, Deck deck, CardType cardType) {
+    public Card(String question, Image imageData, Deck deck, CardType cardType) {
         this.question = question;
         this.imageData = imageData;
         this.deck = deck;
@@ -53,7 +52,7 @@ public class Card {
         return question;
     }
 
-    public Blob getImageData() {
+    public Image getImageData() {
         return imageData;
     }
 
