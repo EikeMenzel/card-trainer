@@ -7,6 +7,8 @@ import {RegisterSuccessfulComponent} from "./register-successful/register-succes
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
 import {ResetPasswordComponent} from "./reset-password/reset-password.component";
 import {EditDeckViewComponent} from "./edit-deck-view/edit-deck-view.component";
+import {UserProfileComponent} from "./user-profile/user-profile.component";
+
 
 
 export const routes: Routes = [
@@ -19,5 +21,6 @@ export const routes: Routes = [
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: '', component: DeckListViewComponent},
   {path:"suc", component: RegisterSuccessfulComponent},
+  {path: 'profile', component: UserProfileComponent},
   { path: '**', redirectTo: "" },
 ];

@@ -4,5 +4,5 @@ export interface UserInfoDTO {
   cardsToLearn: number,
   receiveLearnNotification: boolean,
   langCode: string,
-  achievementIds: [number]
+  achievementIds: number[]
 }
