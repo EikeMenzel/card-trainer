@@ -26,9 +26,6 @@ form input {
   border-radius: 5px;
 }
 
-#remember-me {
-  width: 10px;
-}
 
 button {
   width: 95%;
@@ -65,4 +62,11 @@ a:hover {
 }
 
 #login-body {
+}
+
+#remember-me {
+    position: relative;
+    left: 0;
+    text-align: left;
+    width: 10px;
 }

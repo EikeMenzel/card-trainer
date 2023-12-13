@@ -1,0 +1,128 @@
+.user-profile {
+  background-color: #F2FEDC;
+  max-width: 90%;
+  height: auto;
+  margin: 100px auto;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.toast-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-height: 100px;
+  z-index: 1000;
+}
+
+.profile-header img {
+  width: 150px;
+  margin-bottom: 1rem;
+}
+
+.profile-header {
+  margin-bottom: 20px;
+}
+.profile-header h3, .profile-header p {
+  margin-bottom: 5px;
+}
+
+.profile-body form {
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+.custom-margin-top-65 {
+  margin-top: 65px;
+}
+
+.custom-margin-top-60 {
+  margin-top: 60px;
+}
+
+.icon-home {
+  color: var(--primary-color);
+}
+
+.home-button {
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.change-pw-button,
+.save-button,
+.update-pw-button {
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.logout-button {
+  color: white;
+  background-color: rgb(225, 102, 102);
+  border: 2px solid rgb(225, 102, 102);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.change-pw-button:hover,
+.change-pw-button:active,
+.save-button:hover,
+.save-button:active,
+.update-pw-button:hover,
+.update-pw-button:active,
+.home-button:hover,
+.home-button:active {
+  background-color: var(--bg-main-color);
+  color: white;
+}
+
+.switch-button-input:checked {
+  background-color: var(--bg-main-color);
+  border-color: var(--bg-main-color);
+}
+
+.switch-button-input:checked + .switch-button-label:before {
+  background-color: var(--bg-main-color);
+  border-color: var(--bg-main-color);
+}
+
+.update-pw-header,
+.update-pw-footer {
+  border: none;
+}
+
+@media (min-width: 576px) {
+  .user-profile {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .user-profile {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .user-profile {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .user-profile {
+    max-width: 1140px;
+  }
+}
