@@ -1,11 +1,11 @@
-import {Component, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {MatDialog} from "@angular/material/dialog";
 import {SessionRenewalModalComponent} from "../../session-renewal-modal/session-renewal-modal.component";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {UserInfoDTO} from "../../models/UserInfoDTO";
+import {HttpClient} from "@angular/common/http";
+import {ToastService} from "../toast-service/toast.service";
 
 @Injectable({
   providedIn: 'root',
@@ -14,21 +14,11 @@ export class AuthService {
   private sessionTimeoutMinutes = 60;
   private sessionTimer: any;
   private cookieName: string = "card-trainer-user";
-  private userData: UserInfoDTO = {
-    username: "",
-    email: "",
-    achievementIds: [0],
-    langCode: "",
-    cardsToLearn: 0,
-    receiveLearnNotification: false
-};
 
   constructor(
     private cookieService: CookieService,
-    private modalService: NgbModal,
     private router: Router,
-    public dialog: MatDialog,
-    private http: HttpClient
+    public dialog: MatDialog
   ) {
   }
 
@@ -80,21 +70,5 @@ export class AuthService {
         }
       }
     });
-  }
-
-  getUserInfo(): UserInfoDTO {
-    console.log("Get Userdata")
-    if (this.userData.username == "") {
-      this.updateUserInfo()
-    }
-
-    return this.userData
-  }
-
-  updateUserInfo() {
-    const request: XMLHttpRequest = new XMLHttpRequest();
-    request.open('GET', "/api/v1/account", false);
-    request.send(null);
-    this.userData = JSON.parse(request.responseText);
   }
 }

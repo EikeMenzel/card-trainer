@@ -10,6 +10,7 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
 import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../services/auth-service/auth-service";
+import {UserService} from "../services/user-service/user.service";
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,9 @@ export class LoginComponent {
     private http: HttpClient,
     private toastService: ToastService,
     private router: Router,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private userService: UserService
+  ) {
   }
 
   private errorPassword() {
@@ -62,8 +65,8 @@ export class LoginComponent {
           this.authService.startSessionTimer();
         }
 
-        this.toastService.showSuccessToast("Login", "Login successes")
-        this.authService.updateUserInfo()
+        this.toastService.showSuccessToast("Login", "Login succeeded")
+        this.userService.getUpdatedUserInfo()
         this.router.navigate(["/"])
       },
       error: err => {

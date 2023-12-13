@@ -1,0 +1,117 @@
+<div class="user-profile container">
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <div class="profile-header text-center custom-margin-top-65">
+        <img src="assets/nerd-frog-arbeiten-am-laptop_188898-81.png" alt="User Profile" class="rounded-circle mb-3">
+      </div>
+    </div>
+
+    <div class="col-12 col-md-8 position-relative">
+
+      <!-- Home Button -->
+      <div class="position-absolute top-0 end-0 mt-0 me-3">
+        <button routerLink="/" class="btn home-button">
+          <fa-icon class="nav-icon fa-xl" [icon]="faHouse"></fa-icon>
+        </button>
+      </div>
+
+      <div class="profile-body custom-margin-top-60">
+
+        <form (ngSubmit)="saveProfile()">
+
+          <!-- Name input -->
+          <div class="form-group mb-2">
+            <label for="nameInput">Name</label>
+            <input type="text" class="form-control" id="nameInput" placeholder="" [(ngModel)]="userProfile.username" name="name">
+          </div>
+
+          <!-- Email input -->
+          <div class="form-group mb-4">
+            <label for="emailInput">E-Mail address</label>
+            <input type="email" class="form-control" id="emailInput" placeholder="" [(ngModel)]="userProfile.email" name="email">
+          </div>
+
+          <!-- Update Password button -->
+          <div class="form-group row mb-2">
+            <div class="col-sm-4">
+              <button type="button" class="btn update-pw-button w-100" (click)="openModal()">Update password</button>
+            </div>
+          </div>
+
+          <!-- Update Password Modal -->
+          <div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header update-pw-header">
+                  <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel">Update your password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                  <div>
+                    <!-- New password input -->
+                    <div class="form-group mb-2">
+                      <label for="newPassword">New password</label>
+                      <input type="password" class="form-control" id="newPassword" [(ngModel)]="newPassword" name="newPassword" required>
+                    </div>
+                    <!-- Re-enter new password input -->
+                    <div class="form-group mb-4">
+                      <label for="reenterNewPassword">Re-enter new password</label>
+                      <input type="password" class="form-control" id="reenterNewPassword" [(ngModel)]="reenterNewPassword" name="reenterNewPassword" required>
+                    </div>
+                    <div class="modal-footer update-pw-footer mb-2">
+                      <button type="button" class="btn change-pw-button w-100" data-bs-dismiss="modal" aria-label="Close" (click)="changePassword()">
+                        Change password
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Number of cards input -->
+          <div class="form-group row mb-2">
+            <label for="numberOfCards" class="col-sm-8 col-form-label">Number of cards to be learned per session</label>
+            <div class="col-sm-4">
+              <input type="number" class="form-control" id="numberOfCards" name="numberOfCards" min="1" [(ngModel)]="userProfile.cardsToLearn">
+            </div>
+          </div>
+
+          <!-- Inline form group for language selection -->
+          <div class="form-group row mb-4">
+            <label for="languageSelect" class="col-sm-8 col-form-label">Language</label>
+            <div class="col-sm-4">
+              <select class="form-control" id="languageSelect" name="language" [(ngModel)]="userProfile.langCode">
+                <option value="DE">German</option>
+                <option value="EN">English</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Switch for Receive notifications -->
+          <div class="form-check form-switch mb-4">
+            <input class="form-check-input switch-button-input" type="checkbox" id="receiveNotifications" name="receiveNotifications" [(ngModel)]="userProfile.receiveLearnNotification">
+            <label class="form-check-label switch-button-label" for="receiveNotifications">Receive a learning notification</label>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-8"></div>
+
+            <!-- Logout button -->
+            <div class="col-sm-2">
+              <button type="button" class="btn logout-button w-100" (click)="this.logoutWarningPopup()">Logout</button>
+            </div>
+
+            <!-- Save button -->
+            <div class="col-sm-2">
+              <button type="submit" class="btn save-button w-100">Save</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
