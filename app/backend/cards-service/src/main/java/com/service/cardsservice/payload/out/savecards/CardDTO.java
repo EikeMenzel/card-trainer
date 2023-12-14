@@ -1,31 +1,25 @@
-package com.service.cardsservice.payload.out.cards;
+package com.service.cardsservice.payload.out.savecards;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TextAnswerCardDTO{
-    private final CardDTO cardDTO;
-    private final String textAnswer;
+public class CardDTO {
+    private final String question;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String imagePath;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private byte[] imageData;
 
-    public TextAnswerCardDTO(CardDTO cardDTO, String textAnswer, byte[] imageData) {
-        this.cardDTO = cardDTO;
+    public CardDTO(String question, byte[] imageData) {
+        this.question = question;
         this.imageData = imageData;
-        this.textAnswer = textAnswer;
     }
 
-    public CardDTO getCardDTO() {
-        return cardDTO;
+    public String getQuestion() {
+        return question;
     }
 
     public byte[] getImageData() {
         return imageData;
-    }
-
-    public String getTextAnswer() {
-        return textAnswer;
     }
 
     public String getImagePath() {
