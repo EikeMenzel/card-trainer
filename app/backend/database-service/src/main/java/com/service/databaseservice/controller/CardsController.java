@@ -44,12 +44,23 @@ public class CardsController {
     }
 
     @PostMapping("/users/{userId}/decks/{deckId}/cards")
-    public ResponseEntity<?> saveCard(@PathVariable Long userId, @PathVariable Long deckId, @Valid @RequestBody JsonNode cardNode) { //TESTING
+    public ResponseEntity<?> saveCard(@PathVariable Long userId, @PathVariable Long deckId, @Valid @RequestBody JsonNode cardNode) {
         if(!deckService.existsByDeckIdAndUserId(deckId, userId))
             return ResponseEntity.notFound().build();
 
         return cardService.saveCard(cardNode, userId, deckId)
                 ? ResponseEntity.status(HttpStatus.CREATED).build()
                 : ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/users/{userId}/decks/{deckId}/cards/{cardId}")
+    public ResponseEntity<?> getCardDetails(@PathVariable Long userId, @PathVariable Long deckId, @PathVariable Long cardId) {
+        if(!deckService.existsByDeckIdAndUserId(deckId, userId))
+            return ResponseEntity.notFound().build();
+
+        Object obj = cardService.getCardDetails(cardId);
+        return obj == null
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(obj);
     }
 }

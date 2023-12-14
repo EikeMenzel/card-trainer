@@ -1,6 +1,7 @@
 package com.service.cardsservice.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.service.cardsservice.payload.out.savecards.CardDTO;
 import com.service.cardsservice.services.CardsService;
 import com.service.cardsservice.services.DbQueryService;
 import jakarta.validation.Valid;
@@ -23,6 +24,11 @@ public class CardsController {
         return ResponseEntity.status(cardsService.saveCard(cardNode, userId, deckId, images)).build();
     }
 
+    @GetMapping("/decks/{deckId}/cards/{cardId}")
+    public ResponseEntity<?> getDetailCardInformation(@RequestHeader Long userId, @PathVariable Long deckId, @PathVariable Long cardId) {
+        return dbQueryService.getCardDetails(userId, deckId, cardId)
+                .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
     @DeleteMapping("/decks/{deckId}/cards/{cardId}")
     public ResponseEntity<?> deleteCard(@RequestHeader Long userId, @PathVariable Long deckId, @PathVariable Long cardId) {
         return ResponseEntity.status(dbQueryService.deleteCard(userId, deckId, cardId)).build();

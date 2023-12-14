@@ -300,4 +300,16 @@ public class DbQueryService {
                 String.class);
         return responseEntity.getStatusCode();
     }
+
+    public Optional<Object> getCardDetails(Long userId, Long deckId, Long cardID) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/" + cardID, String.class);
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+                    ? Optional.ofNullable(responseEntity.getBody())
+                    : Optional.empty();
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
 }

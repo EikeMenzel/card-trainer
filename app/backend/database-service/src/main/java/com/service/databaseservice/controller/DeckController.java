@@ -5,23 +5,20 @@ import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
-import com.service.databaseservice.payload.out.cards.CardDTO;
-import com.service.databaseservice.payload.out.cards.ChoiceAnswerDTO;
-import com.service.databaseservice.payload.out.cards.TextAnswerCardDTO;
+import com.service.databaseservice.payload.savecards.CardDTO;
+import com.service.databaseservice.payload.savecards.ChoiceAnswerDTO;
+import com.service.databaseservice.payload.savecards.TextAnswerCardDTO;
 import com.service.databaseservice.payload.out.export.CardExportDTO;
 import com.service.databaseservice.payload.out.export.ExportDTO;
 import com.service.databaseservice.payload.out.export.MultipleChoiceCardDTO;
 import com.service.databaseservice.payload.out.export.TextAnswerDTO;
 import com.service.databaseservice.services.*;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -156,7 +153,7 @@ public class DeckController {
                 cardService.saveCard(objectMapper.valueToTree(new TextAnswerCardDTO(new CardDTO(textAnswerDTO.getCardDTO().question(), textAnswerDTO.getCardDTO().image()), textAnswerDTO.getTextAnswer(), textAnswerDTO.getImage())), 1L, deck.get().getId());
             }
             else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
-                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.out.cards.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
+                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.savecards.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
                         multipleChoiceCardDTO.getChoiceAnswers().stream().map(choiceAnswerDTO -> new ChoiceAnswerDTO(choiceAnswerDTO.answer(), choiceAnswerDTO.getIsRightAnswer(), choiceAnswerDTO.image())).collect(Collectors.toList())));
                 cardService.saveCard(jsonNode, userId, deck.get().getId());
             }
