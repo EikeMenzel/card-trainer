@@ -1,4 +1,4 @@
-package com.service.databaseservice.payload.out.cards;
+package com.service.databaseservice.payload.savecards;
 
 import java.util.List;
 
