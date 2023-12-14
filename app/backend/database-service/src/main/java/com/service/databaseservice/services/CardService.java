@@ -7,9 +7,9 @@ import com.service.databaseservice.model.Image;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.cards.*;
 import com.service.databaseservice.payload.out.CardDTO;
-import com.service.databaseservice.payload.out.cards.ChoiceAnswerDTO;
-import com.service.databaseservice.payload.out.cards.MultipleChoiceCardDTO;
-import com.service.databaseservice.payload.out.cards.TextAnswerCardDTO;
+import com.service.databaseservice.payload.savecards.ChoiceAnswerDTO;
+import com.service.databaseservice.payload.savecards.MultipleChoiceCardDTO;
+import com.service.databaseservice.payload.savecards.TextAnswerCardDTO;
 import com.service.databaseservice.repository.DeckRepository;
 import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.repository.cards.*;
@@ -156,6 +156,7 @@ public class CardService {
     private boolean initRepetition(Card card) {
         return repetitionService.initRepetition(card, card.getDeck().getOwner());
     }
+
     private Image saveImage(Image image) {
         try {
             return imageRepository.save(image);
@@ -164,6 +165,7 @@ public class CardService {
             return null;
         }
     }
+
     private Image buildImageOutOfBlobHelper(Blob blob, User user) {
         return new Image(blob, user);
     }
@@ -175,5 +177,57 @@ public class CardService {
 
         cardRepository.deleteById(cardId);
         return true;
+    }
+
+    public Object getCardDetails(Long cardId) {
+        return cardRepository.findById(cardId)
+                .map(this::convertCardToDTO)
+                .orElse(null);
+    }
+
+    private Object convertCardToDTO(Card card) {
+        var cardDTO = new com.service.databaseservice.payload.out.getcarddetails.CardDTO(card.getId(), card.getQuestion(),
+                getImageIdFromImage(card.getImageData()),
+                card.getCardType().getType());
+
+        return switch (card.getCardType().getType()) {
+            case "BASIC" -> getTextAnswerCardDTO(card.getId(), cardDTO);
+            case "MULTIPLE_CHOICE" -> getMultipleChoiceCardDTO(card.getId(), cardDTO);
+            default -> null;
+        };
+    }
+
+    private com.service.databaseservice.payload.out.getcarddetails.TextAnswerCardDTO getTextAnswerCardDTO(Long cardId, com.service.databaseservice.payload.out.getcarddetails.CardDTO cardDTO) {
+        return textAnswerCardRepository.findById(cardId)
+                .map(textAnswerCard -> new com.service.databaseservice.payload.out.getcarddetails.TextAnswerCardDTO(cardDTO,
+                        textAnswerCard.getId(),
+                        textAnswerCard.getAnswer(),
+                        getImageIdFromImage(textAnswerCard.getImageData())))
+                .orElse(null);
+    }
+
+    private com.service.databaseservice.payload.out.getcarddetails.MultipleChoiceCardDTO getMultipleChoiceCardDTO(Long cardId, com.service.databaseservice.payload.out.getcarddetails.CardDTO cardDTO) {
+        return multipleChoiceCardRepository.findById(cardId)
+                .map(multipleChoiceCard -> createMultipleChoiceCardDTO(cardDTO, multipleChoiceCard))
+                .orElse(null);
+    }
+
+    private com.service.databaseservice.payload.out.getcarddetails.MultipleChoiceCardDTO createMultipleChoiceCardDTO(com.service.databaseservice.payload.out.getcarddetails.CardDTO cardDTO, MultipleChoiceCard multipleChoiceCard) {
+        var choiceAnswerDTOS = multipleChoiceCard.getChoiceAnswerList()
+                .stream()
+                .map(this::createChoiceAnswerDTO)
+                .toList();
+        return new com.service.databaseservice.payload.out.getcarddetails.MultipleChoiceCardDTO(cardDTO, multipleChoiceCard.getId(), choiceAnswerDTOS);
+    }
+
+    private com.service.databaseservice.payload.out.getcarddetails.ChoiceAnswerDTO createChoiceAnswerDTO(ChoiceAnswer choiceAnswer) {
+        return new com.service.databaseservice.payload.out.getcarddetails.ChoiceAnswerDTO(choiceAnswer.getId(), choiceAnswer.getAnswer(),
+                choiceAnswer.getCorrect(), getImageIdFromImage(choiceAnswer.getImageData()));
+    }
+
+    private Long getImageIdFromImage(Image image) {
+        if (image == null)
+            return null;
+        return image.getId();
     }
 }
