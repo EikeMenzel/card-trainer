@@ -13,6 +13,10 @@ RUN npm run build --prod
 
 FROM nginx:latest
 
-COPY --from=builder /usr/local/app/dist/angular-frontend /usr/share/nginx/html
+COPY --from=builder /usr/local/app/dist/angular-frontend/browser /usr/share/nginx/html
 
-EXPOSE 80
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 4200
+
+CMD ["nginx", "-g", "daemon off;"]
