@@ -1,6 +1,5 @@
 package com.service.databaseservice.services;
 
-import com.service.databaseservice.model.Image;
 import com.service.databaseservice.model.cards.Card;
 import com.service.databaseservice.model.cards.MultipleChoiceCard;
 import com.service.databaseservice.model.cards.TextAnswerCard;
@@ -11,11 +10,11 @@ import com.service.databaseservice.repository.cards.MultipleChoiceCardRepository
 import com.service.databaseservice.repository.cards.TextAnswerCardRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.service.databaseservice.services.Utils.extractImageData;
 
 @Service
 public class ExportService {
@@ -65,7 +64,7 @@ public class ExportService {
         return textAnswerCardOptional.map(textAnswerCard -> new TextAnswerDTO(
                 buildCardDTO(card),
                 textAnswerCard.getAnswer(),
-                extractBlobData(textAnswerCard.getImageData())));
+                extractImageData(textAnswerCard.getImageData())));
     }
 
     private Optional<CardExportDTO> buildExportDTOFromMultipleChoiceCard(Card card) {
@@ -73,7 +72,7 @@ public class ExportService {
         return multipleChoiceCardOptional.map(multipleChoiceCard -> {
             List<ChoiceAnswerDTO> choiceAnswerList = multipleChoiceCard.getChoiceAnswerList()
                     .stream()
-                    .map(choiceAnswer -> new ChoiceAnswerDTO(choiceAnswer.getAnswer(), extractBlobData(choiceAnswer.getImageData()), choiceAnswer.getCorrect()))
+                    .map(choiceAnswer -> new ChoiceAnswerDTO(choiceAnswer.getAnswer(), extractImageData(choiceAnswer.getImageData()), choiceAnswer.getCorrect()))
                     .toList();
 
             return new MultipleChoiceCardDTO(
@@ -83,18 +82,7 @@ public class ExportService {
         });
     }
 
-    private byte[] extractBlobData(Image image) {
-        if (image == null)
-            return null;
-
-        try {
-            return image.getData().getBytes(1, (int) image.getData().length());
-        } catch (SQLException e) {
-            return null;
-        }
-    }
-
     private CardDTO buildCardDTO(Card card) {
-        return new CardDTO(card.getQuestion(), extractBlobData(card.getImageData()), card.getCardType().getId());
+        return new CardDTO(card.getQuestion(), extractImageData(card.getImageData()), card.getCardType().getId());
     }
 }

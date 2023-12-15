@@ -312,4 +312,17 @@ public class DbQueryService {
             return Optional.empty();
         }
     }
+
+    public Optional<byte[]> getImage(Long userId, Long imageId) {
+        try {
+            String url = USER_DB_API_PATH + "/" + userId + "/images/" + imageId;
+            ResponseEntity<byte[]> responseEntity = restTemplate.getForEntity(url, byte[].class);
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+                    ? Optional.ofNullable(responseEntity.getBody())
+                    : Optional.empty();
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
 }
