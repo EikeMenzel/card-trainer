@@ -40,7 +40,7 @@ services:
 
   db-service:
     container_name: db-service
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/database-service:latest
+    build: database-service
     ports:
       - "8086:8086"
     networks:
@@ -51,7 +51,7 @@ services:
 
   auth:
     container_name: auth-service
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/authentication-service:latest
+    build: authentication-service
     ports:
       - "8080:8080"
     networks:
@@ -62,7 +62,7 @@ services:
 
   cards:
     container_name: cards-service
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/cards-service:latest
+    build: cards-service
     ports:
       - "8082:8082"
     networks:
@@ -73,7 +73,7 @@ services:
 
   gateway:
     container_name: gateway-service
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/gateway:latest
+    build: gateway
     ports:
       - "80:80"
     networks:
@@ -89,7 +89,7 @@ services:
 
   email:
     container_name: email-service
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/mail-service:latest
+    build: mail-service
     ports:
       - "8081:8081"
     networks:
@@ -100,7 +100,7 @@ services:
 
   user:
     container_name: user-service
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/user-service:latest
+    build: user-service
     ports:
       - "8083:8083"
     networks:
@@ -111,7 +111,7 @@ services:
 
   frontend:
     container_name: frontend
-    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/angular-frontend:latest
+    build: ../frontend/angular-frontend
     ports:
       - "4200:4200"
     networks:
