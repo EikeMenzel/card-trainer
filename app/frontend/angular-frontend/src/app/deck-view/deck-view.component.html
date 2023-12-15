@@ -1,5 +1,91 @@
 <app-base-page>
   <div class="card-view-wrapper">
-
+    <div class="container text-center">
+      <div class="row mt-4">
+        <div class="col">
+          <div class="top-left-item">
+            <div class="circle">{{deckCardsLeft}}</div>
+            <p>Cards Left</p>
+          </div>
+        </div>
+        <div class="col-5 mb-3"><h1 class="fw-bold text-truncate">{{deckTitle}}</h1></div>
+        <div class="col">
+          <div class="top-right-item">
+            <div class="circle">{{deckSize}}</div>
+            <p>Deck Size</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4 mb-1">
+        <div class="col">
+          <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col text-start show-only-bigmedia align-self-end">
+          <button class="custom-round-Button" id="share-button" (click)="openModal(content)">Share</button>
+          <button class="custom-round-Button" id="export-button" (click)="exportButtonPressed()">Export</button>
+          <button class="custom-round-Button disabled-function-color" id="history-button" disabled><i
+            class="bi bi-clock-history fs-5"></i>
+          </button>
+        </div>
+        <div class="col mt-2 align-self-center">
+          <button class="custom-session-button fs-2">Start Learn Session</button>
+          <br>
+          <button class="custom-session-button fs-3">Start Peek Session</button>
+        </div>
+        <div class="col text-end align-self-end show-only-bigmedia">
+          <button class="custom-round-Button" id="edit-button" routerLink="./edit">Edit</button>
+        </div>
+        <div class="text-center show-only-smallmedia">
+          <button class="btn border-black primary-background-color" type="button" data-bs-toggle="offcanvas"
+                  data-bs-target="#offcanvasMenu"
+                  aria-controls="MenuForOptions">
+            <span class="bi bi-list"></span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </app-base-page>
+
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasMenu"
+     aria-labelledby="MenuForOptions">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasLabel">Options</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="list-group text-center ">
+    <button class="mt-2 list-group-item list-group-item-action sidebar-list-buttons" routerLink="./edit">Edit
+    </button>
+    <button class="mt-2 list-group-item list-group-item-action sidebar-list-buttons"
+            (click)="openModal(content)">Share
+    </button>
+    <button class="mt-2 list-group-item list-group-item-action sidebar-list-buttons disabled-function-color"
+            disabled>
+      <i class="bi bi-clock"></i>
+    </button>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header primary-background-color">
+    <h4 class="modal-title" id="modal-basic-title">Share your Deck</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <form (submit)="onSubmit()">
+    <div class="modal-body">
+      <label for="email-holder">Enter the E-Mail Address of the recipient:</label>
+      <input type="email" class="form-control" id="email-holder" [style.border-color]="emailBorder" [(ngModel)]="email"
+             name="email"
+             placeholder="example@example.com">
+      <p *ngIf="emailWarn" class="text-center text-danger fw-bold">Please enter a valid E-Mail</p>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
+        <span *ngIf="!buttonIsPressed">Share</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+  </form>
+</ng-template>
