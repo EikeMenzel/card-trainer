@@ -123,6 +123,11 @@ public class DeckController {
         return ResponseEntity.status(dbQueryService.sendShareDeckEmail(mailDTO.email(), deckId)).build();
     }
 
+    @GetMapping("/{deckId}/cards-to-learn")
+    public ResponseEntity<?> getCardsToLearnSize(@RequestHeader Long userId, @PathVariable Long deckId) {
+        return ResponseEntity.ok(dbQueryService.getCardsToLearnAmountByDeck(userId, deckId));
+    }
+
     //Needs to be a get-mapping, because you can't execute Javascript code in a e-mail
     @GetMapping("/share/{token}")
     public ResponseEntity<?> copySharedDeck(@PathVariable String token) {
