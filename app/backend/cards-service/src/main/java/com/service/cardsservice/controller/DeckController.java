@@ -109,7 +109,7 @@ public class DeckController {
 
     @PostMapping("/import")
     public ResponseEntity<?> importDeck(@RequestHeader Long userId, @RequestParam("file") MultipartFile multipartFile) {
-        if(!Objects.equals(multipartFile.getContentType(), "application/zip"))
+        if(!Objects.equals(multipartFile.getContentType(), "application/x-zip-compressed"))
             return ResponseEntity.unprocessableEntity().build();
 
         return ResponseEntity.status(importService.processZipFile(multipartFile, userId)).build();
