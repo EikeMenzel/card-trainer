@@ -109,6 +109,17 @@ services:
       - db-service
     restart: unless-stopped
 
+  session:
+    container_name: session-service
+    build: session-service
+    ports:
+      - "8084:8084"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
   frontend:
     container_name: frontend
     build: ../frontend/angular-frontend
@@ -122,6 +133,7 @@ services:
       - user
       - auth
       - email
+      - session
 
 networks:
   postgres-network:

@@ -173,9 +173,9 @@ CREATE TABLE "status_type"
 );
 
 INSERT INTO status_type
-VALUES (1, 'FINISHED');
+VALUES (1, 'NOT FINISHED');
 INSERT INTO status_type
-VALUES (2, 'NOT FINISHED');
+VALUES (2, 'FINISHED');
 INSERT INTO status_type
 VALUES (3, 'CANCELED');
 
@@ -184,12 +184,12 @@ CREATE TABLE "learn_session"
     ls_id        BIGSERIAL PRIMARY KEY,
     created_at   TIMESTAMP NOT NULL,
     finished_at  TIMESTAMP,
-    difficulty_1 INTEGER   NOT NULL DEFAULT 0,
-    difficulty_2 INTEGER   NOT NULL DEFAULT 0,
-    difficulty_3 INTEGER   NOT NULL DEFAULT 0,
-    difficulty_4 INTEGER   NOT NULL DEFAULT 0,
-    difficulty_5 INTEGER   NOT NULL DEFAULT 0,
-    difficulty_6 INTEGER   NOT NULL DEFAULT 0,
+    rating_1 INTEGER   NOT NULL DEFAULT 0,
+    rating_2 INTEGER   NOT NULL DEFAULT 0,
+    rating_3 INTEGER   NOT NULL DEFAULT 0,
+    rating_4 INTEGER   NOT NULL DEFAULT 0,
+    rating_5 INTEGER   NOT NULL DEFAULT 0,
+    rating_6 INTEGER   NOT NULL DEFAULT 0,
     status_id    INTEGER   NOT NULL,
     deck_id      BIGINT    NOT NULL,
     user_id      BIGINT    NOT NULL,

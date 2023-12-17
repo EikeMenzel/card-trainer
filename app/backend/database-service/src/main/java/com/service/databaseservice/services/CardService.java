@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Blob;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,9 @@ public class CardService {
         this.imageRepository = imageRepository;
     }
 
+    public boolean doesCardBelongToOwner(Long cardId, Long userId) {
+        return cardRepository.findById(cardId).map(card -> Objects.equals(card.getDeck().getOwner().getId(), userId)).orElse(false);
+    }
     public Integer getCardAmountFromDeckId(Long deckId) {
         return cardRepository.countCardsByDeckId(deckId);
     }
@@ -184,6 +188,13 @@ public class CardService {
                 .map(this::convertCardToDTO)
                 .orElse(null);
     }
+
+    public Optional<Object> getOldestCardToLearn(Long deckId) {
+        Optional<Card> cardOptional = cardRepository.findOldestCardToLearn(deckId);
+        return cardOptional.map(card -> getCardDetails(card.getId()));
+    }
+
+
 
     private Object convertCardToDTO(Card card) {
         var cardDTO = new com.service.databaseservice.payload.out.getcarddetails.CardDTO(card.getId(), card.getQuestion(),

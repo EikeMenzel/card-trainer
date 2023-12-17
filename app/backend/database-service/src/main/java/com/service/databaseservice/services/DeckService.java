@@ -55,7 +55,7 @@ public class DeckService {
     public Optional<String> getDeckNameById(Long deckId) {
         return deckRepository.findById(deckId).map(Deck::getName);
     }
-    public Boolean existsByDeckIdAndUserId(Long deckId, Long userId) {
+    public boolean existsByDeckIdAndUserId(Long deckId, Long userId) {
         return deckRepository.existsDeckByIdAndOwnerId(deckId, userId);
     }
 
