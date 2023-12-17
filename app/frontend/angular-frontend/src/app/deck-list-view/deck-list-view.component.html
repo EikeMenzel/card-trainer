@@ -45,7 +45,7 @@
       <button class="btn menu-item menu-circle sub-menu-circle sub-add-button" (click)="addItem()">
         <i class="bi-plus text-white"></i>
       </button>
-      <button class="btn btn-primary menu-item menu-circle sub-menu-circle">
+      <button class="btn btn-primary menu-item menu-circle sub-menu-circle" (click)="showImportModal(content)">
         <i class="bi-upload text-white"></i>
       </button>
       <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()">
@@ -56,5 +56,23 @@
             (click)="toggleOptions()"><i class="bi-list-ul"></i></button>
   </div>
 
-  <!--<app-option-button [menu]="menuList" (menuOptionClicked)="menuClicked($event)"></app-option-button>-->
 </app-base-page>
+
+<ng-template #content let-modal>
+  <div class="modal-header primary-background-color">
+    <h4 class="modal-title" id="modal-basic-title">Import your Deck</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <form (submit)="onSubmitImportDeck($event)">
+    <div class="modal-body">
+      <input type="file" name="importDeckField" accept="application/zip" (change)="onFileSelected($event)"
+             [(ngModel)]="importFile">
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
+        <span *ngIf="!buttonIsPressed">Import</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+  </form>
+</ng-template>
