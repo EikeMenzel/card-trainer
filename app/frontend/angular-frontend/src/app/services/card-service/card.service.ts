@@ -34,14 +34,20 @@ export class CardService {
   }
 
   detailDecks(id: number): Observable<HttpResponse<DeckDetailInformationDTO>> {
-    return this.http.get<DeckDetailInformationDTO>(`api/v1/decks/${id}`,{observe: 'response'})
+    return this.http.get<DeckDetailInformationDTO>(`api/v1/decks/${id}`, {observe: 'response'})
   }
 
   getExportFile(deckId: number): Observable<HttpResponse<ArrayBuffer>> {
-    return this.http.get(`api/v1/decks/${deckId}/export`,{observe: 'response',responseType: 'arraybuffer'});
+    return this.http.get(`api/v1/decks/${deckId}/export`, {observe: 'response', responseType: 'arraybuffer'});
   }
 
-  shareDeck(deckId: number,email: string)  {
-    return this.http.post(`api/v1/decks/${deckId}/share`,{"email": email},{observe: 'response'});
+  shareDeck(deckId: number, email: string) {
+    return this.http.post(`api/v1/decks/${deckId}/share`, {"email": email}, {observe: 'response'});
+  }
+
+  importDeckUpload(file: FormData) {
+    return this.http.post("api/v1/decks/import", file, {
+      observe: "response"
+    })
   }
 }
