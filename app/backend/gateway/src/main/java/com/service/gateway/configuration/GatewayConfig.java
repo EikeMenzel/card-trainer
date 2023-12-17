@@ -18,6 +18,9 @@ public class GatewayConfig {
     @Value("${cards-service.api.path}")
     private String cardsServiceUri;
 
+    @Value("${session-service.api.path}")
+    private String sessionServiceUri;
+
     @Value("${frontend.path}")
     private String frontendServiceUri;
 
@@ -55,14 +58,23 @@ public class GatewayConfig {
                         ).uri(cardsServiceUri)
                 )
 
+                .route("session-service",
+                        r -> r.path(
+                                "/api/v1/decks/{deckId}/learn-sessions",
+                                "/api/v1/decks/{deckId}/next-card",
+                                "/api/v1/learn-sessions/{learnSessionId}/rating",
+                                "/api/v1/learn-sessions/{learnSessionId}/status"
+                        ).uri(sessionServiceUri)
+                )
+
                 .route("fallback",
                         r -> r.path("/api/**").filters(f -> f.setStatus(HttpStatus.NOT_FOUND))
                                 .uri("no://op"))
 
                 .route("frontend",
                         r -> r.path("/**")
-                        .and().not(predicateSpec -> predicateSpec.path("/api/**"))
-                        .uri(frontendServiceUri))
+                                .and().not(predicateSpec -> predicateSpec.path("/api/**"))
+                                .uri(frontendServiceUri))
 
                 .build();
     }

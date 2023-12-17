@@ -85,6 +85,10 @@ push_backend_to_registry: # push images to registry
     - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/user-service:latest .
     - docker push $CI_REGISTRY_IMAGE_PATH/user-service:latest
     - cd ..
+    - cd session-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/session-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/session-service:latest
+    - cd ..
     - cd gateway
     - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/gateway:latest .
     - docker push $CI_REGISTRY_IMAGE_PATH/gateway:latest

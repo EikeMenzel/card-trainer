@@ -109,6 +109,18 @@ services:
       - db-service
     restart: unless-stopped
 
+  session:
+    container_name: session-service
+    image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/session-service:latest
+    ports:
+      - "8084:8084"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+
   frontend:
     container_name: frontend
     image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/angular-frontend:latest
@@ -122,6 +134,7 @@ services:
       - user
       - auth
       - email
+      - session
 
 networks:
   postgres-network:
