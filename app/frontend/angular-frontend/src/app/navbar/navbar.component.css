@@ -1,5 +1,6 @@
-#nav-content {
-  border-bottom: 1px solid black;
+.custom-navbar {
+  background-color: white;
+  border-bottom: 1px solid var(--primary-color);
   padding: 5px;
   margin-left: 10px;
   margin-right: 10px;
@@ -7,48 +8,81 @@
   display: flex;
 }
 
-.goto-home-wrapper {
-  display: flex;
-}
-
-#nav-username-display {
-  margin-right: 5px;
-}
-
-#nav-title {
-  display: flex;
-  color: black;
-}
-
-.profile-button {
-  background-color: var(--blank-color);
-  border: 1px solid;
-  border-radius: 50%; /* Makes the button circular */
-  width: 50px; /* Adjust size as needed */
-  height: 50px; /* Adjust size as needed */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.nav-icon {
+.house-icon,
+.user-icon {
   color: var(--primary-color);
+  align-self: center;
 }
 
-.house-button {
-  background-color: var(--blank-color);
-  border: 1px solid;
-  border-radius: 50%; /* Makes the button circular */
-  width: 50px; /* Adjust size as needed */
-  height: 50px; /* Adjust size as needed */
+.home-section,
+.user-section {
   display: flex;
-  justify-content: center;
   align-items: center;
+}
+
+.title-text {
+  margin-left: 10px;
+}
+
+.username-text {
+  margin-right: 10px;
+}
+
+.custom-dropdown-window {
+  transform: translateX(-120px);
+}
+
+.custom-toggle {
+  color: var(--primary-color)
+}
+
+.nav-item.dropdown a.nav-link.dropdown-toggle {
   cursor: pointer;
 }
 
-.house-icon {
+.dropdown-menu a.dropdown-item {
+  cursor: pointer;
+}
 
-  color: white; /* Change icon color to white or your desired color */
+
+@media (max-width: 768px) {
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+
+  .custom-dropdown-window {
+    transform: translateX(-120px);
+  }
+
+  .nav-item.dropdown {
+    position: relative;
+  }
+
+  .nav-icon {
+    line-height: 1;
+    vertical-align: middle;
+  }
+
+  .user-section {
+    margin-top: 10px;
+  }
+
+  .user-icon {
+    position: relative;
+    top: -2px;
+  }
+
+  .home-section,
+  .user-section {
+    height: 40px;
+  }
 }

@@ -1,33 +1,34 @@
-<nav class="navbar navbar-expand-sm navbar-light" id="nav-content">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">
-      <div class="goto-home-wrapper">
-        <button class="house-button">
-            <span class="house-icon">
-                <fa-icon class="nav-icon fa-xl" [icon]="faHouse"></fa-icon>
-            </span>
-        </button>
-      </div>
-    </a>
-    <div data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="text-success fa-xl">{{this.title}}</span>
-    </div>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
 
-      </div>
-      <div>
-            <span id="nav-username-display" class="nav-link active fa-xl text-success" aria-current="page" href="#">{{this.username}}</span>
-      </div>
-    </div>
-    <div class="profile-button">
-      <a class="navbar-link" routerLink="/profile">
-                <span class="house-icon">
-                    <fa-icon class="nav-icon fa-xl" [icon]="faUser"></fa-icon>
-                </span>
+  <div class="navbar-nav flex-grow-1 home-section">
+    <!-- Home Button -->
+    <div class="d-flex align-items-center">
+      <a class="nav-item nav-link house-icon" routerLink="/">
+        <fa-icon class="nav-icon fa-xl house-icon" [icon]="faHouse"></fa-icon>
       </a>
+      <!-- Title -->
+      <span class="navbar-text title-text">
+        {{ this.title }}
+      </span>
     </div>
   </div>
-</nav>
 
+
+  <div class="navbar-nav ml-auto user-section">
+    <!-- Username -->
+    <span class="navbar-text username-text d-none d-lg-inline-block">
+      {{ this.username }}
+    </span>
+    <!-- Dropdown Menu for User Profile -->
+    <li class="nav-item dropdown" ngbDropdown>
+      <a class="nav-link dropdown-toggle custom-toggle" id="navbarDropdown" ngbDropdownToggle>
+        <fa-icon class="nav-item fa-xl user-icon" [icon]="faUser"></fa-icon>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right custom-dropdown-window" ngbDropdownMenu aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="/profile">Profile</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#" (click)="logoutWarningPopup()">Logout</a>
+      </div>
+    </li>
+  </div>
+</nav>
