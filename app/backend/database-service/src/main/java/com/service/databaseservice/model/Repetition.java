@@ -78,4 +78,24 @@ public class Repetition {
     public Integer getRepetition() {
         return repetition;
     }
+
+    public void setRepetition(Integer repetition) {
+        this.repetition = repetition;
+    }
+
+    public void setQuality(Integer quality) {
+        this.quality = quality;
+    }
+
+    public void setPrevEaseFactor(double prevEaseFactor) {
+        this.prevEaseFactor = prevEaseFactor;
+    }
+
+    public void setPrevInterval(Integer prevInterval) {
+        this.prevInterval = prevInterval;
+    }
+
+    public void setNextLearnTimestamp(Timestamp nextLearnTimestamp) {
+        this.nextLearnTimestamp = nextLearnTimestamp;
+    }
 }
