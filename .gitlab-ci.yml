@@ -92,6 +92,7 @@ push_backend_to_registry: # push images to registry
     - cd gateway
     - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/gateway:latest .
     - docker push $CI_REGISTRY_IMAGE_PATH/gateway:latest
+  allow_failure: true
 
 push_frontend_to_registry: # push images to registry
   stage: push_to_registry
@@ -110,3 +111,4 @@ push_frontend_to_registry: # push images to registry
     - cd app/frontend/$FRONTEND
     - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest .
     - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest
+  allow_failure: true
