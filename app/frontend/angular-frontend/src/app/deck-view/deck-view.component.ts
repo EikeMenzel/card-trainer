@@ -41,6 +41,10 @@ export class DeckViewComponent implements OnInit {
 
 
   ngOnInit() {
+    this.getDeckDetails();
+  }
+
+  getDeckDetails(){
     this.deckId = this.activatedRoute.snapshot.paramMap.get('deck-id') ?? "";
     if (this.deckId == "") {
       this.toastService.showErrorToast("Error", "Deck not Found");
@@ -65,6 +69,7 @@ export class DeckViewComponent implements OnInit {
               break;
             case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
               this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+              this.router.navigate(["/login"])
               this.authService.logout();
               break;
             case HttpStatusCode.NotFound:
@@ -102,6 +107,7 @@ export class DeckViewComponent implements OnInit {
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.router.navigate(["/login"])
             this.authService.logout();
             break;
           case defaults:
@@ -172,6 +178,7 @@ export class DeckViewComponent implements OnInit {
                 if (this.modalRef)
                   this.modalRef.close();
                 this.authService.logout();
+                this.router.navigate(["/login"])
                 break;
               case HttpStatusCode.NotFound:
                 this.toastService.showErrorToast("Error", "User or Deck not found");
