@@ -1,9 +1,10 @@
-import {Injectable, Input} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {DeckDTO} from "../../models/DeckDTO";
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {DeckDetailInformationDTO} from "../../models/DeckDetailInformationDTO";
 import {CardDTO} from "../../models/CardDTO";
+import {RatingDTO} from "../../models/learn-session/RatingDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -49,5 +50,39 @@ export class CardService {
     return this.http.post("api/v1/decks/import", file, {
       observe: "response"
     })
+  }
+
+
+  createLearnSession(deckId: number) {
+    return this.http.post<number>(`api/v1/decks/${deckId}/learn-sessions`, {observe: 'response'});
+  }
+
+  getDetailCardInformation(deckId: number) {
+    return this.http.get(`api/v1/decks/${deckId}/next-card`, {observe: 'response'});
+  }
+
+  saveLearnSessionRating(learnSessionId: number, ratingDTO: RatingDTO, cardId: number) {
+    return this.http.put(`api/v1/learn-sessions/${learnSessionId}/rating`, {
+      "cardId": cardId,
+      "ratingLevelDTO": ratingDTO
+    }, {observe: 'response'})
+  }
+
+  updateLearnSessionStatus(learnSessionId: number) {
+
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/learn-sessions/${learnSessionId}/status`, JSON.stringify("FINISHED"), {
+      observe: 'response',
+      headers
+    })
+  }
+  getImageOfCard(imageId: number) {
+    return this.http.get(`/api/v1/images/${imageId}`, {responseType: 'blob', observe: 'response'})
+  }
+
+  getCardsToLearn(deckId: number) {
+    return this.http.get<number>(`/api/v1/decks/${deckId}/cards-to-learn`, {observe: 'response'});
   }
 }
