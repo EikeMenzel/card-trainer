@@ -61,7 +61,8 @@ export class UserService {
       return
     }
 
-    if (request.status == HttpStatusCode.PreconditionFailed) {
+    if (request.status == HttpStatusCode.PreconditionFailed || request.status == HttpStatusCode.Unauthorized) {
+      this.toast.showErrorToast("Error","Authorization failed. Please Login again.")
       this.auth.logout()
       this.router.navigate(["/login"])
     }

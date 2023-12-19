@@ -22,53 +22,57 @@
           <!-- Name input -->
           <div class="form-group mb-2">
             <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" placeholder="" [(ngModel)]="userProfile.username" name="name">
+            <input type="text" class="form-control" id="nameInput" placeholder="" [(ngModel)]="userProfile.username"
+                   name="name">
           </div>
 
           <!-- Email input -->
           <div class="form-group mb-4">
             <label for="emailInput">E-Mail address</label>
-            <input type="email" class="form-control" id="emailInput" placeholder="" [(ngModel)]="userProfile.email" name="email">
+            <input type="email" class="form-control" id="emailInput" placeholder="" [(ngModel)]="userProfile.email"
+                   name="email">
           </div>
 
           <!-- Update Password button -->
           <div class="form-group row mb-2">
             <div class="col-sm-4">
-              <button type="button" class="btn update-pw-button w-100" (click)="openModal()">Update password</button>
+              <button type="button" class="btn update-pw-button w-100" (click)="openModal(content)">Update password
+              </button>
             </div>
           </div>
 
           <!-- Update Password Modal -->
-          <div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header update-pw-header">
-                  <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel">Update your password</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                  <div>
-                    <!-- New password input -->
-                    <div class="form-group mb-2">
-                      <label for="newPassword">New password</label>
-                      <input type="password" class="form-control" id="newPassword" [(ngModel)]="newPassword" name="newPassword" required>
-                    </div>
-                    <!-- Re-enter new password input -->
-                    <div class="form-group mb-4">
-                      <label for="reenterNewPassword">Re-enter new password</label>
-                      <input type="password" class="form-control" id="reenterNewPassword" [(ngModel)]="reenterNewPassword" name="reenterNewPassword" required>
-                    </div>
-                    <div class="modal-footer update-pw-footer mb-2">
-                      <button type="button" class="btn change-pw-button w-100" data-bs-dismiss="modal" aria-label="Close" (click)="changePassword()">
-                        Change password
-                      </button>
-                    </div>
+          <ng-template #content let-modal>
+            <div class="modal-header update-pw-header">
+              <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel">Update your password</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                      (click)="modal.close();emptyPasswordModalFields()"></button>
+            </div>
+            <form (submit)="changePassword()">
+              <div class="modal-body">
+                <div>
+                  <!-- New password input -->
+                  <div class="form-group mb-2">
+                    <label for="newPassword">New password</label>
+                    <input type="password" class="form-control" id="newPassword" [(ngModel)]="newPassword"
+                           name="newPassword" required>
+                  </div>
+                  <!-- Re-enter new password input -->
+                  <div class="form-group mb-4">
+                    <label for="reenterNewPassword">Re-enter new password</label>
+                    <input type="password" class="form-control" id="reenterNewPassword"
+                           [(ngModel)]="reenterNewPassword" name="reenterNewPassword" required>
+                  </div>
+                  <div class="modal-footer update-pw-footer mb-2">
+                    <button [disabled]="buttonModalIsPressed" type="submit" class="btn change-pw-button w-100">
+                      <span *ngIf="!buttonModalIsPressed">Change password</span>
+                      <span *ngIf="buttonModalIsPressed" class="spinner-border spinner-border-sm"></span>
+                    </button>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </form>
+          </ng-template>
 
           <hr>
 
@@ -76,7 +80,8 @@
           <div class="form-group row mb-2">
             <label for="numberOfCards" class="col-sm-8 col-form-label">Number of cards to be learned per session</label>
             <div class="col-sm-4">
-              <input type="number" class="form-control" id="numberOfCards" name="numberOfCards" min="1" [(ngModel)]="userProfile.cardsToLearn">
+              <input type="number" class="form-control" id="numberOfCards" name="numberOfCards" min="1"
+                     [(ngModel)]="userProfile.cardsToLearn">
             </div>
           </div>
 
@@ -93,8 +98,10 @@
 
           <!-- Switch for Receive notifications -->
           <div class="form-check form-switch mb-4">
-            <input class="form-check-input switch-button-input" type="checkbox" id="receiveNotifications" name="receiveNotifications" [(ngModel)]="userProfile.receiveLearnNotification">
-            <label class="form-check-label switch-button-label" for="receiveNotifications">Receive a learning notification</label>
+            <input class="form-check-input switch-button-input" type="checkbox" id="receiveNotifications"
+                   name="receiveNotifications" [(ngModel)]="userProfile.receiveLearnNotification">
+            <label class="form-check-label switch-button-label" for="receiveNotifications">Receive a learning
+              notification</label>
           </div>
 
           <div class="form-group row">

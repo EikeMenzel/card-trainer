@@ -10,6 +10,7 @@ import {faHouse} from "@fortawesome/free-solid-svg-icons";
 import {UserService} from "../services/user-service/user.service";
 import {ToastService} from "../services/toast-service/toast.service";
 import {AuthService} from "../services/auth-service/auth-service";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   standalone: true,
@@ -34,8 +35,8 @@ export class UserProfileComponent implements OnInit {
 
   newPassword: string = '';
   reenterNewPassword: string = '';
-
-  modal: bootstrap.Modal | null = null;
+  private modalRef: NgbModalRef | undefined;
+  buttonModalIsPressed: boolean = false;
 
   protected readonly faHouse = faHouse;
 
@@ -43,7 +44,8 @@ export class UserProfileComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private toast: ToastService,
-    public authService: AuthService
+    public authService: AuthService,
+    private modalService: NgbModal
   ) {
   }
 
@@ -53,40 +55,42 @@ export class UserProfileComponent implements OnInit {
   }
 
   validatePassword(): boolean {
-    return this.newPassword.trim().length > 8 && this.newPassword.trim().length < 72
+    return this.newPassword.trim().length >= 8 && this.newPassword.trim().length < 72
   }
 
-  openModal() {
-    const modalElement = document.getElementById('updatePasswordModal');
-    if (!modalElement) {
-      return;
-    }
-
-    this.modal = new bootstrap.Modal(modalElement);
-    this.modal.show();
+  openModal(content: any) {
+    this.modalRef = this.modalService.open(content);
   }
 
   changePassword(): void {
+    this.buttonModalIsPressed = true;
     if (!
       this.newPassword.trim() || !this.reenterNewPassword.trim()
     ) {
       this.toast.showErrorToast("Update Password", "Field cannot be empty")
+      this.buttonModalIsPressed = false;
       return;
     }
     if (this.newPassword !== this.reenterNewPassword) {
       this.toast.showErrorToast("Update Password", "Passwords do not match")
+      this.buttonModalIsPressed = false;
+      this.emptyPasswordModalFields()
       return;
     }
     if (!this.validatePassword()) {
       this.toast.showErrorToast("Update Password", "You Password must be between 8 and 72 characters")
+      this.buttonModalIsPressed = false;
+      this.emptyPasswordModalFields()
       return;
     }
-
 
     this.userService.changePassword(this.newPassword).subscribe({
       next: () => {
         this.toast.showSuccessToast("Password update", 'Password updated successfully');
-        this.modal?.dispose()
+        if (this.modalRef) {
+          this.buttonModalIsPressed = false;
+          this.modalRef.close();
+        }
       },
       error: (err) => {
         switch (err.status) {
@@ -102,8 +106,10 @@ export class UserProfileComponent implements OnInit {
             this.toast.showErrorToast("Password update", "An error occurred")
             break;
         }
+        this.buttonModalIsPressed = false;
       }
     });
+    this.emptyPasswordModalFields()
   }
 
   getUserInfo(): void {
@@ -142,6 +148,12 @@ export class UserProfileComponent implements OnInit {
       this.authService.logout();
     }
   }
+
+  emptyPasswordModalFields() {
+    this.reenterNewPassword = "";
+    this.newPassword = "";
+  }
+
 
 //TODO: Achievement handling
   getAchievements(): void {
