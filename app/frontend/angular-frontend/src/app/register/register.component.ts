@@ -83,19 +83,21 @@ export class RegisterComponent {
                   this.emailBorder = "red";
                   break;
                 case 2:
-                  this.username = "red";
+                  this.usernameBorder = "red";
                   break;
                 case 3:
                   this.passwordBorder = "red";
                   this.passwordRepeatBorder = "red";
                   break;
               }
-
-              return;
             }
-            if (statusCode == HttpStatusCode.InternalServerError)
+            
+            if (statusCode == HttpStatusCode.InternalServerError) {
               this.toastService.showErrorToast("Error", "Server cannot be reached");
+            }
+
             this.buttonIsPressed = false;
+            return;
           }
         })
     } else {
