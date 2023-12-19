@@ -9,6 +9,7 @@ import {ResetPasswordComponent} from "./reset-password/reset-password.component"
 import {EditDeckViewComponent} from "./edit-deck-view/edit-deck-view.component";
 import {EditCardViewComponent} from "./edit-card-view/edit-card-view.component";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
+import {LearnCardViewComponent} from "./learn-card-view/learn-card-view.component";
 
 
 
@@ -22,6 +23,7 @@ export const routes: Routes = [
   {path: 'forgot-password', component: ForgotPasswordComponent},
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: '', component: DeckListViewComponent},
+  {path: 'deck/:deck-id/learn', component: LearnCardViewComponent},
   {path:"suc", component: RegisterSuccessfulComponent},
   {path: 'profile', component: UserProfileComponent},
   { path: '**', redirectTo: "" },

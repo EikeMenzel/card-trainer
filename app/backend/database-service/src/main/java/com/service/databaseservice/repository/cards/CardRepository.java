@@ -13,6 +13,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> getCardsByDeckId(Long deckId);
     Optional<Card> getCardById(Long cardId);
 
-    @Query("SELECT c FROM Card c JOIN Repetition r ON c.id = r.card.id WHERE c.deck.id = :deckId ORDER BY r.nextLearnTimestamp ASC LIMIT 1")
+    @Query("SELECT c FROM Card c JOIN Repetition r ON c.id = r.card.id WHERE c.deck.id = :deckId AND r.nextLearnTimestamp < NOW() ORDER BY r.nextLearnTimestamp ASC LIMIT 1")
     Optional<Card> findOldestCardToLearn(@Param("deckId") Long deckId);
 }

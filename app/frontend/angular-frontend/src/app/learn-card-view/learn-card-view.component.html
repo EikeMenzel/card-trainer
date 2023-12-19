@@ -1,0 +1,164 @@
+<app-base-page>
+  <div class="container-fluid learn-card-view">
+    <div class="row justify-content-center card-container mt-5">
+      <div class="flip-card" [class.flipped]="flipped">
+        <!-- Basic card -->
+        <ng-container *ngIf="card?.cardDTO?.cardType === 'BASIC'">
+          <!-- Basic card front -->
+          <div class="flip-card-front">
+            <div class="img-body">
+              <img *ngIf="this.imageInformationTextAnswerCard?.questionImage"
+                   [src]="this.imageInformationTextAnswerCard?.questionImage"
+                   class="img img-fluid" alt="Descriptive Alt Text">
+            </div>
+            <div class="text-container scrollable-content">
+              <p class="flip-card-question">{{ card?.cardDTO?.question }}</p>
+              <button class="rotate-button-turn-to-back" (click)="flipCard()">
+                <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <!-- Basic card back -->
+          <div class="flip-card-back" *ngIf="flipped">
+            <div class="img-body">
+              <img *ngIf="this.imageInformationTextAnswerCard?.answerImage"
+                   [src]="this.imageInformationTextAnswerCard?.answerImage"
+                   class="img img-fluid">
+            </div>
+            <div class="text-container scrollable-content">
+              <p class="flip-card-answer text-center" *ngIf="flipped">{{ textAnswerCard?.textAnswer }}</p>
+              <button class="rotate-button-turn-to-front" (click)="flipCard()">
+                <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Multiple Choice card -->
+        <ng-container *ngIf="currentCard?.cardDTO?.cardType === 'MULTIPLE_CHOICE'">
+          <!-- Multiple Choice front -->
+          <div class="flip-card-front">
+            <div class="img-body">
+              <img *ngIf="this.imageInformationMultipleChoiceCard?.questionImage"
+                   [src]="this.imageInformationMultipleChoiceCard?.questionImage" class="img img-fluid">
+            </div>
+            <!-- Multiple Choice question -->
+            <div class="text-container scrollable-content">
+              <div class="line-container">
+                <hr class="faded-line">
+                <div class="line-text">Question</div>
+              </div>
+              <p class="flip-card-question text-center mt-5 mb-5">{{ currentCard?.cardDTO?.question }}</p>
+              <div class="line-container mt-4">
+                <hr class="faded-line">
+                <div class="line-text">Answer Options</div>
+              </div>
+              <!-- Multiple Choice answer options -->
+              <div class="choices-container">
+                <div class="choices-wrapper">
+                  <div class="checkbox-group">
+                    <div *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index"
+                         class="checkbox-container">
+                      <div class="choice-image-container">
+                        <img *ngIf="getAnswerImageUrl(i)" [src]="getAnswerImageUrl(i)" class="choice-image">
+                      </div>
+                      <div class="choice-label-container mb-2">
+                        <input type="checkbox" [id]="'choice-' + i"
+                               (change)="updateSelectedChoices($event, choice.answer)">
+                        <label [for]="'choice-front' + i">{{ choice.answer }}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="rotate-button-turn-to-back" (click)="flipCard()">
+                <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <!-- Multiple Choice back -->
+          <div class="flip-card-back" *ngIf="flipped">
+            <div class="text-container scrollable-content">
+              <div class="choices-container">
+                <div class="choices-wrapper">
+                  <div class="checkbox-group">
+                    <div *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index"
+                         class="checkbox-container"
+                         [class.correct-answer]="isCorrectChoice(choice.answer)"
+                         [class.wrong-answer]="!isCorrectChoice(choice.answer) && flipped">
+                      <div class="choice-image-container">
+                        <img *ngIf="getAnswerImageUrl(i)" [src]="getAnswerImageUrl(i)" class="choice-image">
+                      </div>
+                      <div class="choice-label-container mb-2">
+                        <input type="checkbox" [id]="'choice-' + i"
+                               [checked]="isCorrectChoice(choice.answer)" [disabled]="true">
+                        <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="rotate-button-turn-to-front" (click)="flipCard()">
+                <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="progress-container mt-4">
+      <div class="progress">
+        <div class="progress-bar custom-progress" role="progressbar" [style.width.%]="calculateProgress()"
+             [attr.aria-valuenow]="calculateProgress()" aria-valuemin="0" aria-valuemax="100">
+          {{ calculateProgress() }}
+        </div>
+      </div>
+    </div>
+    <!-- Feedback button -->
+    <div class="feedback-button-container">
+      <button class="btn feedback-button button-easy" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_5)">
+        <span *ngIf="!buttonIsPressed">Easy</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+      <button class="btn feedback-button button-ok" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_4)">
+        <span *ngIf="!buttonIsPressed">OK</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+      <button class="btn feedback-button button-kinda-difficult" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_3)">
+        <span *ngIf="!buttonIsPressed">Kinda difficult</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+      <button class="btn feedback-button button-difficult" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_2)">
+        <span *ngIf="!buttonIsPressed">Difficult</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+      <button class="btn feedback-button button-I-guessed" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_1)">
+        <span *ngIf="!buttonIsPressed">Guessed</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+      <button class="btn feedback-button button-no-clue" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_0)">
+        <span *ngIf="!buttonIsPressed">No clue</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+
+
+    <!-- Motivational modal -->
+    <div class="modal fade" id="motivationModal" tabindex="-1" aria-labelledby="motivationModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog customized-modal-width modal-dialog-centered customized-modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header motivation-modal-header">
+            <h5 class="modal-title" id="motivationModalLabel">Hey, Simon here!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body motivation-modal-body">
+            <img src="assets/simon-the-fox.png" alt="Simon the frog" class="img-fox mb-2">
+            <p>Keep up the good work!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base-page>

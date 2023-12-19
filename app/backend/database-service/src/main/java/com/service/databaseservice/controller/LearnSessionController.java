@@ -79,7 +79,6 @@ public class LearnSessionController {
                 : ResponseEntity.internalServerError().build();
     }
 
-    //TODO Switch to another location? Up2Discussion
     @GetMapping("/users/{userId}/decks/{deckId}/cards/longest-unseen")
     public ResponseEntity<Object> getLongestUnseenCard(@PathVariable Long userId, @PathVariable Long deckId) {
         if(!deckService.existsByDeckIdAndUserId(deckId, userId))
