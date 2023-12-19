@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 
 public class Utils {
-    private static final Logger logger = LoggerFactory.getLogger(DeckService.class);
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
     private Utils() {}
     public static byte[] extractImageData(Image image) {
         if (image == null)

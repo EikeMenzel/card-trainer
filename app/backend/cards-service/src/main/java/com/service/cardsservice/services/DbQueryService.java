@@ -325,4 +325,21 @@ public class DbQueryService {
             return Optional.empty();
         }
     }
+
+    public HttpStatusCode updateCard(Long userId, Long deckId, Long cardId, Object cardNode) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                    USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/" + cardId,
+                    HttpMethod.PUT,
+                    new HttpEntity<>(cardNode, headers),
+                    Void.class
+            );
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            logger.debug(e.getMessage());
+            return e.getStatusCode();
+        }
+    }
 }

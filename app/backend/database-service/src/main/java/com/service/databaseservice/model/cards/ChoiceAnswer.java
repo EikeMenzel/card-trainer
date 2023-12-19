@@ -2,12 +2,6 @@ package com.service.databaseservice.model.cards;
 
 import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.springframework.context.annotation.Lazy;
-
-import java.awt.*;
-import java.sql.Blob;
-import java.sql.Types;
 
 @Entity
 @Table(name = "choice_answer")
@@ -21,7 +15,7 @@ public class ChoiceAnswer {
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "image_id")
     private Image imageData;
     @Column(name = "is_correct", nullable = false)
@@ -32,6 +26,14 @@ public class ChoiceAnswer {
     private MultipleChoiceCard multipleChoiceCard;
 
     public ChoiceAnswer(String answer, Image imageData, Boolean isCorrect, MultipleChoiceCard multipleChoiceCard) {
+        this.answer = answer;
+        this.imageData = imageData;
+        this.isCorrect = isCorrect;
+        this.multipleChoiceCard = multipleChoiceCard;
+    }
+
+    public ChoiceAnswer(Long id, String answer, Image imageData, Boolean isCorrect, MultipleChoiceCard multipleChoiceCard) {
+        this.id = id;
         this.answer = answer;
         this.imageData = imageData;
         this.isCorrect = isCorrect;
@@ -62,5 +64,12 @@ public class ChoiceAnswer {
     }
     public ChoiceAnswer cloneWithDifferentMultipleChoiceCard(MultipleChoiceCard newMultipleChoiceCard) {
         return new ChoiceAnswer(this.answer, this.imageData, this.isCorrect, newMultipleChoiceCard);
+    }
+
+    public ChoiceAnswer updateChoiceAnswer(String answer, Image image, boolean isCorrect) {
+        return new ChoiceAnswer(this.id, answer, image, isCorrect, this.multipleChoiceCard);
+    }
+    public ChoiceAnswer updateChoiceAnswer(String answer, boolean isCorrect) {
+        return new ChoiceAnswer(this.id, answer, this.imageData, isCorrect, this.multipleChoiceCard);
     }
 }
