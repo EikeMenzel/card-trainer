@@ -62,6 +62,7 @@ export class LoginComponent {
       next: value => {
 
         if(loginForm.value["remember"] === false) {
+          this.authService.resetCookieToSessionCookie();
           this.authService.startSessionTimer();
         }
 
