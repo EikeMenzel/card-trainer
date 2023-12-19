@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {DeckDetailInformationDTO} from "../../models/DeckDetailInformationDTO";
 import {CardDTO} from "../../models/CardDTO";
 import {RatingDTO} from "../../models/learn-session/RatingDTO";
+import {UpdateMCCardDTO} from "../../models/edit-card/update-card/UpdateMCCardDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -78,11 +79,31 @@ export class CardService {
       headers
     })
   }
+
   getImageOfCard(imageId: number) {
     return this.http.get(`/api/v1/images/${imageId}`, {responseType: 'blob', observe: 'response'})
   }
 
   getCardsToLearn(deckId: number) {
     return this.http.get<number>(`/api/v1/decks/${deckId}/cards-to-learn`, {observe: 'response'});
+  }
+
+  createCard(formData: FormData, deckId: string) {
+    return this.http.post(`/api/v1/decks/${deckId}/cards`, formData, {
+      observe: "response"
+    });
+  }
+
+  getCard(deckId: string, cardId: string): Observable<HttpResponse<any>> {
+    return this.http.get(`/api/v1/decks/${deckId}/cards/${cardId}`, {observe: "response"})
+  }
+
+  updateMCCard(deckId: string, cardId: string, formData: FormData) {
+    return this.http.put(`/api/v1/decks/${deckId}/cards/${cardId}`, formData, {observe: "response"})
+  }
+
+  updateBasicCard(deckId: string, cardId: string, formData: FormData) {
+    return this.http.put(`/api/v1/decks/${deckId}/cards/${cardId}`, formData, {observe: "response"})
+
   }
 }

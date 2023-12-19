@@ -12,6 +12,20 @@
   overflow-y: auto;
 }
 
+.oldImgDisplay {
+  margin-left: 10px;
+}
+
+.oldImgDisplayWrapper {
+  display: inline;
+  position: absolute;
+}
+
+.deleteOldImg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
 .edit-card::-webkit-scrollbar {
   background-color: #F0FDEE;
   width: 16px;
@@ -144,6 +158,11 @@ textarea {
   margin-top: 2px;
 }
 
+.customized-form-control:disabled {
+  background-color: grey;
+  color: darkgrey;
+}
+
 .upload-area {
   border: 2px dashed var(--primary-color);
   border-radius: 5px;
@@ -169,25 +188,25 @@ textarea {
   width: 100%;
 }
 
-.file-list li {
+.file-list {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 5px 15px;
 }
 
-.file-list li .file-info {
+.file-list .file-info {
   display: flex;
   align-items: center;
 }
 
-.file-list li .file-info i.fa-file-image,
-.file-list li .file-info .file-name {
+.file-list .file-info i.fa-file-image,
+.file-list .file-info .file-name {
   margin-right: 10px;
   margin-left: 10px;
 }
 
-.file-list li i.fa-trash {
+.file-list i.fa-trash {
   color: rgb(225, 102, 102);
   cursor: pointer;
 }
