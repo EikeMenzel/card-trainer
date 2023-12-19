@@ -22,6 +22,11 @@ export class AuthService {
   ) {
   }
 
+  resetCookieToSessionCookie() {
+    const cookieValue = this.cookieService.get(this.cookieName);
+    this.cookieService.set(this.cookieName, cookieValue);
+  }
+
   logout() {
     this.cookieService.delete(this.cookieName);
     this.router.navigate(["/login"])
