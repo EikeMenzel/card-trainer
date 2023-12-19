@@ -46,4 +46,12 @@ public class TextAnswerCard {
     public TextAnswerCard cloneTextAnswercard(Long cardId) {
         return new TextAnswerCard(cardId, this.answer, this.imageData);
     }
+
+    public TextAnswerCard updateTextAnswerCard(String answer, Image image) {
+        return new TextAnswerCard(this.id, answer, image);
+    }
+
+    public TextAnswerCard updateTextAnswerCard(String answer) {
+        return new TextAnswerCard(this.id, answer, this.imageData);
+    }
 }
