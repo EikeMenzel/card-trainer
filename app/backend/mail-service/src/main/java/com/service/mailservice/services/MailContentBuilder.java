@@ -21,14 +21,14 @@ public class MailContentBuilder {
     }
     public String getContent(MailType mailType, String... data) {
         return switch (mailType) {
-            case VERIFICATION -> getContentFromFile("static/mail_verification.html")
+            case VERIFICATION -> /*getContentFromFile("static/mail_verification.html")*/ MailContentProvider.MailVerification
                     .replace("${verificationUrl}", buildVerificationUrl(data[0]));
-            case DAILY_REMINDER -> getContentFromFile("static/daily_learn_reminder.html")
+            case DAILY_REMINDER -> /*getContentFromFile("static/daily_learn_reminder.html")*/ MailContentProvider.dailyLearnReminder
                     .replace("${username}", data[1])
                     .replace("${dailyLearnUrl}", GATEWAY_PATH);
-            case PASSWORD_RESET -> getContentFromFile("static/mail_password_reset.html")
+            case PASSWORD_RESET -> /*getContentFromFile("static/mail_password_reset.html")*/ MailContentProvider.mailPasswordReset
                     .replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]));
-            case SHARE_DECK -> getContentFromFile("static/share_deck.html")
+            case SHARE_DECK -> /*getContentFromFile("static/share_deck.html")*/ MailContentProvider.shareDeck
                     .replace("${shareDeckUrl}", buildShareDeckUrl(data[0]))
                     .replace("${deckName}", data[1])
                     .replace("${senderName}", data[2]);
