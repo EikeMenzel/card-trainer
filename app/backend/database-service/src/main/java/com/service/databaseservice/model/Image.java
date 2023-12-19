@@ -50,4 +50,9 @@ public class Image {
     public void setData(Blob imageData) {
         this.data = imageData;
     }
+
+    public Image updateImage(Blob data) {
+        setData(data);
+        return this;
+    }
 }

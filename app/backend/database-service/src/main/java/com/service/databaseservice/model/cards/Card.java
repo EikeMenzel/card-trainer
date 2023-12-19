@@ -41,6 +41,14 @@ public class Card {
         this.cardType = cardType;
     }
 
+    public Card(Long id, String question, Image imageData, Deck deck, CardType cardType) {
+        this.id = id;
+        this.question = question;
+        this.imageData = imageData;
+        this.deck = deck;
+        this.cardType = cardType;
+    }
+
     public Card() {
     }
 
@@ -67,4 +75,12 @@ public class Card {
     public Card cloneWithDifferentDeck(Deck newDeck) {
         return new Card(this.question, this.imageData, newDeck, this.cardType);
     }
+
+    public Card updateCard(String question, Image newImage) {
+        return new Card(this.id, question, newImage, this.deck, this.cardType);
+    }
+    public Card updateCard(String question) {
+        return new Card(this.id, question, this.imageData, this.deck, this.cardType);
+    }
+
 }
