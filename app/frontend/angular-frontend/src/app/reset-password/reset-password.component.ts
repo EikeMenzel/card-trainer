@@ -47,6 +47,7 @@ export class ResetPasswordComponent {
       this.userService.requestPasswordReset(newPw, token, email).subscribe({
         next: res => {
           this.toast.showSuccessToast("Password Reset", "Your password reset was a success Have fun with your account and happy learning ❤️")
+          this.router.navigate(["/login"]);
           this.isLoading = false
         },
         error: err => {
