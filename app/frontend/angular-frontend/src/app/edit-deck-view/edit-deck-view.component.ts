@@ -48,10 +48,6 @@ export class EditDeckViewComponent implements OnInit {
     })
   }
 
-  addItem() {
-    // TODO Redirect to edit card screen for new question
-  }
-
   toggleDeleteItem() {
     this.showDelete = !this.showDelete
   }

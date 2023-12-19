@@ -1,0 +1,8 @@
+{
+  "cardDTO": {
+    "question": "I am just a Lovely Test",
+    "imagePath": "BackendEntwurf.drawio(5).png"
+  },
+  "imagePath": "BackendEntwurf.drawio(5).png",
+  "textAnswer": "Test"
+}

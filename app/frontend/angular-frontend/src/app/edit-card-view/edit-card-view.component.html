@@ -1,15 +1,22 @@
 <app-base-page>
+
   <div class="edit-card container mt-5">
     <div class="edit-card-form mt-2">
-
+      <div>
+        <button class="btn" [routerLink]="'/deck/' + this.deckId + '/edit'">
+          <fa-icon [icon]="faArrowLeft"></fa-icon>
+          <span>Back to List</span>
+        </button>
+      </div>
       <form (ngSubmit)="saveCardToBackend()">
 
         <!-- Card type selection -->
         <div class="form-group customized-form-group row mb-3 mt-4 align-items-center">
-          <label f or="cardTypeSelect" class="col-sm-2 col-form-label customized-col-form-label">Card type</label>
+          <label for="cardTypeSelect" class="col-sm-2 col-form-label customized-col-form-label">Card type</label>
           <div class="col-sm-8">
-            <select class="form-control customized-form-control" id="cardTypeSelect" [(ngModel)]="card.type"
-                    name="cardType">
+            <select class="form-control customized-form-control" id="cardTypeSelect"
+                    (change)="updateCardType(cardTypeInput)" #cardTypeInput
+                    name="cardType" [disabled]="this.cardId != 'new'">
               <option value="basic">Basic</option>
               <option value="multipleChoice">Multiple Choice</option>
             </select>
@@ -17,19 +24,26 @@
         </div>
 
         <!-- Content for 'Basic' cards -->
-        <div *ngIf="card.type == 'basic'">
+        <div *ngIf="isBasicCard">
 
           <!-- Card front input -->
           <div class="form-group row mb-4 align-items-center">
             <div class="col-sm-2 col-form-label">Add your question</div>
             <div class="col-sm-8">
-              <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard" [(ngModel)]="card.front"
+              <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard"
+                        [(ngModel)]="cardDTO.question"
                         name="cardFront"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
-              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal()">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
                 <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
+              <div class="oldImgDisplayWrapper" *ngIf="this.questionImgFromBackend">
+                <img class="oldImgDisplay" [src]="this.questionImgFromBackend" width="50" height="50" alt="Uploaded Img">
+                <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
+                  <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                </a>
+              </div>
             </div>
           </div>
           <hr>
@@ -38,29 +52,35 @@
           <div class="form-group row mb-2 mt-4 align-items-center">
             <div class="col-sm-2 col-form-label">Add the answer</div>
             <div class="col-sm-8">
-              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard" [(ngModel)]="card.back"
+              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard" [(ngModel)]="basicAnswer"
                         name="cardBack"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
-              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal()">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(1)">
                 <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
+              <div class="oldImgDisplayWrapper" *ngIf="this.answerImgFromBackend">
+                <img class="oldImgDisplay" [src]="this.answerImgFromBackend" width="50" height="50" alt="Uploaded Img">
+                <a class="deleteOldImg" (click)="deleteImgBasicAnswer()">
+                  <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Content for 'Multiple Choice' cards -->
-        <div *ngIf="card.type === 'multipleChoice'">
+        <div *ngIf="!isBasicCard">
 
           <!-- Card front input -->
           <div class="form-group row mb-4 align-items-center">
             <div class="col-sm-2 col-form-label">Add your question</div>
             <div class="col-sm-8">
-              <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="card.front"
+              <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="cardDTO.question"
                         name="cardFront"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
-              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal()">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
                 <i class="fa fa-upload"></i>
                 <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
               </button>
@@ -69,7 +89,7 @@
           <hr>
 
           <!-- Options for Multiple Choice -->
-          <div class="form-group" *ngFor="let option of card.options; let i = index">
+          <div class="form-group" *ngFor="let answer of choiceAnswers; let i = index">
             <div class="row mt-4 align-items-center">
               <!-- Option label -->
               <div class="col-sm-2 col-form-label">
@@ -78,13 +98,13 @@
               <!-- Textarea for the option -->
               <div class="col-sm-6">
                 <textarea rows="10" cols="40" type="text" class="form-control custom-textarea-multiple-choice"
-                          [ngModel]="option.text"
+                          [ngModel]="answer.answer"
                           (ngModelChange)="updateOptionText(i, $event)" name="option{{i}}"></textarea>
               </div>
               <!-- Upload image button and delete option button -->
               <div class="col-sm-4 mt-2 d-flex align-items-center">
                 <!-- Upload image button -->
-                <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal()">
+                <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(i)">
                   <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
                 </button>
                 <!-- Delete option button -->
@@ -99,11 +119,12 @@
               <div class="col-sm-2">
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                         [(ngModel)]="option.correct">
+                         [(ngModel)]="answer.isRightAnswer">
                   <label class="form-check-label" for="flexSwitchCheckDefault">Correct answer</label>
                 </div>
               </div>
             </div>
+
           </div>
 
           <!-- Button to add more options -->
@@ -133,7 +154,7 @@
             <div class="modal-header">
               <h5 class="modal-title" id="uploadModalLabel">Upload image</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                      (click)="clearUploadedFiles()"></button>
+                      (click)="closeModal()"></button>
             </div>
             <div class="modal-body upload-image-modal-body">
               <!-- Drag & Drop Area -->
@@ -141,28 +162,24 @@
                 Drag & Drop files here or
                 <a href="#" class="browse-link" (click)="openFilePicker($event)">click to browse</a>
               </div>
-              <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onFileSelected($event)" hidden>
+              <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onFileSelected($event, fileInput)"
+                     hidden>
               <div *ngIf="imageUploadErrorMessage" class="alert alert-danger mb-2 mt-3 alert-message">
                 {{ imageUploadErrorMessage }}
               </div>
             </div>
             <div class="icon-container">
-              <ul class="file-list">
-                <li *ngFor="let file of uploadedFiles; let i = index">
-                  <div class="file-info">
-                    <fa-icon class="nav-icon fa-xl" [icon]="faFileImage"></fa-icon>
-                    <span class="file-name">{{ file.name }}</span>
-                    <!-- Image Preview
-                    <img [src]="file.url" alt="{{ file.name }}" style="width: 50px; height: auto;">
-                    -->
-                  </div>
-                  <fa-icon class="nav-icon fa-xl fa-solid" (click)="deleteFile(i)" [icon]="faTrash"></fa-icon>
-                </li>
-              </ul>
+              <div class="file-list" *ngIf="this.selectedFile != null">
+                <div class="file-info">
+                  <fa-icon class="nav-icon fa-xl" [icon]="faFileImage"></fa-icon>
+                  <span class="file-name">{{ this.selectedFile.name }}</span>
+                </div>
+                <fa-icon class="nav-icon fa-xl fa-solid" (click)="deleteFile()" [icon]="faTrash"></fa-icon>
+              </div>
             </div>
             <div class="modal-footer upload-image-modal-footer">
               <button type="button" class="btn image-upload-done-button btn-square btn-rounded" data-bs-dismiss="modal"
-                      aria-label="Close" (click)="uploadImageToBackend()">
+                      aria-label="Close" (click)="confirmImageSave()">
                 Done
               </button>
             </div>
@@ -179,7 +196,8 @@
     <div class="modal-content">
       <div class="modal-header welcome-modal-header">
         <h5 class="modal-title" id="welcomeModalLabel">Hey, Simon here!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="dontShowSimonAgainOnPageLoad()"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                (click)="dontShowSimonAgainOnPageLoad()"></button>
       </div>
       <div class="modal-body welcome-modal-body">
         <img src="assets/83ba6d2d-99a0-4d7f-bfd5-c75da6b3e209-removebg-preview.png" alt="Simon the frog"
