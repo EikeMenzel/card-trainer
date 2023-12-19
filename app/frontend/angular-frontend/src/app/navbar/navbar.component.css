@@ -44,6 +44,10 @@
   cursor: pointer;
 }
 
+.dropdown-item:active {
+  background-color: var(--primary-color);
+}
+
 
 @media (max-width: 768px) {
   .navbar-nav {
