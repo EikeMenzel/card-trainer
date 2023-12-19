@@ -10,6 +10,7 @@ import com.service.cardsservice.services.DeckService;
 import com.service.cardsservice.services.ExportService;
 import com.service.cardsservice.services.ImportService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +117,7 @@ public class DeckController {
     }
 
     @PostMapping("/{deckId}/share")
-    public ResponseEntity<?> sendShareDeckEmail(@RequestHeader Long userId, @PathVariable Long deckId, @RequestBody MailDTO mailDTO) {
+    public ResponseEntity<?> sendShareDeckEmail(@RequestHeader Long userId, @PathVariable Long deckId, @Valid @RequestBody MailDTO mailDTO) {
         if(dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
             return ResponseEntity.notFound().build();
 
@@ -130,7 +131,7 @@ public class DeckController {
 
     //Needs to be a get-mapping, because you can't execute Javascript code in a e-mail
     @GetMapping("/share/{token}")
-    public ResponseEntity<?> copySharedDeck(@PathVariable String token) {
+    public ResponseEntity<?> copySharedDeck(@PathVariable @Size(min = 36, max = 50) String token) {
         var httpStatusCode = dbQueryService.shareDeck(token);
         if(httpStatusCode == HttpStatus.CREATED)
             return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(GATEWAY_PATH + "/")).build();

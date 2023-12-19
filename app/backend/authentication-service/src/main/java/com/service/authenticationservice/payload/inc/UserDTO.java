@@ -1,13 +1,16 @@
 package com.service.authenticationservice.payload.inc;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
+
 public class UserDTO {
-    private Long id;
-    private String username;
-    private String email;
-    private String password;
+    @Min(value = 0) private Long id;
+    @Size(min = 4, max = 30) private String username;
+    @Size(min = 6, max = 30) private String email;
+    @Size(min = 8, max = 72) private String password;
     private boolean isVerify;
 
-    public UserDTO(Long id, String username, String email, String password, boolean isVerify) {
+    public UserDTO(@Min(value = 0) Long id, @Size(min = 4, max = 30) String username, @Size(min = 6, max = 64) String email, @Size(min = 8, max = 72) String password, boolean isVerify) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -15,7 +18,7 @@ public class UserDTO {
         this.isVerify = isVerify;
     }
 
-    public UserDTO(String username, String email, String password, boolean isVerify) {
+    public UserDTO(@Size(min = 4, max = 30) String username, @Size(min = 6, max = 64) String email, @Size(min = 8, max = 72) String password, boolean isVerify) {
         this.username = username;
         this.email = email;
         this.password = password;
