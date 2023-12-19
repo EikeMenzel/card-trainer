@@ -70,3 +70,34 @@ a:hover {
     text-align: left;
     width: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .login-container {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  form input, button {
+    width: 100%;
+    margin: 8px 0;
+  }
+}
+
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .login-container {
+    width: 70%;
+  }
+
+  form input, button {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
+
+
+@media screen and (min-width: 1025px) {
+  .login-container {
+    width: 400px;
+  }
+}
