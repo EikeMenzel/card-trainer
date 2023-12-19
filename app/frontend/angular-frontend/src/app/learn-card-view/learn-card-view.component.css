@@ -1,0 +1,433 @@
+.learn-card-view {
+  font-size: 22px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.card-container {
+  position: relative;
+  width: 80vw;
+  height: 65vh;
+  perspective: 1000px;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scrollable-content {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 20px;
+  -webkit-overflow-scrolling: touch; /* for smooth scrolling on iOS devices */
+  scrollbar-color: var(--primary-color) var(--primary-color); /* Standard scrollbar styles (for Firefox) */
+  scrollbar-width: thin;
+}
+
+.scrollable-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+  background: #babac0;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.flip-card {
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+
+
+.flip-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.flip-card-front,
+.flip-card-back {
+  background-color: #F0FDEE;
+  color: black;
+  border: 1px solid #F0FDEE;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+.text-container {
+  flex: 2;
+  text-align: center;
+  margin-right: 30px;
+}
+
+.img-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img {
+  width: 30vw;
+  max-width: 100%;
+  height: auto;
+  margin-left: 30px;
+  margin-right: 30px;
+  border-radius: 10px;
+}
+
+.rotate-button-turn-to-back,
+.rotate-button-turn-to-front {
+  color: var(--primary-color);
+  position: absolute;
+  background: transparent;
+  border: none;
+  top: 20px;
+  left: 10px;
+}
+
+.feedback-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.feedback-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.button-easy,
+.button-ok,
+.button-kinda-difficult,
+.button-difficult,
+.button-I-guessed,
+.button-no-clue {
+  background-repeat: no-repeat;
+  background-position: center left;
+  padding-left: 50px;
+  transition: background-color 0.3s;
+}
+
+.button-easy {
+  background-color: #cce5ff;
+  background-image: url('https://openmoji.org/data/black/svg/1F604.svg');
+}
+
+.button-easy:active {
+  background-color: #cce5ff;
+  transform: scale(0.98);
+}
+
+.button-ok {
+  background-color: #ccffcc;
+  background-image: url('https://openmoji.org/data/black/svg/1F60A.svg');
+}
+
+.button-ok:active {
+  background-color: #ccffcc;
+  transform: scale(0.98);
+}
+
+.button-kinda-difficult {
+  background-color: #fff2cc;
+  background-image: url('https://openmoji.org/data/black/svg/1F610.svg');
+}
+
+.button-kinda-difficult:active {
+  background-color: #fff2cc;
+  transform: scale(0.98);
+}
+
+.button-difficult {
+  background-color: #FAC898;
+  background-image: url('https://openmoji.org/data/black/svg/1F914.svg');
+}
+
+.button-difficult:active {
+  background-color: #FAC898;
+  transform: scale(0.98);
+}
+
+.button-I-guessed {
+  background-color: #FFB8A9;
+  background-image: url('https://openmoji.org/data/black/svg/1F630.svg');
+}
+
+.button-I-guessed:active {
+  background-color: #FFB8A9;
+  transform: scale(0.98);
+}
+
+.button-no-clue {
+  background-color: #E96954;
+  background-image: url('https://openmoji.org/data/black/svg/1F613.svg');
+}
+
+.button-no-clue:active {
+  background-color: #E96954;
+  transform: scale(0.98);
+}
+
+.progress-container {
+  width: 80%;
+  margin: auto;
+}
+
+.custom-progress {
+  background-color: var(--primary-color);
+}
+
+.customized-modal-width {
+  max-width: 400px;
+}
+
+.customized-modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.motivation-modal-body {
+  text-align: center;
+}
+
+.motivation-modal-header {
+  background-color: #F8FFF8;
+}
+
+.img-fox {
+  max-width: 50%;
+  height: auto;
+}
+
+.motivation-modal-body p {
+  margin-top: 20px;
+}
+
+.choices-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 600px;
+  border: none;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin-bottom: 10px;
+  margin-right: 5px;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.wrong-answer {
+  opacity: 0.5;
+}
+
+.choice-image-container {
+  height: 20vh;
+  width: 30vw;
+}
+
+.choice-image {
+  max-height: 100%;
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.choice-label-container {
+  text-align: center;
+}
+
+.line-container {
+  text-align: center;
+  position: relative;
+  margin: 10px 0;
+}
+
+.faded-line {
+  border: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+  width: 80%;
+  margin: 0 auto;
+}
+
+.line-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #F0FDEE;
+  color: var(--primary-color);
+  padding: 0 10px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .flip-card {
+    width: 90%;
+    margin: auto;
+    position: relative;
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .flip-card-back {
+    transform: translate(-50%, -50%) rotateY(180deg);
+  }
+
+  .learn-card-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .img-body,
+  .text-container {
+    margin-top: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .img {
+    width: 80vw;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+
+  .choices-wrapper {
+    margin-top: 20px;
+  }
+
+  .choice-image-container {
+    margin: 10px;
+  }
+
+  .choice-image {
+    width: 80%;
+    max-width: calc(100% - 20px);
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .progress-container {
+    width: calc(100% - 40px);
+    margin-top: 0;
+  }
+
+  .feedback-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .feedback-button {
+    width: 100px; /* Set a fixed width for the buttons */
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 4px;
+    justify-content: center;
+    height: 65px;
+  }
+
+  .button-easy,
+  .button-ok,
+  .button-kinda-difficult,
+  .button-difficult,
+  .button-I-guessed,
+  .button-no-clue {
+    background-image: none;
+    padding-left: 20px;
+  }
+}

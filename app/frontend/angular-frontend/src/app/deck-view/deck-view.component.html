@@ -30,7 +30,7 @@
           </button>
         </div>
         <div class="col mt-2 align-self-center">
-          <button class="custom-session-button fs-2" [disabled]="deckCardsLeft===0" [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">Start Learn Session</button>
+          <button class="custom-session-button fs-2" routerLink="./learn" [disabled]="deckCardsLeft===0" [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">Start Learn Session</button>
           <br>
           <button class="custom-session-button fs-3 disabled-function-color" disabled>Start Peek Session</button>
         </div>
