@@ -22,9 +22,9 @@ export class ForgotPasswordComponent {
 
   isValidEmail(email: string): boolean {
     const emailRegex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}(\.[a-zA-Z]+)?$/);
-    return emailRegex.test(email);
+    return emailRegex.test(email) && email.length <= 64;
   }
-
+  
   onSubmit(email: string) {
     if (!this.isValidEmail(email)) {
       return;
