@@ -9,6 +9,8 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
 import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import {HttpStatusCode} from "@angular/common/http";
+import {defaults} from "chart.js";
 
 @Component({
   selector: 'app-deck-list-view',
@@ -43,6 +45,7 @@ export class DeckListViewComponent implements OnInit {
 
   ngOnInit() {
     if (!this.userService.isLoggedIn) {
+      this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.")
       this.router.navigate(["/login"])
       return;
     }
@@ -57,8 +60,23 @@ export class DeckListViewComponent implements OnInit {
         this.deckList = value.body ?? [];
       },
       error: err => {
-        console.log(err)
-        this.toast.showErrorToast("Loading Error", "The Decks could not be loaded")
+        const statusCode = err.status;
+        switch (statusCode) {
+          case HttpStatusCode.InternalServerError:
+            this.toast.showErrorToast("Error", "Server cannot be reached");
+            break;
+          case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
+            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.userService.logout();
+            this.router.navigate(["/login"])
+            break;
+          case HttpStatusCode.NoContent:
+            this.toast.showErrorToast("Error", "No Deck was found")
+            break;
+          case defaults:
+            this.toast.showErrorToast("Error", "Deck could not be Updated")
+            break;
+        }
       }
     })
   }
@@ -82,12 +100,35 @@ export class DeckListViewComponent implements OnInit {
   addedNewDeck() {
     const newDeckName = (document.getElementById("add-new-item-field") as HTMLInputElement).value;
     if (newDeckName == "") {
+      this.toast.showErrorToast("Error","Deck Name can not be Empty")
       return
     }
+
+    if(newDeckName.length > 128){
+      this.toast.showErrorToast("Error","No more then 128 Character allowed")
+      return;
+    }
+
     this.cardService.newDecks(newDeckName).subscribe({
       next: res => {
         if (res.status == 201) {
           this.updateDecks()
+        }
+      },
+      error: err => {
+        const statusCode = err.status;
+        switch (statusCode) {
+          case HttpStatusCode.InternalServerError:
+            this.toast.showErrorToast("Error", "Server cannot be reached");
+            break;
+          case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
+            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.userService.logout();
+            this.router.navigate(["/login"])
+            break;
+          case defaults:
+            this.toast.showErrorToast("Error", "Could not create a new Deck")
+            break;
         }
       }
     })
@@ -100,6 +141,22 @@ export class DeckListViewComponent implements OnInit {
     this.cardService.deleteDeck(id).subscribe({
       complete: () => {
         this.deckList = this.deckList.filter(value => value.deckId != id);
+      },
+      error: err => {
+        const statusCode = err.status;
+        switch (statusCode) {
+          case HttpStatusCode.InternalServerError:
+            this.toast.showErrorToast("Error", "Server cannot be reached");
+            break;
+          case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
+            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.userService.logout();
+            this.router.navigate(["/login"])
+            break;
+          case defaults:
+            this.toast.showErrorToast("Loading Error", "Deck could not be deleted")
+            break;
+        }
       }
     })
   }
@@ -109,7 +166,7 @@ export class DeckListViewComponent implements OnInit {
   }
 
   onSubmitImportDeck(event: any) {
-
+    this.buttonIsPressed = true;
     if (!this.selectedFile) {
       return;
     }
@@ -119,11 +176,29 @@ export class DeckListViewComponent implements OnInit {
     this.cardService.importDeckUpload(formData).subscribe({
       next: value => {
         this.toast.showSuccessToast("Import Deck", "Your deck has been imported successfully");
+        this.buttonIsPressed = false;
         this.updateDecks();
         this.modalRef?.close()
       },
       error: err => {
-        this.toast.showErrorToast("Import deck", "Your deck could not be imported. Please make sure you are using a valid deck.zip 😊")
+        const statusCode = err.status;
+        switch (statusCode) {
+          case HttpStatusCode.InternalServerError:
+            this.toast.showErrorToast("Error", "Server cannot be reached");
+            break;
+          case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
+            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.userService.logout();
+            this.router.navigate(["/login"])
+            break;
+          case HttpStatusCode.UnprocessableEntity:
+            this.toast.showErrorToast("Error", "Wrong format")
+            break;
+          case defaults:
+            this.toast.showErrorToast("Error", "Deck could not be imported")
+            break;
+        }
+        this.buttonIsPressed = false;
       }
     });
   }
@@ -134,6 +209,5 @@ export class DeckListViewComponent implements OnInit {
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
-    console.log(this.selectedFile)
   }
 }
