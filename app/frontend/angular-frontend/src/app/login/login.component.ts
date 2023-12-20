@@ -21,8 +21,8 @@ import {UserService} from "../services/user-service/user.service";
 })
 export class LoginComponent {
 
-  public emailBorder: string = "white";
-  public passwordBorder: string = "white";
+  public emailBorder: string = "#F0FDEE";
+  public passwordBorder: string = "#F0FDEE";
 
   constructor(
     private http: HttpClient,
@@ -34,25 +34,27 @@ export class LoginComponent {
   }
 
   private errorPassword() {
-    this.passwordBorder = "red"
+    this.passwordBorder = "#FF6961"
     setTimeout(() => {
-      this.passwordBorder = "white"
+      this.passwordBorder = "#F0FDEE"
     }, 3000)
   }
 
   private errorEmail() {
-    this.emailBorder = "red"
+    this.emailBorder = "#FF6961"
     setTimeout(() => {
-      this.emailBorder = "white"
+      this.emailBorder = "#F0FDEE"
     }, 3000)
   }
 
   onSubmit(loginForm: NgForm) {
     if (!loginForm.valid) {
+      this.toastService.showErrorToast("Error","Please Enter a valid E-Mail and Password")
       this.errorEmail()
       this.errorPassword()
       return;
     }
+
     if (loginForm.value["remember"] == "") {
       loginForm.value["remember"] = false;
     }
