@@ -45,7 +45,6 @@ export class DeckListViewComponent implements OnInit {
 
   ngOnInit() {
     if (!this.userService.isLoggedIn) {
-      this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.")
       this.router.navigate(["/login"])
       return;
     }
