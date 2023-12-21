@@ -33,10 +33,10 @@ export class RegisterComponent {
   loginSuccess = false;
 
   private http: HttpClient
-  public emailBorder: string = "#F0FDEE";
-  public usernameBorder: string = "#F0FDEE"
-  public passwordBorder: string = "#F0FDEE";
-  public passwordRepeatBorder: string = "#F0FDEE"
+  public emailBorder: string = "var(--bg-main-color)";
+  public usernameBorder: string = "var(--bg-main-color)";
+  public passwordBorder: string = "var(--bg-main-color)";
+  public passwordRepeatBorder: string = "var(--bg-main-color)";
 
   public buttonIsPressed:boolean = false;
 
@@ -52,10 +52,10 @@ export class RegisterComponent {
     const password: String = registerForm.value["password"]
     const passwordRepeat: String = registerForm.value["passwordRepeat"]
 
-    this.emailBorder = "#F0FDEE";
-    this.usernameBorder = "#F0FDEE"
-    this.passwordBorder = "#F0FDEE";
-    this.passwordRepeatBorder = "#F0FDEE"
+    this.emailBorder = "var(--bg-main-color)";
+    this.usernameBorder = "var(--bg-main-color)";
+    this.passwordBorder = "var(--bg-main-color)";
+    this.passwordRepeatBorder = "var(--bg-main-color)";
 
     if (password != "" && password == passwordRepeat && email != "" && username != "") {
       const registerRequest: RegisterRequestDTO = {
@@ -81,14 +81,14 @@ export class RegisterComponent {
               this.toastService.showErrorToast("Error", message.response)
               switch (message.status) {
                 case 1:
-                  this.emailBorder = "#FF6961";
+                  this.emailBorder = "var(--primary-error-color)";
                   break;
                 case 2:
-                  this.usernameBorder = "#FF6961";
+                  this.usernameBorder = "var(--primary-error-color)";
                   break;
                 case 3:
-                  this.passwordBorder = "#FF6961";
-                  this.passwordRepeatBorder = "#FF6961";
+                  this.passwordBorder = "var(--primary-error-color)";
+                  this.passwordRepeatBorder = "var(--primary-error-color)";
                   break;
               }
             }
@@ -103,20 +103,20 @@ export class RegisterComponent {
         })
     } else {
       if (email == "") {
-        this.emailBorder = "#FF6961"
+        this.emailBorder = "var(--primary-error-color)";
         this.toastService.showWarningToast("Warning", "E-Mail cannot be empty");
       }
       if (username == "") {
-        this.usernameBorder = "#FF6961"
+        this.usernameBorder = "var(--primary-error-color)";
         this.toastService.showWarningToast("Warning", "Username cannot be empty");
       }
       if (password == "") {
-        this.passwordBorder = "#FF6961"
+        this.passwordBorder = "var(--primary-error-color)";
         this.toastService.showWarningToast("Warning", "Password cannot be empty");
       }
       if (password != passwordRepeat) {
-        this.passwordBorder = "#FF6961"
-        this.passwordRepeatBorder = "#FF6961"
+        this.passwordBorder = "var(--primary-error-color)";
+        this.passwordRepeatBorder = "var(--primary-error-color)";
         this.toastService.showWarningToast("Warning", "Passwords do not match");
       }
       this.buttonIsPressed = false;

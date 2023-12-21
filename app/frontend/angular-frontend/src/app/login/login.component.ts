@@ -21,8 +21,8 @@ import {UserService} from "../services/user-service/user.service";
 })
 export class LoginComponent {
 
-  public emailBorder: string = "#F0FDEE";
-  public passwordBorder: string = "#F0FDEE";
+  public emailBorder: string = "var(--bg-main-color)";
+  public passwordBorder: string = "var(--bg-main-color)";
 
   constructor(
     private http: HttpClient,
@@ -34,16 +34,16 @@ export class LoginComponent {
   }
 
   private errorPassword() {
-    this.passwordBorder = "#FF6961"
+    this.passwordBorder = "var(--primary-error-color)";
     setTimeout(() => {
-      this.passwordBorder = "#F0FDEE"
+      this.passwordBorder = "var(--bg-main-color)";
     }, 3000)
   }
 
   private errorEmail() {
-    this.emailBorder = "#FF6961"
+    this.emailBorder = "var(--primary-error-color)";
     setTimeout(() => {
-      this.emailBorder = "#F0FDEE"
+      this.emailBorder = "var(--bg-main-color)";
     }, 3000)
   }
 

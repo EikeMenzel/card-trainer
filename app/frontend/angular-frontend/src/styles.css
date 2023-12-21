@@ -12,6 +12,7 @@
     --primary-color: #5bc560;
     --blank-color: white;
     --bg-main-color: #F0FDEE;
+    --primary-error-color: #FF6961;
 }
 
 p, span, h1, h2, h3, h4, h5, h6 {
