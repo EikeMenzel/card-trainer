@@ -33,10 +33,10 @@ export class RegisterComponent {
   loginSuccess = false;
 
   private http: HttpClient
-  public emailBorder: string = "";
-  public usernameBorder: string = "white"
-  public passwordBorder: string = "white";
-  public passwordRepeatBorder: string = "white"
+  public emailBorder: string = "#F0FDEE";
+  public usernameBorder: string = "#F0FDEE"
+  public passwordBorder: string = "#F0FDEE";
+  public passwordRepeatBorder: string = "#F0FDEE"
 
   public buttonIsPressed:boolean = false;
 
@@ -52,10 +52,10 @@ export class RegisterComponent {
     const password: String = registerForm.value["password"]
     const passwordRepeat: String = registerForm.value["passwordRepeat"]
 
-    this.emailBorder = "white";
-    this.usernameBorder = "white"
-    this.passwordBorder = "white";
-    this.passwordRepeatBorder = "white"
+    this.emailBorder = "#F0FDEE";
+    this.usernameBorder = "#F0FDEE"
+    this.passwordBorder = "#F0FDEE";
+    this.passwordRepeatBorder = "#F0FDEE"
 
     if (password != "" && password == passwordRepeat && email != "" && username != "") {
       const registerRequest: RegisterRequestDTO = {
@@ -81,14 +81,14 @@ export class RegisterComponent {
               this.toastService.showErrorToast("Error", message.response)
               switch (message.status) {
                 case 1:
-                  this.emailBorder = "red";
+                  this.emailBorder = "#FF6961";
                   break;
                 case 2:
-                  this.usernameBorder = "red";
+                  this.usernameBorder = "#FF6961";
                   break;
                 case 3:
-                  this.passwordBorder = "red";
-                  this.passwordRepeatBorder = "red";
+                  this.passwordBorder = "#FF6961";
+                  this.passwordRepeatBorder = "#FF6961";
                   break;
               }
             }
@@ -103,20 +103,20 @@ export class RegisterComponent {
         })
     } else {
       if (email == "") {
-        this.emailBorder = "red"
+        this.emailBorder = "#FF6961"
         this.toastService.showWarningToast("Warning", "E-Mail cannot be empty");
       }
       if (username == "") {
-        this.usernameBorder = "red"
+        this.usernameBorder = "#FF6961"
         this.toastService.showWarningToast("Warning", "Username cannot be empty");
       }
       if (password == "") {
-        this.passwordBorder = "red"
+        this.passwordBorder = "#FF6961"
         this.toastService.showWarningToast("Warning", "Password cannot be empty");
       }
       if (password != passwordRepeat) {
-        this.passwordBorder = "red"
-        this.passwordRepeatBorder = "red"
+        this.passwordBorder = "#FF6961"
+        this.passwordRepeatBorder = "#FF6961"
         this.toastService.showWarningToast("Warning", "Passwords do not match");
       }
       this.buttonIsPressed = false;
