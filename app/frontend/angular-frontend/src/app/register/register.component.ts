@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {HttpClient, HttpClientModule, HttpStatusCode} from "@angular/common/http";
-import {RouterLink} from "@angular/router";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 import {RegisterRequestDTO} from "../models/RegisterRequestDTO";
 import {NgIf} from "@angular/common";
 import {RegisterSuccessfulComponent} from "../register-successful/register-successful.component";
@@ -20,6 +20,7 @@ import {ToasterComponent} from "../toaster/toaster.component";
     NgIf,
     RegisterSuccessfulComponent,
     ToasterComponent,
+    RouterLinkActive,
   ],
   styleUrls: ['./register.component.css']
 })
@@ -32,7 +33,7 @@ export class RegisterComponent {
   loginSuccess = false;
 
   private http: HttpClient
-  public emailBorder: string = "white";
+  public emailBorder: string = "";
   public usernameBorder: string = "white"
   public passwordBorder: string = "white";
   public passwordRepeatBorder: string = "white"
@@ -91,7 +92,7 @@ export class RegisterComponent {
                   break;
               }
             }
-            
+
             if (statusCode == HttpStatusCode.InternalServerError) {
               this.toastService.showErrorToast("Error", "Server cannot be reached");
             }
