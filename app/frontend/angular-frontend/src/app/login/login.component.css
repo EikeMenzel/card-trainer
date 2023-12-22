@@ -70,6 +70,18 @@
   border-top: 0;
 }
 
+.toggle-password {
+  width: 50px;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: none;
+}
+
+.toggle-password:hover,
+.toggle-password:active {
+  color: var(--primary-color);
+}
+
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .login-container {

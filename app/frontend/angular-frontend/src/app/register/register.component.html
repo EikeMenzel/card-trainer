@@ -14,7 +14,6 @@
               Sign up by entering the information below.</p>
           </div>
 
-          <!--TODO: Add Error Handeling undernaeath Input Fields! -->
           <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
 
             <!-- Email -->
@@ -22,6 +21,9 @@
               <label for="email">Email</label>
               <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
                      placeholder="Enter your email" name="email" required ngModel>
+              <div *ngIf="(registerForm.controls['email']?.errors && (registerForm.controls['email'].touched || submitted))" class="error">
+                Please enter a valid email.
+              </div>
             </div>
 
             <!-- Username -->
@@ -29,22 +31,41 @@
               <label for="username">Username</label>
               <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
                      placeholder="Enter your username" name="username" required ngModel>
+              <div *ngIf="(registerForm.controls['username']?.errors && (registerForm.controls['username'].touched || submitted))" class="error">
+                Username is required.
+              </div>
             </div>
 
-            <!--TODO: Add Password Policy Hover Icon and Policy -->
-            <!--TODO: Add "Show Password" -->
-            <!-- Password -->
+            <!-- Password with toggle button inside the input field -->
             <div class="form-group mb-3">
-              <label for="password" class="mb-0">Password</label>
-              <input [style.border-color]="passwordBorder" type="password" class="form-control" id="password"
-                     placeholder="Enter your password" name="password" ngModel required>
+              <label for="password">Password</label>
+              <div class="input-group mb-3">
+                <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
+                <div class="input-group-append">
+                  <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
+                    <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="registerForm.controls['password']?.errors && (registerForm.controls['password'].touched || submitted)" class="error">
+                Password is required.
+              </div>
             </div>
 
             <!-- Password repeat -->
             <div class="form-group mb-4">
-              <label for="password-repeat" class="mb-0">Confirm Password</label>
-              <input [style.border-color]="passwordRepeatBorder" type="password" class="form-control" id="password-repeat"
-                     placeholder="Re-enter your password" name="password-repeat" ngModel required>
+              <label for="password-repeat">Confirm Password</label>
+              <div class="input-group mb-3">
+                <input [type]="showPasswordRepeat ? 'text' : 'password'" class="form-control" id="password-repeat" placeholder="Re-enter your password" name="password-repeat" ngModel required>
+                <div class="input-group-append">
+                  <button type="button" class="btn toggle-password" (click)="showPasswordRepeat = !showPasswordRepeat">
+                    <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="registerForm.controls['password-repeat']?.errors && (registerForm.controls['password-repeat'].touched || submitted)" class="error">
+                Password is required.
+              </div>
             </div>
 
             <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">

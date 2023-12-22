@@ -8,6 +8,8 @@ import {RegisterSuccessfulComponent} from "../register-successful/register-succe
 import {MessageResponseDTO} from "../models/MessageResponseDTO";
 import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-register',
@@ -21,6 +23,7 @@ import {ToasterComponent} from "../toaster/toaster.component";
     RegisterSuccessfulComponent,
     ToasterComponent,
     RouterLinkActive,
+    FontAwesomeModule
   ],
   styleUrls: ['./register.component.css']
 })
@@ -28,6 +31,7 @@ export class RegisterComponent {
 
   email: string = "";
   loginSuccess: boolean = false;
+  submitted = false;
 
   public emailBorder: string = "var(--bg-main-color)";
   public usernameBorder: string = "var(--bg-main-color)";
@@ -35,12 +39,20 @@ export class RegisterComponent {
   public passwordRepeatBorder: string = "var(--bg-main-color)";
 
   public buttonIsPressed:boolean = false;
+  showPassword: boolean = false;
+  showPasswordRepeat: boolean = false;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
-  constructor(private http: HttpClient, private toastService: ToastService, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private toastService: ToastService,
+    private router: Router) {
   }
 
   onSubmit(registerForm: NgForm) {
     this.buttonIsPressed = true;
+    this.submitted = true;
 
     const email: string = registerForm.value["email"]
     const username: string = registerForm.value["username"]

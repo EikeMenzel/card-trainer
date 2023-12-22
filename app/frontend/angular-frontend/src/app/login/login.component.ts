@@ -11,18 +11,33 @@ import {ToasterComponent} from "../toaster/toaster.component";
 import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../services/auth-service/auth-service";
 import {UserService} from "../services/user-service/user.service";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, HttpClientModule, ToasterComponent, RouterLinkActive]
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    HttpClientModule,
+    ToasterComponent,
+    RouterLinkActive,
+    FontAwesomeModule
+  ]
 })
 export class LoginComponent {
 
   public emailBorder: string = "var(--bg-main-color)";
   public passwordBorder: string = "var(--bg-main-color)";
+
+  showPassword: boolean = false;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+
 
   constructor(
     private http: HttpClient,
