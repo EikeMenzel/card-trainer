@@ -1,3 +1,4 @@
+<ng-container *ngIf="!loginSuccess; else other">
 <div class="register-container">
   <div class="row justify-content-center">
     <div class="col-12 col-md-6 col-lg-4">
@@ -12,6 +13,8 @@
               Don´t have an account yet? No worries!<br>
               Sign up by entering the information below.</p>
           </div>
+
+          <!--TODO: Add Error Handeling undernaeath Input Fields! -->
           <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
 
             <!-- Email -->
@@ -28,6 +31,8 @@
                      placeholder="Enter your username" name="username" required ngModel>
             </div>
 
+            <!--TODO: Add Password Policy Hover Icon and Policy -->
+            <!--TODO: Add "Show Password" -->
             <!-- Password -->
             <div class="form-group mb-3">
               <label for="password" class="mb-0">Password</label>
@@ -57,3 +62,8 @@
     </div>
   </div>
 </div>
+</ng-container>
+
+<ng-template #other>
+  <app-register-successful [userEmail]="email"></app-register-successful>
+</ng-template>

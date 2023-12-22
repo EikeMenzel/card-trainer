@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
 import {HttpClient, HttpClientModule, HttpStatusCode} from "@angular/common/http";
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {RegisterRequestDTO} from "../models/RegisterRequestDTO";
 import {NgIf} from "@angular/common";
 import {RegisterSuccessfulComponent} from "../register-successful/register-successful.component";
@@ -26,13 +26,9 @@ import {ToasterComponent} from "../toaster/toaster.component";
 })
 export class RegisterComponent {
 
-  email: string = '';
-  username: string = '';
-  password: string = '';
-  passwordRepeat: string = '';
-  loginSuccess = false;
+  email: string = "";
+  loginSuccess: boolean = false;
 
-  private http: HttpClient
   public emailBorder: string = "var(--bg-main-color)";
   public usernameBorder: string = "var(--bg-main-color)";
   public passwordBorder: string = "var(--bg-main-color)";
@@ -40,17 +36,16 @@ export class RegisterComponent {
 
   public buttonIsPressed:boolean = false;
 
-  constructor(http: HttpClient, private toastService: ToastService) {
-    this.http = http;
+  constructor(private http: HttpClient, private toastService: ToastService, private router: Router) {
   }
 
   onSubmit(registerForm: NgForm) {
     this.buttonIsPressed = true;
 
-    const email: String = registerForm.value["email"]
-    const username: String = registerForm.value["username"]
-    const password: String = registerForm.value["password"]
-    const passwordRepeat: String = registerForm.value["passwordRepeat"]
+    const email: string = registerForm.value["email"]
+    const username: string = registerForm.value["username"]
+    const password: string = registerForm.value["password"]
+    const passwordRepeat: string = registerForm.value["password-repeat"]
 
     this.emailBorder = "var(--bg-main-color)";
     this.usernameBorder = "var(--bg-main-color)";
@@ -59,15 +54,18 @@ export class RegisterComponent {
 
     if (password != "" && password == passwordRepeat && email != "" && username != "") {
       const registerRequest: RegisterRequestDTO = {
-        username: this.username,
-        email: this.email,
-        password: this.password
+        username: username,
+        email: email,
+        password: password
       };
+
+      this.email = email;
 
       this.http.post<RegisterRequestDTO>('/api/v1/register', registerRequest, {observe: 'response'})
         .subscribe({
           next: (response) => {
             if (response.status == HttpStatusCode.Created) {
+              this.buttonIsPressed = false;
               this.loginSuccess = true;
             }
           },
@@ -96,7 +94,6 @@ export class RegisterComponent {
             if (statusCode == HttpStatusCode.InternalServerError) {
               this.toastService.showErrorToast("Error", "Server cannot be reached");
             }
-
             this.buttonIsPressed = false;
             return;
           }
