@@ -39,7 +39,7 @@
             <!-- Password with toggle button inside the input field -->
             <div class="form-group mb-3">
               <label for="password">Password</label>
-              <div class="input-group mb-3">
+              <div class="input-group mb-1">
                 <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
                 <div class="input-group-append">
                   <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
@@ -53,9 +53,9 @@
             </div>
 
             <!-- Password repeat -->
-            <div class="form-group mb-4">
+            <div class="form-group mb-3">
               <label for="password-repeat">Confirm Password</label>
-              <div class="input-group mb-3">
+              <div class="input-group mb-1">
                 <input [type]="showPasswordRepeat ? 'text' : 'password'" class="form-control" id="password-repeat" placeholder="Re-enter your password" name="password-repeat" ngModel required>
                 <div class="input-group-append">
                   <button type="button" class="btn toggle-password" (click)="showPasswordRepeat = !showPasswordRepeat">
