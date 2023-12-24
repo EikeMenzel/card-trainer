@@ -39,6 +39,9 @@
             <!-- Password with toggle button inside the input field -->
             <div class="form-group mb-3">
               <label for="password">Password</label>
+              <span class="password-policy" title=
+                "A password must be at least 8 characters and a maximum of 72 characters long, must contain at least one number and one of the following special characters: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
+              </span>
               <div class="input-group mb-1">
                 <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
                 <div class="input-group-append">

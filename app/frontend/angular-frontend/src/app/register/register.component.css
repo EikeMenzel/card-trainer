@@ -48,9 +48,22 @@
   color: var(--primary-error-color);
   /* other styles */
 }
+
 .password-policy {
-  cursor: help;
   color: var(--primary-color);
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  cursor: help;
+  padding: 0;
+  border: 1px solid var(--primary-color);
+  border-radius: 50%;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: smaller;
+  vertical-align: middle;
 }
 
 .toggle-password {
