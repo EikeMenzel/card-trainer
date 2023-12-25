@@ -24,6 +24,7 @@
               <div *ngIf="(registerForm.controls['email']?.errors && (registerForm.controls['email'].touched || submitted))" class="error">
                 Please enter a valid email.
               </div>
+              <div *ngIf="getEmailError" class="error">{{errorCode}}</div>
             </div>
 
             <!-- Username -->
@@ -34,6 +35,7 @@
               <div *ngIf="(registerForm.controls['username']?.errors && (registerForm.controls['username'].touched || submitted))" class="error">
                 Username is required.
               </div>
+              <div *ngIf="getUsernameError" class="error">{{errorCode}}</div>
             </div>
 
             <!-- Password with toggle button inside the input field -->
@@ -43,7 +45,7 @@
                 "A password must be at least 8 characters and a maximum of 72 characters long, must contain at least one number and one of the following special characters: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
               </span>
               <div class="input-group mb-1">
-                <input [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
+                <input [style.border-color] = "passwordBorder" [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
                 <div class="input-group-append">
                   <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
                     <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
@@ -53,13 +55,14 @@
               <div *ngIf="registerForm.controls['password']?.errors && (registerForm.controls['password'].touched || submitted)" class="error">
                 Password is required.
               </div>
+              <div *ngIf="getPasswordError" class="error">{{errorCode}}</div>
             </div>
 
             <!-- Password repeat -->
             <div class="form-group mb-3">
               <label for="password-repeat">Confirm Password</label>
               <div class="input-group mb-1">
-                <input [type]="showPasswordRepeat ? 'text' : 'password'" class="form-control" id="password-repeat" placeholder="Re-enter your password" name="password-repeat" ngModel required>
+                <input [style.border-color] = "passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'" class="form-control" id="password-repeat" placeholder="Re-enter your password" name="password-repeat" ngModel required>
                 <div class="input-group-append">
                   <button type="button" class="btn toggle-password" (click)="showPasswordRepeat = !showPasswordRepeat">
                     <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
@@ -69,6 +72,7 @@
               <div *ngIf="registerForm.controls['password-repeat']?.errors && (registerForm.controls['password-repeat'].touched || submitted)" class="error">
                 Password is required.
               </div>
+              <div *ngIf="getPasswordRepeatError" class="error">{{errorCode}}</div>
             </div>
 
             <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">

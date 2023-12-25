@@ -33,12 +33,19 @@ export class RegisterComponent {
   loginSuccess: boolean = false;
   submitted = false;
 
-  public emailBorder: string = "var(--bg-main-color)";
-  public usernameBorder: string = "var(--bg-main-color)";
-  public passwordBorder: string = "var(--bg-main-color)";
-  public passwordRepeatBorder: string = "var(--bg-main-color)";
+  emailBorder: string = "var(--bg-main-color)";
+  usernameBorder: string = "var(--bg-main-color)";
+  passwordBorder: string = "var(--bg-main-color)";
+  passwordRepeatBorder: string = "var(--bg-main-color)";
 
-  public buttonIsPressed:boolean = false;
+  getEmailError: boolean = false;
+  getUsernameError: boolean = false;
+  getPasswordError: boolean = false;
+  getPasswordRepeatError: boolean = false;
+
+  errorCode: string = "";
+
+  buttonIsPressed:boolean = false;
   showPassword: boolean = false;
   showPasswordRepeat: boolean = false;
   faEye = faEye;
@@ -46,11 +53,17 @@ export class RegisterComponent {
 
   constructor(
     private http: HttpClient,
-    private toastService: ToastService,
-    private router: Router) {
+    private toastService: ToastService) {
   }
 
   onSubmit(registerForm: NgForm) {
+
+    this.getEmailError = false;
+    this.getUsernameError = false;
+    this.getPasswordError = false;
+    this.getPasswordRepeatError = false;
+    this.errorCode = ""
+
     this.buttonIsPressed = true;
     this.submitted = true;
 
@@ -87,18 +100,21 @@ export class RegisterComponent {
               response: error.error.message
             }
             const statusCode = error.status;
+            this.errorCode = message.response;
             if (statusCode == HttpStatusCode.Conflict || statusCode == HttpStatusCode.BadRequest) {
-              this.toastService.showErrorToast("Error", message.response)
               switch (message.status) {
                 case 1:
                   this.emailBorder = "var(--primary-error-color)";
+                  this.getEmailError = true;
                   break;
                 case 2:
                   this.usernameBorder = "var(--primary-error-color)";
+                  this.getUsernameError = true;
                   break;
                 case 3:
                   this.passwordBorder = "var(--primary-error-color)";
                   this.passwordRepeatBorder = "var(--primary-error-color)";
+                  this.getPasswordError = true;
                   break;
               }
             }
@@ -113,20 +129,21 @@ export class RegisterComponent {
     } else {
       if (email == "") {
         this.emailBorder = "var(--primary-error-color)";
-        this.toastService.showWarningToast("Warning", "E-Mail cannot be empty");
       }
       if (username == "") {
         this.usernameBorder = "var(--primary-error-color)";
-        this.toastService.showWarningToast("Warning", "Username cannot be empty");
       }
       if (password == "") {
         this.passwordBorder = "var(--primary-error-color)";
-        this.toastService.showWarningToast("Warning", "Password cannot be empty");
+      }
+      if (passwordRepeat == "") {
+        this.passwordRepeatBorder = "var(--primary-error-color)";
       }
       if (password != passwordRepeat) {
+        this.errorCode = "Please make sure the Passwords are the same!"
+        this.getPasswordRepeatError = true;
         this.passwordBorder = "var(--primary-error-color)";
         this.passwordRepeatBorder = "var(--primary-error-color)";
-        this.toastService.showWarningToast("Warning", "Passwords do not match");
       }
       this.buttonIsPressed = false;
     }
