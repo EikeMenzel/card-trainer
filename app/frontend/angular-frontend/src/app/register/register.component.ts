@@ -139,8 +139,8 @@ export class RegisterComponent {
       if (passwordRepeat == "") {
         this.passwordRepeatBorder = "var(--primary-error-color)";
       }
-      if (password != passwordRepeat) {
-        this.errorCode = "Please make sure the Passwords are the same!"
+      if (password != passwordRepeat && passwordRepeat != "") {
+        this.errorCode = "Please make sure the passwords are the same!"
         this.getPasswordRepeatError = true;
         this.passwordBorder = "var(--primary-error-color)";
         this.passwordRepeatBorder = "var(--primary-error-color)";

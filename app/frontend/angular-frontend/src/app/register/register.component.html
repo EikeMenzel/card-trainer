@@ -69,7 +69,7 @@
                   </button>
                 </div>
               </div>
-              <div *ngIf="registerForm.controls['password-repeat']?.errors && (registerForm.controls['password-repeat'].touched || submitted)" class="error">
+              <div *ngIf="registerForm.controls['password-repeat']?.errors && (registerForm.controls['password-repeat'].touched || submitted) && !getPasswordRepeatError" class="error">
                 Password is required.
               </div>
               <div *ngIf="getPasswordRepeatError" class="error">{{errorCode}}</div>
