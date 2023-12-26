@@ -10,6 +10,7 @@ import {EditDeckViewComponent} from "./edit-deck-view/edit-deck-view.component";
 import {EditCardViewComponent} from "./edit-card-view/edit-card-view.component";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {LearnCardViewComponent} from "./learn-card-view/learn-card-view.component";
+import {LearnSessionResultComponent} from "./learn-session-result/learn-session-result.component";
 
 
 
@@ -25,6 +26,7 @@ export const routes: Routes = [
   {path: '', component: DeckListViewComponent},
   {path: 'deck/:deck-id/learn', component: LearnCardViewComponent},
   {path:"suc", component: RegisterSuccessfulComponent},
+  {path: "session-result", component: LearnSessionResultComponent},
   {path: 'profile', component: UserProfileComponent},
   { path: '**', redirectTo: "" },
 ];

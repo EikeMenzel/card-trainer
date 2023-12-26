@@ -79,7 +79,7 @@
     align-items: center;
     justify-content: center;
   }
-  .card {
+  .session-result-card {
     width: 100%; /* Optional: Adjust the width of the card to fit smaller screens */
   }
   .profile-image {
