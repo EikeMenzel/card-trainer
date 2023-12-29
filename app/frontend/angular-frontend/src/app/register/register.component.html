@@ -1,95 +1,95 @@
 <ng-container *ngIf="!loginSuccess; else other">
-<div class="register-container">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card register-card">
-        <div class="card-body">
+  <div class="register-container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card register-card">
+          <div class="card-body">
 
-          <!-- Simon -->
-          <div class="text-center">
-            <img src="assets/fox3.png" alt="Profile Image" class="simon">
-            <h2 class="my-3">Hey!</h2>
-            <p>
-              Don´t have an account yet? No worries!<br>
-              Sign up by entering the information below.</p>
+            <!-- Simon -->
+            <div class="text-center">
+              <img src="assets/fox3.png" alt="Profile Image" class="simon">
+              <h2 class="my-3">Hey!</h2>
+              <p>
+                Don´t have an account yet? No worries!<br>
+                Sign up by entering the information below.</p>
+            </div>
+
+            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
+              <!-- Email -->
+              <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
+                       placeholder="Enter your email" name="email" (ngModelChange)="validateInput('email',emailValue.value)" required ngModel #emailValue>
+                <div class="error">
+                  {{emailError}}
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div class="form-group mb-3">
+                <label for="username">Username</label>
+                <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
+                       placeholder="Enter your username" name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
+                <div class="error">
+                  {{usernameError}}
+                </div>
+              </div>
+
+              <!-- Password with toggle button inside the input field -->
+              <div class="form-group mb-3">
+                <label for="password">Password</label>
+                <span class="password-policy" title=
+                  "A password must be at least 8 characters and a maximum of 72 characters long, must contain at least one number and one of the following special characters: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
+              </span>
+                <div class="input-group mb-1">
+                  <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'"
+                         class="form-control" placeholder="Enter your password" name="password" id="password" ngModel
+                         required (ngModelChange)="validateInput('password',passwordValue.value)" #passwordValue>
+                  <div class="input-group-append">
+                    <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
+                      <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="error">
+                  {{passwordError}}
+                </div>
+              </div>
+
+              <!-- Password repeat -->
+              <div class="form-group mb-3">
+                <label for="password-repeat">Confirm Password</label>
+                <div class="input-group mb-1">
+                  <input [style.border-color]="passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'"
+                         class="form-control" id="password-repeat" placeholder="Re-enter your password"
+                         name="password-repeat" ngModel required (ngModelChange)="validateInput('passwordRepeat',passwordRepValue.value)" #passwordRepValue>
+                  <div class="input-group-append">
+                    <button type="button" class="btn toggle-password"
+                            (click)="showPasswordRepeat = !showPasswordRepeat">
+                      <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="error">
+                  {{passwordRepeatError}}
+                </div>
+              </div>
+
+              <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">
+                <span *ngIf="!buttonIsPressed">Sign Up</span>
+                <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+              </button>
+            </form>
           </div>
 
-          <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
-
-            <!-- Email -->
-            <div class="form-group mb-3">
-              <label for="email">Email</label>
-              <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
-                     placeholder="Enter your email" name="email" required ngModel>
-              <div *ngIf="(registerForm.controls['email']?.errors && (registerForm.controls['email'].touched || submitted))" class="error">
-                Please enter a valid email.
-              </div>
-              <div *ngIf="getEmailError" class="error">{{errorCode}}</div>
-            </div>
-
-            <!-- Username -->
-            <div class="form-group mb-3">
-              <label for="username">Username</label>
-              <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
-                     placeholder="Enter your username" name="username" required ngModel>
-              <div *ngIf="(registerForm.controls['username']?.errors && (registerForm.controls['username'].touched || submitted))" class="error">
-                Username is required.
-              </div>
-              <div *ngIf="getUsernameError" class="error">{{errorCode}}</div>
-            </div>
-
-            <!-- Password with toggle button inside the input field -->
-            <div class="form-group mb-3">
-              <label for="password">Password</label>
-              <span class="password-policy" title=
-                "A password must be at least 8 characters and a maximum of 72 characters long, must contain at least one number and one of the following special characters: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
-              </span>
-              <div class="input-group mb-1">
-                <input [style.border-color] = "passwordBorder" [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
-                <div class="input-group-append">
-                  <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
-                    <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
-                  </button>
-                </div>
-              </div>
-              <div *ngIf="registerForm.controls['password']?.errors && (registerForm.controls['password'].touched || submitted)" class="error">
-                Password is required.
-              </div>
-              <div *ngIf="getPasswordError" class="error">{{errorCode}}</div>
-            </div>
-
-            <!-- Password repeat -->
-            <div class="form-group mb-3">
-              <label for="password-repeat">Confirm Password</label>
-              <div class="input-group mb-1">
-                <input [style.border-color] = "passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'" class="form-control" id="password-repeat" placeholder="Re-enter your password" name="password-repeat" ngModel required>
-                <div class="input-group-append">
-                  <button type="button" class="btn toggle-password" (click)="showPasswordRepeat = !showPasswordRepeat">
-                    <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
-                  </button>
-                </div>
-              </div>
-              <div *ngIf="registerForm.controls['password-repeat']?.errors && (registerForm.controls['password-repeat'].touched || submitted) && !getPasswordRepeatError" class="error">
-                Password is required.
-              </div>
-              <div *ngIf="getPasswordRepeatError" class="error">{{errorCode}}</div>
-            </div>
-
-            <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">
-              <span *ngIf="!buttonIsPressed">Sign Up</span>
-              <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
-            </button>
-          </form>
-        </div>
-
-        <!-- Login -->
-        <div class="card-footer text-center mb-4">
-          Already have an account? <a routerLink="/login" class="sign-in-link">Sign In</a>
+          <!-- Login -->
+          <div class="card-footer text-center mb-4">
+            Already have an account? <a routerLink="/login" class="sign-in-link">Sign In</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </ng-container>
 
 <ng-template #other>

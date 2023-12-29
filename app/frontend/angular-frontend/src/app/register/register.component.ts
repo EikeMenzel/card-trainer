@@ -8,8 +8,8 @@ import {RegisterSuccessfulComponent} from "../register-successful/register-succe
 import {MessageResponseDTO} from "../models/MessageResponseDTO";
 import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-register',
@@ -38,31 +38,71 @@ export class RegisterComponent {
   passwordBorder: string = "var(--bg-main-color)";
   passwordRepeatBorder: string = "var(--bg-main-color)";
 
-  getEmailError: boolean = false;
-  getUsernameError: boolean = false;
-  getPasswordError: boolean = false;
-  getPasswordRepeatError: boolean = false;
-
-  errorCode: string = "";
-
-  buttonIsPressed:boolean = false;
+  buttonIsPressed: boolean = false;
   showPassword: boolean = false;
   showPasswordRepeat: boolean = false;
   faEye = faEye;
   faEyeSlash = faEyeSlash;
+
+  emailError: string = "";
+  usernameError: string = "";
+  passwordError: string = "";
+  passwordRepeatError: string = "";
+
 
   constructor(
     private http: HttpClient,
     private toastService: ToastService) {
   }
 
+  validateInput(field: string,value: string) { //Checks if the Input fields are empty or not
+    switch (field) {
+      case 'email':
+        if (value != "") {
+          this.emailError = "";
+          this.emailBorder = "var(--bg-main-color)";
+        } else {
+          this.emailError = "Please enter a valid email.";
+          this.emailBorder = "var(--primary-error-color)";
+        }
+        break;
+      case 'username':
+        if (value != "") {
+          this.usernameError = "";
+          this.usernameBorder = "var(--bg-main-color)";
+        } else {
+          this.usernameError = "Username is required.";
+          this.usernameBorder = "var(--primary-error-color)";
+        }
+        break;
+      case 'password':
+        if (value != "") {
+          this.passwordError = "";
+          this.passwordBorder = "var(--bg-main-color)";
+        } else {
+          this.passwordError = "Password is required.";
+          this.passwordBorder = "var(--primary-error-color)";
+        }
+        break;
+      case 'passwordRepeat':
+        if (value != "") {
+          this.passwordRepeatError = "";
+          this.passwordRepeatBorder = "var(--bg-main-color)";
+        } else {
+          this.passwordRepeatError = "Password is required.";
+          this.passwordRepeatBorder = "var(--primary-error-color)";
+        }
+        break;
+    }
+  }
+
+
   onSubmit(registerForm: NgForm) {
 
-    this.getEmailError = false;
-    this.getUsernameError = false;
-    this.getPasswordError = false;
-    this.getPasswordRepeatError = false;
-    this.errorCode = ""
+    this.emailError = "";
+    this.usernameError = "";
+    this.passwordError = "";
+    this.passwordRepeatError = "";
 
     this.buttonIsPressed = true;
     this.submitted = true;
@@ -100,25 +140,23 @@ export class RegisterComponent {
               response: error.error.message
             }
             const statusCode = error.status;
-            this.errorCode = message.response;
             if (statusCode == HttpStatusCode.Conflict || statusCode == HttpStatusCode.BadRequest) {
               switch (message.status) {
                 case 1:
                   this.emailBorder = "var(--primary-error-color)";
-                  this.getEmailError = true;
+                  this.emailError = message.response;
                   break;
                 case 2:
                   this.usernameBorder = "var(--primary-error-color)";
-                  this.getUsernameError = true;
+                  this.usernameError = message.response;
                   break;
                 case 3:
                   this.passwordBorder = "var(--primary-error-color)";
                   this.passwordRepeatBorder = "var(--primary-error-color)";
-                  this.getPasswordError = true;
+                  this.passwordError = message.response;
                   break;
               }
             }
-
             if (statusCode == HttpStatusCode.InternalServerError) {
               this.toastService.showErrorToast("Error", "Server cannot be reached");
             }
@@ -126,24 +164,27 @@ export class RegisterComponent {
             return;
           }
         })
-    } else {
+    } else { //Checks if the Input Fields are empty by the time a Submit was sent
       if (email == "") {
         this.emailBorder = "var(--primary-error-color)";
+        this.emailError = "Please enter a valid email."
       }
       if (username == "") {
         this.usernameBorder = "var(--primary-error-color)";
+        this.usernameError = "Username is required."
       }
       if (password == "") {
         this.passwordBorder = "var(--primary-error-color)";
+        this.passwordError = "Password is required."
       }
       if (passwordRepeat == "") {
         this.passwordRepeatBorder = "var(--primary-error-color)";
+        this.passwordRepeatError = "Password is required."
       }
       if (password != passwordRepeat && passwordRepeat != "") {
-        this.errorCode = "Please make sure the passwords are the same!"
-        this.getPasswordRepeatError = true;
         this.passwordBorder = "var(--primary-error-color)";
         this.passwordRepeatBorder = "var(--primary-error-color)";
+        this.passwordRepeatError = "Passwords are not the same!"
       }
       this.buttonIsPressed = false;
     }
