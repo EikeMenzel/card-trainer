@@ -7,6 +7,7 @@ import com.service.cardsservice.payload.Views;
 import com.service.cardsservice.payload.in.*;
 import com.service.cardsservice.payload.in.export.ExportDTO;
 import com.service.cardsservice.payload.out.EmailRequestDTO;
+import com.service.cardsservice.payload.out.ImageDataDTO;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +73,11 @@ public class DbQueryService {
             String url = USER_DB_API_PATH + "/" + userId + "/learn-sessions/" + deckId + "/timestamp";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
-                    ?  Optional
-                        .ofNullable(responseEntity.getBody())
-                        .map(body -> body.replace("\"", ""))
-                        .map(OffsetDateTime::parse)
-                        .map(odt -> Timestamp.from(odt.toInstant()))
+                    ? Optional
+                    .ofNullable(responseEntity.getBody())
+                    .map(body -> body.replace("\"", ""))
+                    .map(OffsetDateTime::parse)
+                    .map(odt -> Timestamp.from(odt.toInstant()))
                     : Optional.empty();
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -90,7 +91,8 @@ public class DbQueryService {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
-                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Integer>>(){})
+                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<Integer>>() {
+            })
                     : List.of();
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -102,13 +104,15 @@ public class DbQueryService {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
-                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<DeckDTO>>(){})
+                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<DeckDTO>>() {
+            })
                     : List.of();
         } catch (Exception e) {
             logger.debug(e.getMessage());
             return List.of();
         }
     }
+
     public Optional<DeckDTO> getDeckByUserIdAndDeckId(Long userId, Long deckId) {
         try {
             String url = USER_DB_API_PATH + "/" + userId + "/decks/" + deckId;
@@ -121,6 +125,7 @@ public class DbQueryService {
             return Optional.empty();
         }
     }
+
     public HttpStatusCode saveDeck(Long userId, DeckNameDTO deckNameDTO) {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -169,7 +174,8 @@ public class DbQueryService {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/export", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
-                    ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<ExportDTO>(){}))
+                    ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<ExportDTO>() {
+            }))
                     : Optional.empty();
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -181,7 +187,8 @@ public class DbQueryService {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/histories", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
-                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<HistoryDTO>>(){})
+                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<HistoryDTO>>() {
+            })
                     : List.of();
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -193,8 +200,9 @@ public class DbQueryService {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/histories/" + historyId, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
-            ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<HistoryDetailDTO>>() {})
-            : Optional.empty();
+                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<HistoryDetailDTO>>() {
+            })
+                    : Optional.empty();
         } catch (Exception e) {
             logger.debug(e.getMessage());
             return Optional.empty();
@@ -205,7 +213,8 @@ public class DbQueryService {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
-                    ? Pair.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<CardDTO>>(){}), responseEntity.getStatusCode())
+                    ? Pair.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<CardDTO>>() {
+            }), responseEntity.getStatusCode())
                     : Pair.of(List.of(), responseEntity.getStatusCode());
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -258,7 +267,7 @@ public class DbQueryService {
 
     public HttpStatusCode sendShareDeckEmail(String email, Long deckId) {
         Optional<Long> userId = getUserIdByEmail(email);
-        if(userId.isEmpty())
+        if (userId.isEmpty())
             return ResponseEntity.notFound().build().getStatusCode();
 
         var headers = new HttpHeaders();
@@ -269,6 +278,7 @@ public class DbQueryService {
                 String.class);
         return responseEntity.getStatusCode();
     }
+
     public Optional<Long> getUserIdByEmail(String email) {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/emails/" + email + "/id", String.class);
@@ -340,6 +350,24 @@ public class DbQueryService {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             logger.debug(e.getMessage());
             return e.getStatusCode();
+        }
+    }
+
+    public Optional<Long> saveImage(Long userId, byte[] imageData) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                    DB_API_BASE_PATH + "/users/" + userId + "/images",
+                    new HttpEntity<>(new ImageDataDTO(imageData), headers),
+                    String.class);
+
+            return responseEntity.getStatusCode() == HttpStatus.CREATED
+                    ? Optional.of(Long.valueOf(Objects.requireNonNull(responseEntity.getBody())))
+                    : Optional.empty();
+        } catch (HttpServerErrorException e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
         }
     }
 }
