@@ -30,48 +30,16 @@ public class CardsService {
     }
 
     //saveCard
-    public HttpStatusCode saveCard(JsonNode cardNode, Long userId, Long deckId, MultipartFile[] images) {
+    public HttpStatusCode saveCard(JsonNode cardNode, Long userId, Long deckId) {
         try {
-            if (cardNode.has("textAnswer")) {
-                var textCard = objectMapper.treeToValue(cardNode, TextAnswerCardDTO.class);
-                return dbQueryService.saveCardByDeckIdAndUserId(userId, deckId, processTextAnswerCardDTO(textCard, images));
-            } else if (cardNode.has("choiceAnswers")) {
-                var multipleChoiceCardDTO = objectMapper.treeToValue(cardNode, MultipleChoiceCardDTO.class);
-                return dbQueryService.saveCardByDeckIdAndUserId(userId, deckId, processMultipleChoiceCardDTO(multipleChoiceCardDTO, images));
+            if (cardNode.has("textAnswer") || cardNode.has("choiceAnswers")) {
+                return dbQueryService.saveCardByDeckIdAndUserId(userId, deckId, cardNode);
             } else {
                 return HttpStatus.UNPROCESSABLE_ENTITY;
             }
         } catch (Exception e) {
             return HttpStatus.UNPROCESSABLE_ENTITY;
         }
-    }
-
-    public MultipleChoiceCardDTO processMultipleChoiceCardDTO(MultipleChoiceCardDTO multipleChoiceCardDTO, MultipartFile[] images) throws IOException {
-        Optional<MultipartFile> optionalMultipartFile = findMultiPartFileByName(images, multipleChoiceCardDTO.getCardDTO().getImagePath());
-        if (optionalMultipartFile.isPresent()) {
-            multipleChoiceCardDTO.getCardDTO().setImageData(optionalMultipartFile.get().getBytes());
-        }
-
-        for (var choiceAnswer : multipleChoiceCardDTO.getChoiceAnswers()) {
-            optionalMultipartFile = findMultiPartFileByName(images, choiceAnswer.getImagePath());
-            if (optionalMultipartFile.isPresent())
-                choiceAnswer.setImageData(optionalMultipartFile.get().getBytes());
-        }
-        return multipleChoiceCardDTO;
-    }
-
-    public TextAnswerCardDTO processTextAnswerCardDTO(TextAnswerCardDTO textAnswerCardDTO, MultipartFile[] images) throws IOException {
-        Optional<MultipartFile> optionalMultipartFile = findMultiPartFileByName(images, textAnswerCardDTO.getCardDTO().getImagePath());
-        if (optionalMultipartFile.isPresent()) {
-            textAnswerCardDTO.getCardDTO().setImageData(optionalMultipartFile.get().getBytes());
-        }
-
-        optionalMultipartFile = findMultiPartFileByName(images, textAnswerCardDTO.getImagePath());
-        if (optionalMultipartFile.isPresent()) {
-            textAnswerCardDTO.setImageData(optionalMultipartFile.get().getBytes());
-        }
-
-        return textAnswerCardDTO;
     }
 
     private Optional<MultipartFile> findMultiPartFileByName(MultipartFile[] images, String name) {

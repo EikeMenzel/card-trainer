@@ -49,6 +49,8 @@ public class Card {
         this.cardType = cardType;
     }
 
+
+
     public Card() {
     }
 
