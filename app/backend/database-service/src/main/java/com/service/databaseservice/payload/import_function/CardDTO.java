@@ -1,4 +1,4 @@
-package com.service.databaseservice.payload.savecards;
+package com.service.databaseservice.payload.import_function;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

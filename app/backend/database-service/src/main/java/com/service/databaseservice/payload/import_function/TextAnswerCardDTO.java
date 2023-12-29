@@ -1,4 +1,4 @@
-package com.service.databaseservice.payload.savecards;
+package com.service.databaseservice.payload.import_function;
 
 public class TextAnswerCardDTO{
     private final CardDTO cardDTO;

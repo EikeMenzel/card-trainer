@@ -7,9 +7,9 @@ import com.service.databaseservice.model.Image;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.cards.*;
 import com.service.databaseservice.payload.out.CardDTO;
-import com.service.databaseservice.payload.savecards.ChoiceAnswerDTO;
-import com.service.databaseservice.payload.savecards.MultipleChoiceCardDTO;
-import com.service.databaseservice.payload.savecards.TextAnswerCardDTO;
+import com.service.databaseservice.payload.savecard.ChoiceAnswerDTO;
+import com.service.databaseservice.payload.savecard.MultipleChoiceCardDTO;
+import com.service.databaseservice.payload.savecard.TextAnswerCardDTO;
 import com.service.databaseservice.repository.DeckRepository;
 import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.repository.cards.*;
@@ -79,6 +79,7 @@ public class CardService {
 
 
     //saveCard
+    @Transactional
     public boolean saveCard(JsonNode cardNode, Long userId, Long deckId) {
         try {
             if (cardNode.has("textAnswer")) {
@@ -98,19 +99,13 @@ public class CardService {
 
     private boolean saveTextAnswerCard(Long userId, Long deckId, TextAnswerCardDTO textAnswerCardDTO) {
         Optional<CardType> optionalCardType = cardTypeRepository.getCardTypesByType("BASIC");
-        if (optionalCardType.isEmpty())
-            return false;
-
         Optional<Deck> optionalDeck = deckRepository.getDeckByIdAndOwnerId(deckId, userId);
-        if (optionalDeck.isEmpty())
+        if (optionalDeck.isEmpty() || optionalCardType.isEmpty())
             return false;
 
         try {
-            var user = optionalDeck.get().getOwner();
-            var image = saveImage(buildImageOutOfBlobHelper(generateBlob(textAnswerCardDTO.getCardDTO().getImageData()), user));
-            var card = cardRepository.save(new Card(textAnswerCardDTO.getCardDTO().getQuestion(), image, optionalDeck.get(), optionalCardType.get()));
-            image = saveImage(buildImageOutOfBlobHelper(generateBlob(textAnswerCardDTO.getImageData()), user));
-            textAnswerCardRepository.save(new TextAnswerCard(card.getId(), textAnswerCardDTO.getTextAnswer(), image));
+            var card = cardRepository.save(new Card(textAnswerCardDTO.getCardDTO().getQuestion(), getImageFromImageId(textAnswerCardDTO.getCardDTO().getImageId()), optionalDeck.get(), optionalCardType.get()));
+            textAnswerCardRepository.save(new TextAnswerCard(card.getId(), textAnswerCardDTO.getTextAnswer(), getImageFromImageId(textAnswerCardDTO.getImageId())));
 
             return initRepetition(card);
         } catch (Exception e) {
@@ -129,11 +124,9 @@ public class CardService {
             return false;
 
         try {
-            var user = optionalDeck.get().getOwner();
-            var image = saveImage(buildImageOutOfBlobHelper(generateBlob(multipleChoiceCardDTO.getCardDTO().getImageData()), user));
-            var card = cardRepository.save(new Card(multipleChoiceCardDTO.getCardDTO().getQuestion(), image, optionalDeck.get(), optionalCardType.get()));
+            var card = cardRepository.save(new Card(multipleChoiceCardDTO.getCardDTO().getQuestion(), getImageFromImageId(multipleChoiceCardDTO.getCardDTO().getImageId()), optionalDeck.get(), optionalCardType.get()));
             var multipleChoiceCard = multipleChoiceCardRepository.save(new MultipleChoiceCard(card.getId()));
-            choiceAnswerRepository.saveAll(choiceAnswersBuilder(multipleChoiceCardDTO.getChoiceAnswers(), multipleChoiceCard, user));
+            choiceAnswerRepository.saveAll(choiceAnswersBuilder(multipleChoiceCardDTO.getChoiceAnswers(), multipleChoiceCard));
 
             return initRepetition(card);
         } catch (Exception e) {
@@ -143,14 +136,18 @@ public class CardService {
 
     }
 
-    private List<ChoiceAnswer> choiceAnswersBuilder(List<ChoiceAnswerDTO> choiceAnswerDTOList, MultipleChoiceCard multipleChoiceCard, User user) {
+    private List<ChoiceAnswer> choiceAnswersBuilder(List<ChoiceAnswerDTO> choiceAnswerDTOList, MultipleChoiceCard multipleChoiceCard) {
         return choiceAnswerDTOList
                 .stream()
-                .map(choiceAnswerDTO -> {
-                    var image = saveImage(buildImageOutOfBlobHelper(generateBlob(choiceAnswerDTO.getImageData()), user));
-                    return new ChoiceAnswer(choiceAnswerDTO.getAnswer(), image, choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard);
-                })
+                .map(choiceAnswerDTO -> new ChoiceAnswer(choiceAnswerDTO.getAnswer(), getImageFromImageId(choiceAnswerDTO.getImageId()), choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard))
                 .collect(Collectors.toList());
+    }
+
+    private Image getImageFromImageId(Long imageId) {
+        if(imageId == null)
+            return null;
+
+        return imageRepository.findById(imageId).orElse(null);
     }
 
     //updateCard
