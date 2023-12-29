@@ -1,4 +1,4 @@
-package com.service.cardsservice.payload.out.savecards;
+package com.service.databaseservice.payload.savecard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

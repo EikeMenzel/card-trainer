@@ -5,9 +5,9 @@ import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
-import com.service.databaseservice.payload.savecards.CardDTO;
-import com.service.databaseservice.payload.savecards.ChoiceAnswerDTO;
-import com.service.databaseservice.payload.savecards.TextAnswerCardDTO;
+import com.service.databaseservice.payload.import_function.CardDTO;
+import com.service.databaseservice.payload.import_function.ChoiceAnswerDTO;
+import com.service.databaseservice.payload.import_function.TextAnswerCardDTO;
 import com.service.databaseservice.payload.out.export.CardExportDTO;
 import com.service.databaseservice.payload.out.export.ExportDTO;
 import com.service.databaseservice.payload.out.export.MultipleChoiceCardDTO;
@@ -153,7 +153,7 @@ public class DeckController {
                 cardService.saveCard(objectMapper.valueToTree(new TextAnswerCardDTO(new CardDTO(textAnswerDTO.getCardDTO().question(), textAnswerDTO.getCardDTO().image()), textAnswerDTO.getTextAnswer(), textAnswerDTO.getImage())), 1L, deck.get().getId());
             }
             else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
-                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.savecards.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
+                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.import_function.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
                         multipleChoiceCardDTO.getChoiceAnswers().stream().map(choiceAnswerDTO -> new ChoiceAnswerDTO(choiceAnswerDTO.answer(), choiceAnswerDTO.getIsRightAnswer(), choiceAnswerDTO.image())).collect(Collectors.toList())));
                 cardService.saveCard(jsonNode, userId, deck.get().getId());
             }
