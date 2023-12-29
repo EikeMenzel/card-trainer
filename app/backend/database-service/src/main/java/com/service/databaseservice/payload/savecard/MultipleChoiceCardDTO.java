@@ -1,10 +1,10 @@
-package com.service.databaseservice.payload.savecards;
+package com.service.databaseservice.payload.savecard;
 
 import java.util.List;
 
 public class MultipleChoiceCardDTO {
-    private CardDTO cardDTO;
-    private List<ChoiceAnswerDTO> choiceAnswers;
+    private final CardDTO cardDTO;
+    private final List<ChoiceAnswerDTO> choiceAnswers;
 
     public MultipleChoiceCardDTO(CardDTO cardDTO, List<ChoiceAnswerDTO> choiceAnswers) {
         this.cardDTO = cardDTO;

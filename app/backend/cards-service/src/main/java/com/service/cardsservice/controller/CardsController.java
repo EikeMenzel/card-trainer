@@ -10,6 +10,8 @@ import com.service.cardsservice.payload.out.updatecards.TextAnswerCardDTO;
 import com.service.cardsservice.services.CardsService;
 import com.service.cardsservice.services.DbQueryService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +22,21 @@ public class CardsController {
     private final CardsService cardsService;
     private final DbQueryService dbQueryService;
     private final ObjectMapper objectMapper;
+    private final Logger logger = LoggerFactory.getLogger(CardsController.class);
     public CardsController(CardsService cardsService, DbQueryService dbQueryService, ObjectMapper objectMapper) {
         this.cardsService = cardsService;
         this.dbQueryService = dbQueryService;
         this.objectMapper = objectMapper;
     }
 
-    @PostMapping(value = "/decks/{deckId}/cards", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> saveCard(@RequestHeader Long userId, @PathVariable Long deckId, @RequestPart(value = "cardNode") String cardNodeString, @RequestPart(value = "images", required = false) MultipartFile[] images) {
+    @PostMapping(value = "/decks/{deckId}/cards")
+    public ResponseEntity<?> saveCard(@RequestHeader Long userId, @PathVariable Long deckId, @RequestBody() String cardData) {
         JsonNode cardNode;
         try {
-            cardNode = objectMapper.readTree(cardNodeString);
-            return ResponseEntity.status(cardsService.saveCard(cardNode, userId, deckId, images)).build();
+            cardNode = objectMapper.readTree(cardData);
+            return ResponseEntity.status(cardsService.saveCard(cardNode, userId, deckId)).build();
         } catch (JsonProcessingException e) {
+            logger.debug(e.getMessage());
             return ResponseEntity.unprocessableEntity().build();
         }
     }
@@ -44,6 +48,7 @@ public class CardsController {
             cardNode = objectMapper.readTree(cardNodeString);
             return ResponseEntity.status(cardsService.updateCard(cardNode, userId, deckId, cardId, images)).build();
         } catch (JsonProcessingException e) {
+            logger.debug(e.getMessage());
             return ResponseEntity.unprocessableEntity().build();
         }
     }

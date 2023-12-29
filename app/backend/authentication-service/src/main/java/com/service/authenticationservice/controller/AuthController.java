@@ -146,7 +146,7 @@ public class AuthController {
     }
 
     @PostMapping("/password/reset")
-    public ResponseEntity<?> sendPasswordResetMail(@RequestBody MailDTO mailDTO) {
+    public ResponseEntity<?> sendPasswordResetMail(@Valid @RequestBody MailDTO mailDTO) {
         Optional<Long> optionalUserId = dbQueryService.getUserIdByEmail(mailDTO.email());
         optionalUserId.ifPresent(userId -> emailQueryService.sendEmail(userId, MailType.PASSWORD_RESET));
 
