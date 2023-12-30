@@ -37,12 +37,14 @@
               </div>
               <div *ngIf="getUsernameError" class="error">{{errorCode}}</div>
             </div>
-
             <!-- Password with toggle button inside the input field -->
             <div class="form-group mb-3">
               <label for="password">Password</label>
               <span class="password-policy" title=
-                "A password must be at least 8 characters and a maximum of 72 characters long, must contain at least one number and one of the following special characters: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
+                "A password must be:
+                • between 8 - 72 characters long
+                • contain at least one number
+                • at least special character: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
               </span>
               <div class="input-group mb-1">
                 <input [style.border-color] = "passwordBorder" [type]="showPassword ? 'text' : 'password'" class="form-control" placeholder="Enter your password" name="password" id="password" ngModel required>
