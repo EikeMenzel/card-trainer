@@ -82,7 +82,7 @@ public class Card {
         return new Card(this.id, question, newImage, this.deck, this.cardType);
     }
     public Card updateCard(String question) {
-        return new Card(this.id, question, this.imageData, this.deck, this.cardType);
+        return new Card(this.id, question, null, this.deck, this.cardType);
     }
 
 }
