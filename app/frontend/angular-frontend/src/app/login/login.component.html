@@ -30,7 +30,7 @@
 
             <!-- Password input field with show/hide button -->
             <div class="input-group mb-3">
-              <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" placeholder="Enter your password" name="password" ngModel required>
+              <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" placeholder="Enter your password" name="password" ngModel required>
               <div class="input-group-append">
                 <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
                   <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
