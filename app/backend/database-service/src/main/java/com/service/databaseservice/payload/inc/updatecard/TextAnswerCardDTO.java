@@ -1,4 +1,4 @@
-package com.service.cardsservice.payload.out.updatecards;
+package com.service.databaseservice.payload.inc.updatecard;
 
 public class TextAnswerCardDTO {
     private final Long textAnswerCardId;

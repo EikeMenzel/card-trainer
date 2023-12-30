@@ -1,4 +1,4 @@
-package com.service.databaseservice.payload.inc.updatecards;
+package com.service.databaseservice.payload.inc.updatecard;
 
 import java.util.List;
 
