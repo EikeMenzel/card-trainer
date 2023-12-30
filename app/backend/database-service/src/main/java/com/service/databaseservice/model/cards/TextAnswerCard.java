@@ -52,6 +52,6 @@ public class TextAnswerCard {
     }
 
     public TextAnswerCard updateTextAnswerCard(String answer) {
-        return new TextAnswerCard(this.id, answer, this.imageData);
+        return new TextAnswerCard(this.id, answer, null);
     }
 }
