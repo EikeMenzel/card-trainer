@@ -5,6 +5,7 @@ import com.service.databaseservice.model.User;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "peek_session")
@@ -16,7 +17,7 @@ public class PeekSession {
     private Long id;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private final Timestamp createdAt = Timestamp.from(Instant.now());
 
     @Column(name = "finished_at")
     private Timestamp finishedAt;
@@ -33,13 +34,10 @@ public class PeekSession {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public PeekSession(Long id, Timestamp createdAt, Timestamp finishedAt, StatusType status, Deck deck, User user) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.finishedAt = finishedAt;
-        this.status = status;
-        this.deck = deck;
+    public PeekSession(User user, Deck deck, StatusType status) {
         this.user = user;
+        this.deck = deck;
+        this.status = status;
     }
 
     public PeekSession() {
@@ -67,5 +65,15 @@ public class PeekSession {
 
     public User getUser() {
         return user;
+    }
+
+    public PeekSession setPeekStatus(StatusType status) {
+        this.status = status;
+        return this;
+    }
+
+    public PeekSession setEndTimestamp() {
+        this.finishedAt = Timestamp.from(Instant.now());
+        return this;
     }
 }

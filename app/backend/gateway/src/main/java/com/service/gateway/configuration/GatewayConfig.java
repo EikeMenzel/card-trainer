@@ -65,7 +65,11 @@ public class GatewayConfig {
                                 "/api/v1/decks/{deckId}/learn-sessions",
                                 "/api/v1/decks/{deckId}/next-card",
                                 "/api/v1/learn-sessions/{learnSessionId}/rating",
-                                "/api/v1/learn-sessions/{learnSessionId}/status"
+                                "/api/v1/learn-sessions/{learnSessionId}/status",
+                                "/api/v1/decks/{deckId}/peek-sessions",
+                                "api/v1/peek-sessions/{peekSessionId}/next-card",
+                                "/api/v1/peek-sessions/{peekSessionId}/cards/{cardId}",
+                                "/api/v1/peek-sessions/{peekSessionId}/status"
                         ).uri(sessionServiceUri)
                 )
 
