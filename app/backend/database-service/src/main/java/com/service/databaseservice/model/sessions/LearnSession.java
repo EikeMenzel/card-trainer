@@ -17,7 +17,7 @@ public class LearnSession {
     private Long id;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt = Timestamp.from(Instant.now());
+    private final Timestamp createdAt = Timestamp.from(Instant.now());
 
     @Column(name = "finished_at")
     private Timestamp finishedAt;

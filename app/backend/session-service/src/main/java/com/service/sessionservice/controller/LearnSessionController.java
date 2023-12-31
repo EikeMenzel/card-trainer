@@ -40,7 +40,7 @@ public class LearnSessionController {
     }
 
     @PutMapping("/learn-sessions/{learnSessionId}/status")
-    public ResponseEntity<?> updateLearnSessionDifficulty(@RequestHeader Long userId, @PathVariable Long learnSessionId, @RequestBody StatusTypeDTO statusTypeDTO) {
+    public ResponseEntity<?> updateLearnSessionStatus(@RequestHeader Long userId, @PathVariable Long learnSessionId, @RequestBody StatusTypeDTO statusTypeDTO) {
         return ResponseEntity.status(dbQueryService.updateLearnSessionStatus(userId, learnSessionId, statusTypeDTO)).build();
     }
 

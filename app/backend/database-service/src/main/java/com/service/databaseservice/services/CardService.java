@@ -334,7 +334,6 @@ public class CardService {
         return cardOptional.map(card -> getCardDetails(card.getId()));
     }
 
-
     private Object convertCardToDTO(Card card) {
         var cardDTO = new com.service.databaseservice.payload.out.getcarddetails.CardDTO(card.getId(), card.getQuestion(),
                 getImageIdFromImage(card.getImageData()),
