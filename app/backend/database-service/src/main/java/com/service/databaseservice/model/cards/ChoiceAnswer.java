@@ -62,6 +62,7 @@ public class ChoiceAnswer {
     public MultipleChoiceCard getMultipleChoiceCard() {
         return multipleChoiceCard;
     }
+
     public ChoiceAnswer cloneWithDifferentMultipleChoiceCard(MultipleChoiceCard newMultipleChoiceCard) {
         return new ChoiceAnswer(this.answer, this.imageData, this.isCorrect, newMultipleChoiceCard);
     }
@@ -69,7 +70,8 @@ public class ChoiceAnswer {
     public ChoiceAnswer updateChoiceAnswer(String answer, Image image, boolean isCorrect) {
         return new ChoiceAnswer(this.id, answer, image, isCorrect, this.multipleChoiceCard);
     }
+
     public ChoiceAnswer updateChoiceAnswer(String answer, boolean isCorrect) {
-        return new ChoiceAnswer(this.id, answer, this.imageData, isCorrect, this.multipleChoiceCard);
+        return new ChoiceAnswer(this.id, answer, null, isCorrect, this.multipleChoiceCard);
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.Image;
-import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.cards.*;
 import com.service.databaseservice.payload.out.CardDTO;
 import com.service.databaseservice.payload.savecard.ChoiceAnswerDTO;
@@ -14,13 +13,11 @@ import com.service.databaseservice.repository.DeckRepository;
 import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.repository.cards.*;
 import jakarta.persistence.EntityManager;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Blob;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,20 +32,18 @@ public class CardService {
     private final TextAnswerCardRepository textAnswerCardRepository;
     private final MultipleChoiceCardRepository multipleChoiceCardRepository;
     private final ChoiceAnswerRepository choiceAnswerRepository;
-    private final EntityManager entityManager;
     private final ObjectMapper objectMapper;
     private final RepetitionService repetitionService;
     private final ImageRepository imageRepository;
     private final Logger logger = LoggerFactory.getLogger(CardService.class);
 
-    public CardService(DeckRepository deckRepository, CardTypeRepository cardTypeRepository, CardRepository cardRepository, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository, ChoiceAnswerRepository choiceAnswerRepository, EntityManager entityManager, ObjectMapper objectMapper, RepetitionService repetitionService, ImageRepository imageRepository) {
+    public CardService(DeckRepository deckRepository, CardTypeRepository cardTypeRepository, CardRepository cardRepository, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository, ChoiceAnswerRepository choiceAnswerRepository, ObjectMapper objectMapper, RepetitionService repetitionService, ImageRepository imageRepository) {
         this.deckRepository = deckRepository;
         this.cardTypeRepository = cardTypeRepository;
         this.cardRepository = cardRepository;
         this.textAnswerCardRepository = textAnswerCardRepository;
         this.multipleChoiceCardRepository = multipleChoiceCardRepository;
         this.choiceAnswerRepository = choiceAnswerRepository;
-        this.entityManager = entityManager;
         this.objectMapper = objectMapper;
         this.repetitionService = repetitionService;
         this.imageRepository = imageRepository;
@@ -152,14 +147,14 @@ public class CardService {
 
     //updateCard
     @Transactional
-    public boolean updateCard(JsonNode cardNode, Long userId, Long deckId, Long cardId) {
+    public boolean updateCard(JsonNode cardNode, Long userId, Long cardId) {
         try {
             if (cardNode.has("textAnswer")) {
-                var textCard = objectMapper.treeToValue(cardNode, com.service.databaseservice.payload.inc.updatecards.TextAnswerCardDTO.class);
-                return updateTextAnswerCard(cardId, textCard);
+                var textCard = objectMapper.treeToValue(cardNode, com.service.databaseservice.payload.inc.updatecard.TextAnswerCardDTO.class);
+                return updateTextAnswerCard(cardId, textCard, userId);
             } else if (cardNode.has("choiceAnswers")) {
-                var multipleChoiceCard = objectMapper.treeToValue(cardNode, com.service.databaseservice.payload.inc.updatecards.MultipleChoiceCardDTO.class);
-                return updateMultipleChoiceCard(cardId, multipleChoiceCard);
+                var multipleChoiceCard = objectMapper.treeToValue(cardNode, com.service.databaseservice.payload.inc.updatecard.MultipleChoiceCardDTO.class);
+                return updateMultipleChoiceCard(cardId, multipleChoiceCard, userId);
             } else {
                 return false; // invalid type
             }
@@ -169,7 +164,7 @@ public class CardService {
         }
     }
 
-    public boolean updateMultipleChoiceCard(Long cardId, com.service.databaseservice.payload.inc.updatecards.MultipleChoiceCardDTO multipleChoiceCardDTO) {
+    public boolean updateMultipleChoiceCard(Long cardId, com.service.databaseservice.payload.inc.updatecard.MultipleChoiceCardDTO multipleChoiceCardDTO, Long userId) {
         Optional<Card> cardOptional = cardRepository.getCardById(cardId);
         Optional<MultipleChoiceCard> multipleChoiceCardOptional = multipleChoiceCardRepository.findById(multipleChoiceCardDTO.getMultipleChoiceCardId());
         if (cardOptional.isEmpty() || multipleChoiceCardOptional.isEmpty())
@@ -178,8 +173,8 @@ public class CardService {
         try {
             var card = cardOptional.get();
             var multipleChoiceCard = multipleChoiceCardOptional.get();
-            boolean updateBaseCard = updateBaseCard(multipleChoiceCardDTO.getCardDTO(), card);
-            boolean updateChoiceAnswers = updateChoiceAnswers(multipleChoiceCardDTO.getChoiceAnswers(), card, multipleChoiceCard);
+            boolean updateBaseCard = updateBaseCard(multipleChoiceCardDTO.getCardDTO(), card, card.getDeck().getOwner().getId());
+            boolean updateChoiceAnswers = updateChoiceAnswers(multipleChoiceCardDTO.getChoiceAnswers(), multipleChoiceCard, userId);
 
             return updateBaseCard && updateChoiceAnswers;
         } catch (Exception e) {
@@ -188,10 +183,10 @@ public class CardService {
         }
     }
 
-    private List<Long> getMissingChoiceAnswerIds(List<com.service.databaseservice.payload.inc.updatecards.ChoiceAnswerDTO> choiceAnswerDTOs, List<ChoiceAnswer> choiceAnswers) {
+    private List<Long> getMissingChoiceAnswerIds(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, List<ChoiceAnswer> choiceAnswers) {
         Set<Long> dtoIds = choiceAnswerDTOs.stream()
                 .filter(Objects::nonNull) // Filter out null IDs; Only used for Creating new ChoiceAnswer
-                .map(com.service.databaseservice.payload.inc.updatecards.ChoiceAnswerDTO::getChoiceAnswerId)
+                .map(com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO::getChoiceAnswerId)
                 .collect(Collectors.toSet());
 
         // Filter choiceAnswers to find missing IDs
@@ -201,27 +196,32 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
-    public boolean updateChoiceAnswers(List<com.service.databaseservice.payload.inc.updatecards.ChoiceAnswerDTO> choiceAnswerDTOs, Card card, MultipleChoiceCard multipleChoiceCard) {
+    public boolean updateChoiceAnswers(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, MultipleChoiceCard multipleChoiceCard, Long userId) {
         try {
             //delete all Ids that are not sent
             List<Long> excludedIds = getMissingChoiceAnswerIds(choiceAnswerDTOs, multipleChoiceCard.getChoiceAnswerList());
             excludedIds.forEach(choiceAnswerRepository::deleteById);
 
             //create choiceAnswers
-            choiceAnswerDTOs.stream()
+            boolean createChoiceAnswerResult = choiceAnswerDTOs.stream()
                     .filter(choiceAnswerDTO -> choiceAnswerDTO.getChoiceAnswerId() == null)
-                    .forEach(choiceAnswerDTO -> {
-                        if (choiceAnswerDTO.getImageDTO() != null) {
-                            var image = saveImage(buildImageOutOfBlobHelper(generateBlob(choiceAnswerDTO.getImageDTO().getImageData()), card.getDeck().getOwner()));
-                            choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), image, choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
-                        } else {
+                    .allMatch(choiceAnswerDTO -> {
+                        if(choiceAnswerDTO.getImageId() == null) {
                             choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), null, choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
                         }
+                        else {
+                            Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(choiceAnswerDTO.getImageId(), userId);
+                            if(imageOptional.isEmpty())
+                                return false;
+
+                            choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), imageOptional.get(), choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
+                        }
+                        return true;
                     });
 
 
             //actual updateAnswers
-            return choiceAnswerDTOs.stream()
+            return createChoiceAnswerResult && choiceAnswerDTOs.stream()
                     .filter(choiceAnswerDTO -> choiceAnswerDTO.getChoiceAnswerId() != null)
                     .filter(choiceAnswerDTO -> !excludedIds.contains(choiceAnswerDTO.getChoiceAnswerId()))
                     .allMatch(choiceAnswerDTO -> {
@@ -231,40 +231,29 @@ public class CardService {
 
                         var choiceAnswer = choiceAnswerOptional.get();
 
-                        if (choiceAnswerDTO.getImageDTO() == null) {
-                            choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswerDTO.getAnswer(), choiceAnswerDTO.getIsRightAnswer()));
-                            return true;
-                        } else {
-                            return switch (choiceAnswerDTO.getImageDTO().getOperationDTO()) {
-                                case CREATE -> {
-                                    var image = imageRepository.save(new Image(generateBlob(choiceAnswerDTO.getImageDTO().getImageData()), card.getDeck().getOwner()));
-                                    choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswerDTO.getAnswer(), image, choiceAnswerDTO.getIsRightAnswer()));
-                                    yield true;
-                                }
-                                case UPDATE -> {
-                                    Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(choiceAnswerDTO.getImageDTO().getImageId(), card.getDeck().getOwner().getId());
-                                    if (imageOptional.isEmpty())
-                                        yield false;
+                        try {
+                            if (choiceAnswerDTO.getImageId() == null) {
+                                choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswerDTO.getAnswer(), choiceAnswerDTO.getIsRightAnswer()));
+                            } else {
+                                Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(choiceAnswerDTO.getImageId(), userId);
+                                if(imageOptional.isEmpty())
+                                    return false;
 
-                                    var image = imageRepository.save(imageOptional.get().updateImage(generateBlob(choiceAnswerDTO.getImageDTO().getImageData())));
-                                    choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswerDTO.getAnswer(), image, choiceAnswerDTO.getIsRightAnswer()));
-                                    yield true;
-                                }
-                                case DELETE -> {
-                                    imageRepository.deleteById(choiceAnswerDTO.getImageDTO().getImageId());
-                                    choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswerDTO.getAnswer(), null, choiceAnswerDTO.getIsRightAnswer()));
-                                    yield true;
-                                }
-                            };
+                                choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswer.getAnswer(), imageOptional.get(), choiceAnswerDTO.getIsRightAnswer()));
+                            }
+                            return true;
+                        } catch (Exception e) {
+                            logger.debug(e.getMessage());
+                            return false;
                         }
                     });
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            logger.debug(e.getMessage());
             return false;
         }
     }
 
-    public boolean updateTextAnswerCard(Long cardId, com.service.databaseservice.payload.inc.updatecards.TextAnswerCardDTO textAnswerCardDTO) {
+    public boolean updateTextAnswerCard(Long cardId, com.service.databaseservice.payload.inc.updatecard.TextAnswerCardDTO textAnswerCardDTO, Long userId) {
         Optional<Card> cardOptional = cardRepository.getCardById(cardId);
         Optional<TextAnswerCard> textAnswerCardOptional = textAnswerCardRepository.findById(textAnswerCardDTO.getTextAnswerCardId());
         if (cardOptional.isEmpty() || textAnswerCardOptional.isEmpty())
@@ -273,8 +262,9 @@ public class CardService {
         try {
             var card = cardOptional.get();
             var textAnswerCard = textAnswerCardOptional.get();
-            boolean updateBaseCard = updateBaseCard(textAnswerCardDTO.getCardDTO(), card);
+            boolean updateBaseCard = updateBaseCard(textAnswerCardDTO.getCardDTO(), card, userId);
             boolean updateAnswerCard = updateAnswerCard(textAnswerCardDTO, textAnswerCard, card);
+
             return updateBaseCard && updateAnswerCard;
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -282,101 +272,46 @@ public class CardService {
         }
     }
 
-    public boolean updateAnswerCard(com.service.databaseservice.payload.inc.updatecards.TextAnswerCardDTO textAnswerCardDTO, TextAnswerCard textAnswerCard, Card card) {
+    //For TextAnswerCard
+    public boolean updateAnswerCard(com.service.databaseservice.payload.inc.updatecard.TextAnswerCardDTO textAnswerCardDTO, TextAnswerCard textAnswerCard, Card card) {
         try {
-            if (textAnswerCardDTO.getImageDTO() == null) {
-                textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCard.getAnswer()));
-                return true;
+            if (textAnswerCardDTO.getImageId() == null) {
+                textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer()));
+            } else {
+                Optional<Image> image = imageRepository.getImageByIdAndUserId(textAnswerCardDTO.getImageId(), card.getDeck().getOwner().getId());
+                if(image.isEmpty())
+                    return false;
+
+                textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer(), image.get()));
             }
-
-            return switch (textAnswerCardDTO.getImageDTO().getOperationDTO()) {
-                case CREATE -> {
-                    var image = imageRepository.save(new Image(generateBlob(textAnswerCardDTO.getImageDTO().getImageData()), card.getDeck().getOwner()));
-                    textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer(), image));
-                    yield true;
-                }
-                case UPDATE -> {
-                    Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(textAnswerCardDTO.getImageDTO().getImageId(), card.getDeck().getOwner().getId());
-                    if (imageOptional.isEmpty())
-                        yield false;
-
-                    var image = imageRepository.save(imageOptional.get().updateImage(generateBlob(textAnswerCardDTO.getImageDTO().getImageData())));
-                    textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer(), image));
-                    yield true;
-                }
-                case DELETE -> {
-                    imageRepository.deleteById(textAnswerCardDTO.getImageDTO().getImageId());
-                    textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer(), null));
-                    yield true;
-                }
-            };
+            return true;
         } catch (Exception e) {
             logger.debug(e.getMessage());
             return false;
         }
     }
 
-    public boolean updateBaseCard(com.service.databaseservice.payload.inc.updatecards.CardDTO cardDTO, Card card) {
+    //For CardDTO
+    public boolean updateBaseCard(com.service.databaseservice.payload.inc.updatecard.CardDTO cardDTO, Card card, Long userId) {
         try {
-            if (cardDTO.getImageDTO() == null) {
+            if (cardDTO.getImageId() == null) {
                 cardRepository.save(card.updateCard(cardDTO.getQuestion()));
-                return true;
+            } else {
+                Optional<Image> image = imageRepository.getImageByIdAndUserId(cardDTO.getImageId(), userId);
+                if(image.isEmpty())
+                    return false;
+
+                cardRepository.save(card.updateCard(cardDTO.getQuestion(), image.get()));
             }
-
-            return switch (cardDTO.getImageDTO().getOperationDTO()) {
-                case CREATE -> {
-                    var image = imageRepository.save(new Image(generateBlob(cardDTO.getImageDTO().getImageData()), card.getDeck().getOwner()));
-                    cardRepository.save(card.updateCard(cardDTO.getQuestion(), image));
-                    yield true;
-                }
-                case UPDATE -> {
-                    Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(cardDTO.getImageDTO().getImageId(), card.getDeck().getOwner().getId());
-                    if (imageOptional.isEmpty())
-                        yield false;
-
-                    var image = imageRepository.save(imageOptional.get().updateImage(generateBlob(cardDTO.getImageDTO().getImageData())));
-                    cardRepository.save(card.updateCard(cardDTO.getQuestion(), image));
-                    yield true;
-                }
-                case DELETE -> {
-                    imageRepository.deleteById(cardDTO.getImageDTO().getImageId());
-                    cardRepository.save(card.updateCard(cardDTO.getQuestion(), null));
-                    yield true;
-                }
-            };
+            return true;
         } catch (Exception e) {
             logger.debug(e.getMessage());
             return false;
-        }
-    }
-
-    private Blob generateBlob(byte[] data) {
-        if (data == null)
-            return null;
-
-        try (var session = entityManager.unwrap(Session.class)) {
-            return session.getLobHelper().createBlob(data);
-        } catch (Exception e) {
-            logger.debug(e.getMessage());
-            return null;
         }
     }
 
     private boolean initRepetition(Card card) {
         return repetitionService.initRepetition(card, card.getDeck().getOwner());
-    }
-
-    private Image saveImage(Image image) {
-        try {
-            return imageRepository.save(image);
-        } catch (Exception e) {
-            logger.debug(e.getMessage());
-            return null;
-        }
-    }
-
-    private Image buildImageOutOfBlobHelper(Blob blob, User user) {
-        return new Image(blob, user);
     }
 
     @Transactional
@@ -398,7 +333,6 @@ public class CardService {
         Optional<Card> cardOptional = cardRepository.findOldestCardToLearn(deckId);
         return cardOptional.map(card -> getCardDetails(card.getId()));
     }
-
 
     private Object convertCardToDTO(Card card) {
         var cardDTO = new com.service.databaseservice.payload.out.getcarddetails.CardDTO(card.getId(), card.getQuestion(),

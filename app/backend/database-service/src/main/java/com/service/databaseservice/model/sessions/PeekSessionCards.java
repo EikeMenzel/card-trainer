@@ -20,8 +20,7 @@ public class PeekSessionCards {
     @JoinColumn(name = "peek_session_id", nullable = false)
     private PeekSession peekSession;
 
-    public PeekSessionCards(Long id, Card card, PeekSession peekSession) {
-        this.id = id;
+    public PeekSessionCards(Card card, PeekSession peekSession) {
         this.card = card;
         this.peekSession = peekSession;
     }

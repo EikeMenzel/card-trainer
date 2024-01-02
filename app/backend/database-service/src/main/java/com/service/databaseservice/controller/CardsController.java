@@ -55,10 +55,11 @@ public class CardsController {
 
     @PutMapping("/users/{userId}/decks/{deckId}/cards/{cardId}")
     public ResponseEntity<?> updateCard(@PathVariable Long userId, @PathVariable Long deckId, @PathVariable Long cardId, @Valid @RequestBody JsonNode cardNode) {
-        if(!cardService.doesCardBelongToOwnerAndDeck(userId, deckId, cardId))
+        if(!cardService.doesCardBelongToOwnerAndDeck(userId, deckId, cardId)) {
             return ResponseEntity.notFound().build();
+        }
 
-        return cardService.updateCard(cardNode, userId, deckId, cardId)
+        return cardService.updateCard(cardNode, userId, cardId)
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
                 : ResponseEntity.internalServerError().build();
     }
