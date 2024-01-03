@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
-import {HttpClient, HttpClientModule, HttpStatusCode} from "@angular/common/http";
+import {HttpClientModule, HttpStatusCode} from "@angular/common/http";
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {RegisterRequestDTO} from "../models/RegisterRequestDTO";
 import {NgIf} from "@angular/common";
@@ -10,6 +10,9 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {UserService} from "../services/user-service/user.service";
+import {ErrorHandlerService} from "../services/error-handler-service/error-handler.service";
+import {AuthService} from "../services/auth-service/auth-service";
 
 @Component({
   selector: 'app-register',
@@ -17,7 +20,6 @@ import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
   templateUrl: './register.component.html',
   imports: [
     FormsModule,
-    HttpClientModule,
     RouterLink,
     NgIf,
     RegisterSuccessfulComponent,
@@ -27,7 +29,7 @@ import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
   ],
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
   email: string = "";
   loginSuccess: boolean = false;
@@ -51,11 +53,22 @@ export class RegisterComponent {
 
 
   constructor(
-    private http: HttpClient,
-    private toastService: ToastService) {
+    private toastService: ToastService,
+    private userService: UserService,
+    private errHandlerService: ErrorHandlerService,
+    private authService: AuthService,
+    private router: Router
+  ) {
   }
 
-  validateInput(field: string,value: string) { //Checks if the Input fields are empty or not
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn) {
+      this.toastService.showWarningToast("Register", "You are already logged in. If you want to register again, please logout first.");
+      this.router.navigate(['/']);
+    }
+  }
+
+  validateInput(field: string, value: string) { //Checks if the Input fields are empty or not
     switch (field) {
       case 'email':
         if (value != "") {
@@ -98,7 +111,6 @@ export class RegisterComponent {
 
 
   onSubmit(registerForm: NgForm) {
-
     this.emailError = "";
     this.usernameError = "";
     this.passwordError = "";
@@ -126,44 +138,43 @@ export class RegisterComponent {
 
       this.email = email;
 
-      this.http.post<RegisterRequestDTO>('/api/v1/register', registerRequest, {observe: 'response'})
-        .subscribe({
-          next: (response) => {
-            if (response.status == HttpStatusCode.Created) {
-              this.buttonIsPressed = false;
-              this.loginSuccess = true;
-            }
-          },
-          error: (error) => {
-            const message: MessageResponseDTO = {
-              status: error.error.status,
-              response: error.error.message
-            }
-            const statusCode = error.status;
-            if (statusCode == HttpStatusCode.Conflict || statusCode == HttpStatusCode.BadRequest) {
-              switch (message.status) {
-                case 1:
-                  this.emailBorder = "var(--primary-error-color)";
-                  this.emailError = message.response;
-                  break;
-                case 2:
-                  this.usernameBorder = "var(--primary-error-color)";
-                  this.usernameError = message.response;
-                  break;
-                case 3:
-                  this.passwordBorder = "var(--primary-error-color)";
-                  this.passwordRepeatBorder = "var(--primary-error-color)";
-                  this.passwordError = message.response;
-                  break;
-              }
-            }
-            if (statusCode == HttpStatusCode.InternalServerError) {
-              this.toastService.showErrorToast("Error", "Server cannot be reached");
-            }
+      this.userService.registerUser(registerRequest).subscribe({
+        next: (response) => {
+          if (response.status == HttpStatusCode.Created) {
             this.buttonIsPressed = false;
-            return;
+            this.loginSuccess = true;
           }
-        })
+        },
+        error: (err) => {
+          const message: MessageResponseDTO = {
+            status: err.error.status,
+            response: err.error.message
+          }
+          const statusCode = err.status;
+          if (statusCode == HttpStatusCode.Conflict || statusCode == HttpStatusCode.BadRequest) {
+            switch (message.status) {
+              case 1:
+                this.emailBorder = "var(--primary-error-color)";
+                this.emailError = this.errHandlerService.getErrorMessageFromResponse(message);
+                break;
+              case 2:
+                this.usernameBorder = "var(--primary-error-color)";
+                this.usernameError = this.errHandlerService.getErrorMessageFromResponse(message);
+                break;
+              case 3:
+                this.passwordBorder = "var(--primary-error-color)";
+                this.passwordRepeatBorder = "var(--primary-error-color)";
+                this.passwordError = this.errHandlerService.getErrorMessageFromResponse(message);
+                break;
+            }
+          }
+          if (statusCode == HttpStatusCode.InternalServerError) {
+            this.toastService.showErrorToast("Error", "Server cannot be reached");
+          }
+          this.buttonIsPressed = false;
+          return;
+        }
+      })
     } else { //Checks if the Input Fields are empty by the time a Submit was sent
       if (email == "") {
         this.emailBorder = "var(--primary-error-color)";
