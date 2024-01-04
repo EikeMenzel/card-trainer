@@ -3,6 +3,8 @@ package com.service.gateway.security.jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpCookie;
 import org.springframework.stereotype.Component;
@@ -28,6 +30,7 @@ public class JwtUtils {
     public Key getKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     public boolean isJwtTokenValid(String authenticationToken) {
         if(authenticationToken != null && authenticationToken.chars().filter(ch -> ch == '.').count() != 2) // Validity check. JWT-Tokens need to contain two dots.
@@ -40,6 +43,7 @@ public class JwtUtils {
                     .parseClaimsJws(authenticationToken);
             return true;
         } catch (Exception e) {
+            logger.debug(e.getMessage());
             return false;
         }
     }
@@ -48,6 +52,12 @@ public class JwtUtils {
         Optional<HttpCookie> jwtCookie = Optional.ofNullable(
                 exchange.getRequest().getCookies().getFirst(jwtCookieName)
         );
-        return jwtCookie.map(HttpCookie::getValue).orElse(null);
+        String token =  jwtCookie.map(HttpCookie::getValue).orElse(null);
+
+        // If the JWT was not found in the cookie, try to get it from a query parameter - necessary for Websockets
+        if(token == null) {
+            token = exchange.getRequest().getQueryParams().getFirst("jwt-token");
+        }
+        return token;
     }
 }

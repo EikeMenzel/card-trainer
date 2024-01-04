@@ -4,9 +4,10 @@ import com.service.databaseservice.model.User;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
-@Table(name = "user_achievement")
+@Table(name = "user_achievements")
 public class UserAchievement {
 
     @Id
@@ -23,13 +24,11 @@ public class UserAchievement {
     private Achievement achievement;
 
     @Column(name = "achieved_at", nullable = false)
-    private Timestamp achievedAt;
+    private final Timestamp achievedAt = Timestamp.from(Instant.now());
 
-    public UserAchievement(Long id, User user, Achievement achievement, Timestamp achievedAt) {
-        this.id = id;
+    public UserAchievement(User user, Achievement achievement) {
         this.user = user;
         this.achievement = achievement;
-        this.achievedAt = achievedAt;
     }
 
     public UserAchievement() {

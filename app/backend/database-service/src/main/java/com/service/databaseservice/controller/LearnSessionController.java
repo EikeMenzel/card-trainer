@@ -8,8 +8,6 @@ import com.service.databaseservice.services.CardService;
 import com.service.databaseservice.services.DeckService;
 import com.service.databaseservice.services.LearnSessionService;
 import com.service.databaseservice.services.RepetitionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,5 +84,25 @@ public class LearnSessionController {
 
         return cardService.getOldestCardToLearn(deckId)
                 .map(ResponseEntity::ok).orElse(ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/users/{userId}/learn-sessions/count")
+    public ResponseEntity<Integer> getLearnSessionCountFromUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(learnSessionService.getLearnSessionCount(userId));
+    }
+
+    @GetMapping("/users/{userId}/cards-learned")
+    public ResponseEntity<Integer> getCardsLearnedAmount(@PathVariable Long userId) {
+        return ResponseEntity.ok(learnSessionService.getCardsLearnedCount(userId));
+    }
+
+    @GetMapping("/users/{userId}/learn-sessions/daily")
+    public ResponseEntity<Boolean> getDailyLearnSession(@PathVariable Long userId) {
+        return ResponseEntity.ok(learnSessionService.isDailyLearnSessionCompletedToday(userId));
+    }
+
+    @GetMapping("/users/{userId}/learn-sessions/cards-learned/daily")
+    public ResponseEntity<Integer> getCardsLearnedAmountDaily(@PathVariable Long userId) {
+        return ResponseEntity.ok(learnSessionService.getCardsLearnedToday(userId));
     }
 }
