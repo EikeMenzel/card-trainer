@@ -37,7 +37,7 @@ public class AuthController {
     private final boolean skipVerify;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private static final String passwordBlockedPasswordMessage = "Error, Password is a blocked password";
-    private static final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/";
+    private static final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/ and the password needs to be between 8 and 72 characters";
     private final String GATEWAY_PATH;
     public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify, @Value("${gateway.path}") String gatewayPath) {
         this.skipVerify = skipVerify.equalsIgnoreCase("true");
@@ -52,9 +52,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
-
         if (registerRequest.username().length() < 4 || registerRequest.username().length() > 30) {
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(2, "Error, Username is to long or to short"));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(2, "Error, Username needs to be between 4 and 30 characters"));
         }
 
         if (passwordSecurityService.checkPasswordIsInRainbowTable(registerRequest.password())) //contains check, returns true if the password is in the table
@@ -147,6 +146,9 @@ public class AuthController {
 
     @PostMapping("/password/reset")
     public ResponseEntity<?> sendPasswordResetMail(@Valid @RequestBody MailDTO mailDTO) {
+        if(EmailValidator.validate(mailDTO.email()))
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(1, "Error, invalid Email"));
+
         Optional<Long> optionalUserId = dbQueryService.getUserIdByEmail(mailDTO.email());
         optionalUserId.ifPresent(userId -> emailQueryService.sendEmail(userId, MailType.PASSWORD_RESET));
 
