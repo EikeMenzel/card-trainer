@@ -68,28 +68,29 @@ CREATE TABLE "achievement"
     a_id        SERIAL PRIMARY KEY,
     name        VARCHAR(128) NOT NULL,
     description TEXT         NOT NULL,
+    is_daily     BOOLEAN      NOT NULL DEFAULT FALSE,
 
     CONSTRAINT unique_name UNIQUE (name)
 );
 
-INSERT INTO "achievement" (a_id, name, description)
-VALUES (1, 'Achievement Made! All beginning is … easy', 'For creating the first card deck'),
-       (2, 'Achievement Made! Master of cards', 'For the first successfully completed session'),
-       (3, 'Achievement Made! 50 down, 50 to go', 'For the first 50 successfully completed sessions'),
-       (4, 'Achievement Made! Centurio of Knowledge', 'For the first 100 successfully completed sessions'),
-       (5, 'Achievement Made! Session Supreme', 'For the first 500 successfully completed sessions'),
-       (6, 'Achievement Made! Scholar of the Century', 'For the first 100 cards learned'),
-       (7, 'Achievement Made! Card Conqueror', 'For the first 500 cards learned'),
-       (8, 'Achievement Made! Greatest of all Time', 'For the first 2500 cards learned'),
-       (9, 'Achievement Made! Daily Dedication', 'For daily logging in'),
+INSERT INTO "achievement" (a_id, name, description, is_daily)
+VALUES (1, 'Achievement Made! All beginning is … easy', 'For creating the first card deck', false),
+       (2, 'Achievement Made! Master of cards', 'For the first successfully completed session', false),
+       (3, 'Achievement Made! 50 down, 50 to go', 'For the first 50 successfully completed sessions', false),
+       (4, 'Achievement Made! Centurio of Knowledge', 'For the first 100 successfully completed sessions', false),
+       (5, 'Achievement Made! Session Supreme', 'For the first 500 successfully completed sessions', false),
+       (6, 'Achievement Made! Scholar of the Century', 'For the first 100 cards learned', false),
+       (7, 'Achievement Made! Card Conqueror', 'For the first 500 cards learned', false),
+       (8, 'Achievement Made! Greatest of all Time', 'For the first 2500 cards learned', false),
+       (9, 'Achievement Made! Daily Dedication', 'For daily logging in', true),
        (10, 'Achievement Made! One session a day keeps the bad grades away',
-        'For daily completion of a learning session'),
-       (11, 'Achievement Made! Ten-time Triumph', 'For daily learning of 10 cards'),
-       (12, 'Achievement Made! Fifty-fold Fiend', 'For daily learning of 50 cards');
+        'For daily completion of a learning session', true),
+       (11, 'Achievement Made! Ten-time Triumph', 'For daily learning of 10 cards', true),
+       (12, 'Achievement Made! Fifty-fold Fiend', 'For daily learning of 50 cards', true);
 
 
 
-CREATE TABLE "user_achievement"
+CREATE TABLE "user_achievements"
 (
     ua_id          BIGSERIAL PRIMARY KEY,
     user_id        BIGINT    NOT NULL,
@@ -181,18 +182,18 @@ VALUES (3, 'CANCELED');
 
 CREATE TABLE "learn_session"
 (
-    ls_id        BIGSERIAL PRIMARY KEY,
-    created_at   TIMESTAMP NOT NULL,
-    finished_at  TIMESTAMP,
-    rating_1 INTEGER   NOT NULL DEFAULT 0,
-    rating_2 INTEGER   NOT NULL DEFAULT 0,
-    rating_3 INTEGER   NOT NULL DEFAULT 0,
-    rating_4 INTEGER   NOT NULL DEFAULT 0,
-    rating_5 INTEGER   NOT NULL DEFAULT 0,
-    rating_6 INTEGER   NOT NULL DEFAULT 0,
-    status_id    INTEGER   NOT NULL,
-    deck_id      BIGINT    NOT NULL,
-    user_id      BIGINT    NOT NULL,
+    ls_id       BIGSERIAL PRIMARY KEY,
+    created_at  TIMESTAMP NOT NULL,
+    finished_at TIMESTAMP,
+    rating_1    INTEGER   NOT NULL DEFAULT 0,
+    rating_2    INTEGER   NOT NULL DEFAULT 0,
+    rating_3    INTEGER   NOT NULL DEFAULT 0,
+    rating_4    INTEGER   NOT NULL DEFAULT 0,
+    rating_5    INTEGER   NOT NULL DEFAULT 0,
+    rating_6    INTEGER   NOT NULL DEFAULT 0,
+    status_id   INTEGER   NOT NULL,
+    deck_id     BIGINT    NOT NULL,
+    user_id     BIGINT    NOT NULL,
 
     FOREIGN KEY (status_id) REFERENCES status_type (st_id),
     FOREIGN KEY (deck_id) REFERENCES deck (d_id) ON DELETE CASCADE,

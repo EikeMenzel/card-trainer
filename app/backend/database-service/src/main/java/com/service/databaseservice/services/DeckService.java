@@ -44,6 +44,10 @@ public class DeckService {
                 .collect(Collectors.toList());
     }
 
+    public Integer getDeckCountByUserId(Long userId) {
+        return deckRepository.getAllByOwnerId(userId).size();
+    }
+
     public Optional<DeckDTO> getDeckByIdAndUserId(Long userId, Long deckId) {
         return deckRepository.getDeckByIdAndOwnerId(deckId, userId)
                 .map(deck -> new DeckDTO(deck.getId(), deck.getName()));

@@ -1,5 +1,7 @@
 package com.service.gateway.security.jwt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,8 @@ import java.util.HashSet;
 
 @Component
 public class JwtTokenResolveFilter implements WebFilter {
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenResolveFilter.class);
+
     private final JwtUtils jwtUtils;
     private final HashSet<String> excludedRoutes;
     public JwtTokenResolveFilter(JwtUtils jwtUtils) {
@@ -26,11 +30,11 @@ public class JwtTokenResolveFilter implements WebFilter {
 
     @NonNull
     public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
-        if(isRouteInExcludedList(exchange.getRequest().getURI().getPath()))
+        if(isRouteInExcludedList(exchange.getRequest().getURI().getPath())) {
             return chain.filter(exchange); // Skip jwtTokenResolveFilter
+        }
 
         String jwt = jwtUtils.parseJwt(exchange);
-
         if (jwt == null || !jwtUtils.isJwtTokenValid(jwt)) {
             return chain.filter(exchange);
         }
@@ -53,6 +57,6 @@ public class JwtTokenResolveFilter implements WebFilter {
             return true;
         }
         // Handle pattern matching
-        return pathMatcher.match("/api/v1/email/verify/*", path) || !path.startsWith("/api") || pathMatcher.match("/api/v1/decks/share/*", path);
+        return pathMatcher.match("/api/v1/email/verify/*", path) || !path.startsWith("/api") && !path.startsWith("/tmp/websocket") || pathMatcher.match("/api/v1/decks/share/*", path);
     }
 }

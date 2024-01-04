@@ -1,11 +1,9 @@
 package com.service.databaseservice.controller;
 
 import com.service.databaseservice.services.UserAchievementService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +21,17 @@ public class UserAchievementsController {
         return ResponseEntity.ok(userAchievementService.getAllUserAchievementIdsByUserId(userId));
     }
 
+    @GetMapping("/users/{userId}/achievements/{achievementId}/exists")
+    public ResponseEntity<Void> doesUserHaveAchievement(@PathVariable Long userId, @PathVariable Long achievementId) {
+        return userAchievementService.doesUserHaveAchievement(userId, achievementId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/users/{userId}/achievements")
+    public ResponseEntity<Void> saveUserAchievement(@PathVariable Long userId, @RequestBody Long achievementId) {
+        return userAchievementService.saveUserAchievement(userId, achievementId)
+                ? ResponseEntity.status(HttpStatus.CREATED).build()
+                : ResponseEntity.internalServerError().build();
+    }
 }

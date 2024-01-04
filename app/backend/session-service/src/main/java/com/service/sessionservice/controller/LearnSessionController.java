@@ -2,6 +2,7 @@ package com.service.sessionservice.controller;
 
 import com.service.sessionservice.payload.RatingCardHandlerDTO;
 import com.service.sessionservice.payload.StatusTypeDTO;
+import com.service.sessionservice.services.AchievementQueryService;
 import com.service.sessionservice.services.DbQueryService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class LearnSessionController {
     private final DbQueryService dbQueryService;
+    private final AchievementQueryService achievementQueryService;
 
-    public LearnSessionController(DbQueryService dbQueryService) {
+    public LearnSessionController(DbQueryService dbQueryService, AchievementQueryService achievementQueryService) {
         this.dbQueryService = dbQueryService;
+        this.achievementQueryService = achievementQueryService;
     }
 
     @PostMapping("/decks/{deckId}/learn-sessions")
@@ -36,12 +39,20 @@ public class LearnSessionController {
 
     @PutMapping("/learn-sessions/{learnSessionId}/rating")
     public ResponseEntity<?> updateLearnSessionDifficulty(@RequestHeader Long userId, @PathVariable Long learnSessionId, @RequestBody RatingCardHandlerDTO ratingCardHandlerDTO) {
-        return ResponseEntity.status(dbQueryService.updateLearnSessionDifficulty(userId, learnSessionId, ratingCardHandlerDTO)).build();
+        var httpStatus = dbQueryService.updateLearnSessionDifficulty(userId, learnSessionId, ratingCardHandlerDTO);
+        if(httpStatus.is2xxSuccessful())
+            achievementQueryService.checkCardsLearnedAchievements(userId);
+
+        return ResponseEntity.status(httpStatus).build();
     }
 
     @PutMapping("/learn-sessions/{learnSessionId}/status")
     public ResponseEntity<?> updateLearnSessionStatus(@RequestHeader Long userId, @PathVariable Long learnSessionId, @RequestBody StatusTypeDTO statusTypeDTO) {
-        return ResponseEntity.status(dbQueryService.updateLearnSessionStatus(userId, learnSessionId, statusTypeDTO)).build();
+        var httpStatus = dbQueryService.updateLearnSessionStatus(userId, learnSessionId, statusTypeDTO);
+        if(httpStatus.is2xxSuccessful())
+            achievementQueryService.checkSessionAchievements(userId);
+
+        return ResponseEntity.status(httpStatus).build();
     }
 
 }

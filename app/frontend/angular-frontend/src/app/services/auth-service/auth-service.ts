@@ -22,9 +22,12 @@ export class AuthService {
   ) {
   }
 
+  getJwtValueFromCookie() {
+    return this.cookieService.get(this.cookieName);
+  }
+
   resetCookieToSessionCookie() {
-    const cookieValue = this.cookieService.get(this.cookieName);
-    this.cookieService.set(this.cookieName, cookieValue);
+    this.cookieService.set(this.cookieName, this.getJwtValueFromCookie());
   }
 
   logout() {

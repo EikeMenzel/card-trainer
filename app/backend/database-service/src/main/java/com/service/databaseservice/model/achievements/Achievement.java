@@ -17,11 +17,8 @@ public class Achievement {
     @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    public Achievement(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
+    @Column(name = "is_daily", columnDefinition = "BOOLEAN", nullable = false)
+    private Boolean isDaily;
 
     public Achievement() {
     }
@@ -36,5 +33,9 @@ public class Achievement {
 
     public String getDescription() {
         return description;
+    }
+
+    public Boolean getDaily() {
+        return isDaily;
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -134,5 +135,30 @@ public class LearnSessionService {
             logger.debug(e.getMessage());
             return false;
         }
+    }
+
+    public Integer getLearnSessionCount(Long userId) {
+        return Math.toIntExact(learnSessionRepository.getAllByUserId(userId)
+                .stream()
+                .filter(learnSession -> Objects.equals(learnSession.getStatus().getType(), "FINISHED"))
+                .count());
+    }
+
+    public Integer getCardsLearnedCount(Long userId) {
+        return learnSessionRepository.getAllByUserId(userId)
+                .stream()
+                .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
+                .sum();
+    }
+
+    public boolean isDailyLearnSessionCompletedToday(Long userId) {
+        return learnSessionRepository.isLearnSessionCompletedToday(userId);
+    }
+
+    public Integer getCardsLearnedToday(Long userId) {
+        return learnSessionRepository.findLearnSessionsFinishedTodayByUserId(userId)
+                .stream()
+                .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
+                .sum();
     }
 }
