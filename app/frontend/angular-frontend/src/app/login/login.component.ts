@@ -12,6 +12,7 @@ import {AuthService} from "../services/auth-service/auth-service";
 import {UserService} from "../services/user-service/user.service";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {WebsocketService} from "../services/websocket/websocket-service";
 
 @Component({
   selector: 'app-login',
@@ -43,7 +44,8 @@ export class LoginComponent {
     private toastService: ToastService,
     private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private websocketService: WebsocketService
   ) {
   }
 
@@ -84,6 +86,7 @@ export class LoginComponent {
 
         this.toastService.showSuccessToast("Login", "Login succeeded")
         this.userService.getUpdatedUserInfo()
+        this.websocketService.rxStompService.activate();
         this.router.navigate(["/"])
       },
       error: err => {

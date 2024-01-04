@@ -58,6 +58,10 @@ public class DeckController {
         Optional<DeckDTO> deckDTO = deckService.getDeckByIdAndUserId(userId, deckId);
         return deckDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
+    @GetMapping("/users/{userId}/decks/count")
+    public ResponseEntity<Integer> getDeckCount(@PathVariable Long userId) {
+        return ResponseEntity.ok(deckService.getDeckCountByUserId(userId));
+    }
 
     @GetMapping("/decks/{deckId}/name")
     public ResponseEntity<String> getDeckName(@PathVariable Long deckId) {

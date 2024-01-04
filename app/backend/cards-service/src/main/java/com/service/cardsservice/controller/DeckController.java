@@ -5,10 +5,7 @@ import com.service.cardsservice.payload.in.DeckNameDTO;
 import com.service.cardsservice.payload.in.MailDTO;
 import com.service.cardsservice.payload.out.DeckDetailInformationDTO;
 import com.service.cardsservice.payload.out.DeckInformationDTO;
-import com.service.cardsservice.services.DbQueryService;
-import com.service.cardsservice.services.DeckService;
-import com.service.cardsservice.services.ExportService;
-import com.service.cardsservice.services.ImportService;
+import com.service.cardsservice.services.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.tuple.Pair;
@@ -31,14 +28,16 @@ import java.util.Optional;
 public class DeckController {
     private final DeckService deckService;
     private final DbQueryService dbQueryService;
+    private final AchievementQueryService achievementQueryService;
     private final ExportService exportService;
     private final ImportService importService;
     private final Logger logger = LoggerFactory.getLogger(DeckController.class);
     private final String GATEWAY_PATH;
 
-    public DeckController(DeckService deckService, DbQueryService dbQueryService, ExportService exportService, ImportService importService,  @Value("${gateway.path}") String gatewayPath) {
+    public DeckController(DeckService deckService, DbQueryService dbQueryService, AchievementQueryService achievementQueryService, ExportService exportService, ImportService importService, @Value("${gateway.path}") String gatewayPath) {
         this.deckService = deckService;
         this.dbQueryService = dbQueryService;
+        this.achievementQueryService = achievementQueryService;
         this.exportService = exportService;
         this.importService = importService;
         this.GATEWAY_PATH = gatewayPath;
@@ -46,7 +45,13 @@ public class DeckController {
 
     @GetMapping("")
     public ResponseEntity<List<DeckInformationDTO>> getAllDecksByUserId(@RequestHeader Long userId) {
+        if(dbQueryService.saveUserLogin(userId) == HttpStatus.CREATED) // Save User Login
+        {
+            achievementQueryService.checkDailyLoginAchievement(userId); //Check for daily Login
+        }
+
         List<DeckInformationDTO> deckInformationDTOS = deckService.getAllDeckInformation(userId);
+
         return deckInformationDTOS.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(deckInformationDTOS);
@@ -57,7 +62,11 @@ public class DeckController {
         if(userId < 0 || deckNameDTO.deckName().isEmpty() || deckNameDTO.deckName().length() > 128)
             return ResponseEntity.badRequest().build();
 
-        return ResponseEntity.status(dbQueryService.saveDeck(userId, new DeckNameDTO(deckNameDTO.deckName()))).build();
+        var httpStatusCode = dbQueryService.saveDeck(userId, new DeckNameDTO(deckNameDTO.deckName()));
+        if(httpStatusCode.is2xxSuccessful())
+            achievementQueryService.checkDeckAchievements(userId);
+
+        return ResponseEntity.status(httpStatusCode).build();
     }
 
     @DeleteMapping("/{deckId}")

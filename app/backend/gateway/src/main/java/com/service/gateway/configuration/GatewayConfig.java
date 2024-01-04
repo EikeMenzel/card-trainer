@@ -73,6 +73,11 @@ public class GatewayConfig {
                         ).uri(sessionServiceUri)
                 )
 
+                .route("achievement-service",
+                        r -> r.path(
+                                "/tmp/websocket/**"
+                        ).uri("ws://localhost:8085"))
+
                 .route("fallback",
                         r -> r.path("/api/**").filters(f -> f.setStatus(HttpStatus.NOT_FOUND))
                                 .uri("no://op"))

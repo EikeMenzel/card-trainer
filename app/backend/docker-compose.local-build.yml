@@ -60,6 +60,17 @@ services:
       - db-service
     restart: unless-stopped
 
+  achievment:
+    container_name: achievement-service
+    build: achievement-service
+    ports:
+      - "8085:8085"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
   cards:
     container_name: cards-service
     build: cards-service

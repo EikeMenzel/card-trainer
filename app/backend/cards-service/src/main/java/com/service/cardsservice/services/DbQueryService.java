@@ -370,4 +370,20 @@ public class DbQueryService {
             return Optional.empty();
         }
     }
+
+    public HttpStatusCode saveUserLogin(Long userId) {
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                    USER_DB_API_PATH + "/" + userId + "/user-login-tracker",
+                    new HttpEntity<>(headers),
+                    String.class);
+
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException | HttpServerErrorException e) { //This is not an error! It only means that an entry was already created today
+            logger.debug(e.getMessage());
+            return e.getStatusCode();
+        }
+    }
 }
