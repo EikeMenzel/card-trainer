@@ -5,6 +5,7 @@ import {UserInfoDTO} from "../../models/UserInfoDTO";
 import {AuthService} from "../auth-service/auth-service";
 import {Router} from "@angular/router";
 import {ToastService} from "../toast-service/toast.service";
+import {RegisterRequestDTO} from "../../models/RegisterRequestDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -68,5 +69,9 @@ export class UserService {
 
     if(request.status != HttpStatusCode.Unauthorized)
       this.toast.showErrorToast("User Loading error", "Could not load user Data")
+  }
+
+  registerUser(registerRequest: RegisterRequestDTO) {
+    return this.http.post<RegisterRequestDTO>('/api/v1/register', registerRequest, {observe: 'response'})
   }
 }

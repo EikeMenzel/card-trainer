@@ -1,39 +1,99 @@
-<ng-container *ngIf="!loginSuccess; else other">
-  <div id="register-body" class="d-flex justify-content-center align-items-center">
-    <div class="register-container bg-green">
-      <h1>Register</h1>
-      <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
-        <label>
-          <p id="headline_email">E-Mail</p>
-          <input [style.border-color]="emailBorder" type="text" placeholder="E-Mail" name="email" [(ngModel)]="email"
-                 required>
-        </label>
-        <label>
-          <p id="headline_username">Username</p>
-          <input [style.border-color]="usernameBorder" type="text" placeholder="Username" name="username"
-                 [(ngModel)]="username" required>
-        </label>
-        <br>
-        <label>
-          <p id="headline_password">Password</p>
-          <input [style.border-color]="passwordBorder" type="password" placeholder="Password" name="password"
-                 [(ngModel)]="password" required>
-        </label>
-        <label>
-          <p id="headline_repeat">Repeat Password</p>
-          <input [style.border-color]="passwordRepeatBorder" type="password" placeholder="Repeat Password"
-                 name="passwordRepeat" [(ngModel)]="passwordRepeat" required>
-        </label>
-        <button [disabled]="buttonIsPressed" type="submit" class="btn-success">
-          <span *ngIf="!buttonIsPressed">Register</span>
-          <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
-        </button>
-      </form>
-      <span style="width: 100%"></span>
-      <p style=color:white>Already have an Account? <a routerLink="/login">Login</a></p>
+<ng-container *ngIf="!loginSuccess; else other" xmlns="http://www.w3.org/1999/html">
+  <div class="register-container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card register-card">
+          <div class="card-body">
+
+            <!-- Simon -->
+            <div class="text-center">
+              <img src="assets/fox3.png" alt="Profile Image" class="simon">
+              <h2 class="my-3">Hey!</h2>
+              <p>
+                Don´t have an account yet? No worries!<br>
+                Sign up by entering the information below.</p>
+            </div>
+
+            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
+              <!-- Email -->
+              <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
+                       placeholder="Enter your email" name="email" (ngModelChange)="validateInput('email',emailValue.value)" required ngModel #emailValue>
+                <div class="error">
+                  {{emailError}}
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div class="form-group mb-3">
+                <label for="username">Username</label>
+                <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
+                       placeholder="Enter your username" name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
+                <div class="error">
+                  {{usernameError}}
+                </div>
+              </div>
+              <!-- Password with toggle button inside the input field -->
+              <div class="form-group mb-3">
+                <label for="password">Password</label>
+                <span class="password-policy" title=
+                "A password must be:
+                • between 8 - 72 characters long
+                • contain at least one number
+                • at least special character: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
+              </span>
+                <div class="input-group mb-1">
+                  <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'"
+                         class="form-control" placeholder="Enter your password" name="password" id="password" ngModel
+                         required (ngModelChange)="validateInput('password',passwordValue.value)" #passwordValue>
+                  <div class="input-group-append">
+                    <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
+                      <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="error">
+                  <p>{{passwordError}}</p>
+                </div>
+              </div>
+
+              <!-- Password repeat -->
+              <div class="form-group mb-3">
+                <label for="password-repeat">Confirm Password</label>
+                <div class="input-group mb-1">
+                  <input [style.border-color]="passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'"
+                         class="form-control" id="password-repeat" placeholder="Re-enter your password"
+                         name="password-repeat" ngModel required (ngModelChange)="validateInput('passwordRepeat',passwordRepValue.value)" #passwordRepValue>
+                  <div class="input-group-append">
+                    <button type="button" class="btn toggle-password"
+                            (click)="showPasswordRepeat = !showPasswordRepeat">
+                      <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="error">
+                  {{passwordRepeatError}}
+                </div>
+              </div>
+
+              <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">
+                <span *ngIf="!buttonIsPressed">Sign Up</span>
+                <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Login -->
+          <div class="card-footer text-center mb-4">
+            Already have an account? <a routerLink="/login" class="sign-in-link">Sign In</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </ng-container>
+
 <ng-template #other>
   <app-register-successful [userEmail]="email"></app-register-successful>
 </ng-template>
