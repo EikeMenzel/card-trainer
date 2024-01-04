@@ -92,6 +92,10 @@ push_backend_to_registry: # push images to registry
     - cd gateway
     - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/gateway:latest .
     - docker push $CI_REGISTRY_IMAGE_PATH/gateway:latest
+    - cd ..
+    - cd achievement-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/achievement-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/achievement-service:latest
   allow_failure: true
 
 push_frontend_to_registry: # push images to registry

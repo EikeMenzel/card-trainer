@@ -6,6 +6,7 @@ import {ToastComponent} from "./toast/toast.component";
 import {ToasterComponent} from "./toaster/toaster.component";
 import {AuthService} from "./services/auth-service/auth-service";
 import {HttpClientModule} from "@angular/common/http";
+import {WebsocketService} from "./services/websocket/websocket-service";
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ export class AppComponent {
 
   constructor(private authService: AuthService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private websocket: WebsocketService) {
   }
 }
