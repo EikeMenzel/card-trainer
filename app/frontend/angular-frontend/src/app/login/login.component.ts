@@ -2,27 +2,41 @@ import {Component} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormsModule,
-  FormControl, FormGroup, Validators, NgForm
+  NgForm
 } from '@angular/forms';
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {HttpClient, HttpClientModule, HttpStatusCode} from "@angular/common/http";
 import {ToastService} from "../services/toast-service/toast.service";
 import {ToasterComponent} from "../toaster/toaster.component";
-import {CookieService} from "ngx-cookie-service";
 import {AuthService} from "../services/auth-service/auth-service";
 import {UserService} from "../services/user-service/user.service";
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, HttpClientModule, ToasterComponent, RouterLinkActive]
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    HttpClientModule,
+    ToasterComponent,
+    RouterLinkActive,
+    FontAwesomeModule
+  ]
 })
 export class LoginComponent {
 
-  public emailBorder: string = "#F0FDEE";
-  public passwordBorder: string = "#F0FDEE";
+  public emailBorder: string = "var(--bg-main-color)";
+  public passwordBorder: string = "var(--bg-main-color)";
+
+  showPassword: boolean = false;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+
 
   constructor(
     private http: HttpClient,
@@ -34,22 +48,22 @@ export class LoginComponent {
   }
 
   private errorPassword() {
-    this.passwordBorder = "#FF6961"
+    this.passwordBorder = "var(--primary-error-color)";
     setTimeout(() => {
-      this.passwordBorder = "#F0FDEE"
+      this.passwordBorder = "var(--bg-main-color)";
     }, 3000)
   }
 
   private errorEmail() {
-    this.emailBorder = "#FF6961"
+    this.emailBorder = "var(--primary-error-color)";
     setTimeout(() => {
-      this.emailBorder = "#F0FDEE"
+      this.emailBorder = "var(--bg-main-color)";
     }, 3000)
   }
 
   onSubmit(loginForm: NgForm) {
     if (!loginForm.valid) {
-      this.toastService.showErrorToast("Error","Please Enter a valid E-Mail and Password")
+      this.toastService.showErrorToast("Error", "Please Enter a valid E-Mail and Password")
       this.errorEmail()
       this.errorPassword()
       return;
@@ -63,7 +77,7 @@ export class LoginComponent {
     this.http.post<any>("/api/v1/login", {email, password}, {observe: 'response'}).subscribe({
       next: value => {
 
-        if(loginForm.value["remember"] === false) {
+        if (loginForm.value["remember"] === false) {
           this.authService.resetCookieToSessionCookie();
           this.authService.startSessionTimer();
         }

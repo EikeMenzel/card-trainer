@@ -5,12 +5,13 @@
 .login-card {
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #F0FDEE;
+  background-color: var(--bg-main-color);
 }
 .simon {
   width: 150px;
   height: auto;
   border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .forgot-password-link {
   margin-left: auto;
@@ -23,10 +24,9 @@
   width: 100%;
   padding: 10px;
   border-radius: 10px;
-  color: var(--primary-color);
-  background-color: transparent;
+  color: white;
+  background-color: var(--primary-color);
   border: 2px solid var(--primary-color);
-  transition: background-color 0.3s, color 0.3s;
 }
 .submit-button:hover,
 .submit-button:active {
@@ -68,6 +68,18 @@
 .card-footer {
   background: none;
   border-top: 0;
+}
+
+.toggle-password {
+  width: 50px;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: none;
+}
+
+.toggle-password:hover,
+.toggle-password:active {
+  color: var(--primary-color);
 }
 
 /* Responsive adjustments */
