@@ -165,7 +165,7 @@ class UserControllerTest {
     @Test
     void testGetUserAccountInformation_UserFound() {
         long userId = 1L;
-        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en");
+        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en", 0);
         when(userService.getAccountInformation(userId)).thenReturn(Optional.of(mockUser));
 
         ResponseEntity<UserAccountInformationDTO> response = userController.getUserAccountInformation(userId);
@@ -189,7 +189,7 @@ class UserControllerTest {
     @Test
     void testUpdateUserAccountInformation_Success() {
         long userId = 1L;
-        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en");
+        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en", 0);
 
         when(userService.updateAccountInformation(userId, mockUser)).thenReturn(true);
 
@@ -201,7 +201,7 @@ class UserControllerTest {
     @Test
     void testUpdateUserAccountInformation_Failure() {
         long userId = 1L;
-        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en");
+        UserAccountInformationDTO mockUser = new UserAccountInformationDTO( "username", "test@example.com", 10, false, "en", 0);
 
         when(userService.updateAccountInformation(userId, mockUser)).thenReturn(false);
 
