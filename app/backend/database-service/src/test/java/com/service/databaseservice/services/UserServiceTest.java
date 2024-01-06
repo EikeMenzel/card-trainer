@@ -5,12 +5,14 @@ import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
+import com.service.databaseservice.repository.achievements.UserLoginTrackerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -27,6 +29,8 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private UserLoginTrackerRepository userLoginTrackerRepository;
     @InjectMocks
     private UserService userService;
 
@@ -218,7 +222,7 @@ class UserServiceTest {
     void updateAccountInformation_UserExists_UpdatesAndReturnsTrue() {
         Long userId = 1L;
         User mockUser = new User(userId, "username", "email@example.com", "password", true, true, 20, "en");
-        UserAccountInformationDTO dto = new UserAccountInformationDTO("newUsername", "newEmail@example.com", 10, true, "en");
+        UserAccountInformationDTO dto = new UserAccountInformationDTO("newUsername", "newEmail@example.com", 10, true, "en", 0);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
 
@@ -233,7 +237,7 @@ class UserServiceTest {
     @Test
     void updateAccountInformation_UserDoesNotExist_ReturnsFalse() {
         Long userId = 1L;
-        UserAccountInformationDTO dto = new UserAccountInformationDTO("username", "email@example.com", 10, true, "en");
+        UserAccountInformationDTO dto = new UserAccountInformationDTO("username", "email@example.com", 10, true, "en", 0);
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 

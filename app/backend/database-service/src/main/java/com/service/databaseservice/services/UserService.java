@@ -6,24 +6,25 @@ import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.repository.UserRepository;
+import com.service.databaseservice.repository.achievements.UserLoginTrackerRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
     private final UserRepository userRepository;
+    private final UserLoginTrackerRepository userLoginTrackerRepository;
+    public UserService(UserRepository userRepository, UserLoginTrackerRepository userLoginTrackerRepository) {
+        this.userRepository = userRepository;
+        this.userLoginTrackerRepository = userLoginTrackerRepository;
+    }
 
     public Optional<String> getUserEmailById(Long id) {
         var user = userRepository.getUserById(id);
@@ -72,7 +73,8 @@ public class UserService {
 
     public Optional<UserAccountInformationDTO> getAccountInformation(Long id) {
         Optional<User> user = userRepository.getUserById(id);
-        return user.map(value -> new UserAccountInformationDTO(value.getUsername(), value.getEmail(), value.getCardsPerSession(), value.getGetsNotified(), value.getLangCode()));
+        List<Date> loginDates = userLoginTrackerRepository.findDistinctLoginDatesByUserId(id);
+        return user.map(value -> new UserAccountInformationDTO(value.getUsername(), value.getEmail(), value.getCardsPerSession(), value.getGetsNotified(), value.getLangCode(), calculateLoginStreak(loginDates)));
     }
 
     @Transactional
@@ -119,5 +121,32 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    private int calculateLoginStreak(List<Date> loginDates) {
+        if(loginDates == null || loginDates.isEmpty())
+            return 0;
+
+        List<LocalDate> localDates = loginDates.stream().map(this::convertToLocalDateViaSqlDate).toList();
+
+        var streak = 0;
+        var today = LocalDate.now();
+
+        for (LocalDate localDate : localDates) {
+            if (localDate.equals(today)) {
+                streak++;
+                today = localDate.minusDays(1);
+            }
+
+            else if (localDate.isBefore(today)) {
+                break;
+            }
+        }
+
+        return streak;
+    }
+
+    public LocalDate convertToLocalDateViaSqlDate(Date dateToConvert) {
+        return new java.sql.Date(dateToConvert.getTime()).toLocalDate();
     }
 }

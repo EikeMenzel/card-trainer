@@ -29,7 +29,7 @@ public class UserController {
                 accountInformationDTO.getEmail(),
                 accountInformationDTO.getCardsToLearn(),
                 accountInformationDTO.getReceiveLearnNotification(),
-                accountInformationDTO.getLangCode(),
+                accountInformationDTO.getLangCode(), accountInformationDTO.getLoginStreak(),
                 dbQueryService.getAchievementIds(userId))))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
