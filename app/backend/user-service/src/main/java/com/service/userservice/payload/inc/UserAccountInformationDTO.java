@@ -12,13 +12,14 @@ public class UserAccountInformationDTO {
     @Min(value = 0) private final Integer cardsToLearn;
     private final Boolean receiveLearnNotification;
     @Size(min = 2, max = 3) private final String langCode;
-
-    public UserAccountInformationDTO(@NonNull String username, @NonNull @Email String email, @NonNull Integer cardsToLearn, @NonNull Boolean receiveLearnNotification, @NonNull String langCode) {
+    private Integer loginStreak;
+    public UserAccountInformationDTO(@NonNull String username, @NonNull @Email String email, @NonNull Integer cardsToLearn, @NonNull Boolean receiveLearnNotification, @NonNull String langCode, Integer loginStreak) {
         this.username = username;
         this.email = email;
         this.cardsToLearn = cardsToLearn;
         this.receiveLearnNotification = receiveLearnNotification;
         this.langCode = langCode;
+        this.loginStreak = loginStreak;
     }
 
     public String getUsername() {
@@ -39,5 +40,9 @@ public class UserAccountInformationDTO {
 
     public String getLangCode() {
         return langCode;
+    }
+
+    public Integer getLoginStreak() {
+        return loginStreak;
     }
 }
