@@ -33,17 +33,17 @@ public class LearnSessionController {
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/users/{userId}/histories")
-    public ResponseEntity<List<HistoryDTO>> getAllLearnSessionsFromUserId(@PathVariable Long userId) {
-        List<HistoryDTO> historyDTOS = learnSessionService.getAllHistoryFromUserId(userId);
+    @GetMapping("/users/{userId}/decks/{deckId}/histories")
+    public ResponseEntity<List<HistoryDTO>> getAllLearnSessionsFromUserId(@PathVariable Long userId, @PathVariable Long deckId) {
+        List<HistoryDTO> historyDTOS = learnSessionService.getAllHistoryFromUserIdAndDeckId(userId, deckId);
         return historyDTOS.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(historyDTOS);
     }
 
-    @GetMapping("/users/{userId}/histories/{historyId}")
-    public ResponseEntity<HistoryDetailDTO> getLearnSessionDetailsFromUserIdAndSessionId(@PathVariable Long userId, @PathVariable Long historyId) {
-        return learnSessionService.getHistoryDetailsFromHistoryIdAndUserId(historyId, userId)
+    @GetMapping("/users/{userId}/decks/{deckId}/histories/{historyId}")
+    public ResponseEntity<HistoryDetailDTO> getLearnSessionDetailsFromUserIdAndSessionId(@PathVariable Long userId, @PathVariable Long deckId, @PathVariable Long historyId) {
+        return learnSessionService.getHistoryDetailsFromHistoryIdAndUserId(historyId, userId, deckId)
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
