@@ -10,8 +10,10 @@ import java.util.Optional;
 
 public interface LearnSessionRepository extends JpaRepository<LearnSession, Long> {
     Optional<LearnSession> findTopByDeckIdAndUserIdOrderByIdDesc(Long deckId, Long userId);
+    List<LearnSession> getAllByUserIdAndDeckId(Long userId, Long deckId);
     List<LearnSession> getAllByUserId(Long userId);
-    Optional<LearnSession> getLearnSessionByIdAndUserId(Long sessionId, Long userId);
+    Optional<LearnSession> getLearnSessionByIdAndUserIdAndDeckId(Long sessionId, Long userId, Long deckId);
+    Boolean existsLearnSessionByIdAndDeckId(Long sessionId, Long deckId);
     @Query("SELECT CASE WHEN COUNT(ls) > 0 THEN TRUE ELSE FALSE END FROM LearnSession ls WHERE ls.user.id = :userId AND ls.status.type = 'FINISHED' AND DATE(ls.finishedAt) = CURRENT_DATE")
     Boolean isLearnSessionCompletedToday(Long userId);
 

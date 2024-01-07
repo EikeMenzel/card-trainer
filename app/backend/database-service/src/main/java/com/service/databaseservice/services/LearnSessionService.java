@@ -43,8 +43,8 @@ public class LearnSessionService {
         return learnSession.map(session -> session.getFinishedAt() == null ? session.getCreatedAt() : session.getFinishedAt());
     }
 
-    public List<HistoryDTO> getAllHistoryFromUserId(Long userId) {
-        return learnSessionRepository.getAllByUserId(userId)
+    public List<HistoryDTO> getAllHistoryFromUserIdAndDeckId(Long userId, Long deckId) {
+        return learnSessionRepository.getAllByUserIdAndDeckId(userId, deckId)
                 .stream()
                 .map(learnSession -> {
                     int cardsLearnedCount = learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6();
@@ -53,8 +53,8 @@ public class LearnSessionService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<HistoryDetailDTO> getHistoryDetailsFromHistoryIdAndUserId(Long historyId, Long userId) {
-        return learnSessionRepository.getLearnSessionByIdAndUserId(historyId, userId)
+    public Optional<HistoryDetailDTO> getHistoryDetailsFromHistoryIdAndUserId(Long historyId, Long userId, Long deckId) {
+        return learnSessionRepository.getLearnSessionByIdAndUserIdAndDeckId(historyId, userId, deckId)
                 .map(learnSession -> {
                     int cardsLearnedCount = learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6();
                     return new HistoryDetailDTO(learnSession.getId(), learnSession.getDeck().getName(), learnSession.getCreatedAt(), learnSession.getFinishedAt(),
@@ -82,7 +82,7 @@ public class LearnSessionService {
     }
 
     public boolean doesLearnSessionFromUserExist(Long userId, Long learnSessionId) {
-        return learnSessionRepository.getLearnSessionByIdAndUserId(learnSessionId, userId).isPresent();
+        return learnSessionRepository.existsLearnSessionByIdAndDeckId(learnSessionId, userId);
     }
 
     @Transactional

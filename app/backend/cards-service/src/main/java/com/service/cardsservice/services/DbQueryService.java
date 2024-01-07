@@ -183,9 +183,9 @@ public class DbQueryService {
         }
     }
 
-    public List<HistoryDTO> getAllHistoriesByUserId(Long userId) {
+    public List<HistoryDTO> getAllHistoriesByUserIdAndDeckId(Long userId, Long deckId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/histories", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/histories", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<HistoryDTO>>() {
             })
@@ -196,9 +196,9 @@ public class DbQueryService {
         }
     }
 
-    public Optional<HistoryDetailDTO> getDetailsHistoryByUserIdAndHistoryId(Long userId, Long historyId) {
+    public Optional<HistoryDetailDTO> getDetailsHistoryByUserIdAndDeckIdAndHistoryId(Long userId, Long deckId, Long historyId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/histories/" + historyId, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/histories/" + historyId, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<HistoryDetailDTO>>() {
             })
