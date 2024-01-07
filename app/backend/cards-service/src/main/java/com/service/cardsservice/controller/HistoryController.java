@@ -17,17 +17,17 @@ public class HistoryController {
         this.dbQueryService = dbQueryService;
     }
 
-    @GetMapping("/histories")
-    public ResponseEntity<List<HistoryDTO>> getAllHistoriesByUserId(@RequestHeader Long userId) {
-        List<HistoryDTO> historyDTOS = dbQueryService.getAllHistoriesByUserId(userId);
+    @GetMapping("/decks/{deckId}/histories")
+    public ResponseEntity<List<HistoryDTO>> getAllHistoriesByUserIdAndDeckId(@RequestHeader Long userId, @PathVariable Long deckId) {
+        List<HistoryDTO> historyDTOS = dbQueryService.getAllHistoriesByUserIdAndDeckId(userId, deckId);
         return historyDTOS.isEmpty()
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.ok(historyDTOS);
     }
 
-    @GetMapping("/histories/{historyId}")
-    public ResponseEntity<HistoryDetailDTO> getHistoryDetailsByUserIdAndHistoryId(@RequestHeader Long userId, @PathVariable Long historyId) {
-        return dbQueryService.getDetailsHistoryByUserIdAndHistoryId(userId, historyId)
+    @GetMapping("/decks/{deckId}/histories/{historyId}")
+    public ResponseEntity<HistoryDetailDTO> getHistoryDetailsByUserIdAndHistoryId(@RequestHeader Long userId, @PathVariable Long deckId, @PathVariable Long historyId) {
+        return dbQueryService.getDetailsHistoryByUserIdAndDeckIdAndHistoryId(userId, deckId, historyId)
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }
