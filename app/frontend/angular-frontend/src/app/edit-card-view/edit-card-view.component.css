@@ -13,12 +13,12 @@
 }
 
 .oldImgDisplay {
+  border-radius: 5px;
   margin-left: 10px;
 }
 
 .oldImgDisplayWrapper {
-  display: inline;
-  position: absolute;
+  display: inline-block;
 }
 
 .deleteOldImg {

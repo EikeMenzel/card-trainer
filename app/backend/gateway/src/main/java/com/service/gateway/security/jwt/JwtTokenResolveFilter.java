@@ -2,6 +2,7 @@ package com.service.gateway.security.jwt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 @Component
 public class JwtTokenResolveFilter implements WebFilter {
@@ -19,7 +21,10 @@ public class JwtTokenResolveFilter implements WebFilter {
 
     private final JwtUtils jwtUtils;
     private final HashSet<String> excludedRoutes;
-    public JwtTokenResolveFilter(JwtUtils jwtUtils) {
+    private final boolean logRoutes;
+
+    public JwtTokenResolveFilter(JwtUtils jwtUtils, @Value("${log.routes}") boolean logRoutes) {
+        this.logRoutes = logRoutes;
         this.jwtUtils = jwtUtils;
         this.excludedRoutes = new HashSet<>();
         this.excludedRoutes.add("/api/v1/register");
@@ -31,6 +36,13 @@ public class JwtTokenResolveFilter implements WebFilter {
     @NonNull
     public Mono<Void> filter(@NonNull ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         if(isRouteInExcludedList(exchange.getRequest().getURI().getPath())) {
+            if (logRoutes) {
+                if (!Objects.requireNonNull(exchange.getResponse().getStatusCode()).is2xxSuccessful()) {
+                    logger.error("Route '{}' | Res: {}", exchange.getRequest().getPath(), exchange.getResponse().getStatusCode());
+                } else {
+                    logger.info("Route '{}' | Res: {}", exchange.getRequest().getPath(), exchange.getResponse().getStatusCode());
+                }
+            }
             return chain.filter(exchange); // Skip jwtTokenResolveFilter
         }
 
@@ -40,6 +52,14 @@ public class JwtTokenResolveFilter implements WebFilter {
         }
 
         String userId = jwtUtils.getUserIdFromJwtToken(jwt);
+
+        if (logRoutes) {
+            if (!Objects.requireNonNull(exchange.getResponse().getStatusCode()).is2xxSuccessful()) {
+                logger.error("Route '{}' | User {} | Res: {}", exchange.getRequest().getPath(), userId, exchange.getResponse().getStatusCode());
+            } else {
+                logger.info("Route '{}' | User {} | Res: {}", exchange.getRequest().getPath(), userId, exchange.getResponse().getStatusCode());
+            }
+        }
 
         ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                 .header("userId", userId)

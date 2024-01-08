@@ -28,6 +28,7 @@ export class DeckListViewComponent implements OnInit {
   buttonIsPressed: boolean = false;
   importFile: string = "";
   private selectedFile: File | null = null;
+  private wipCreateDeck: boolean = false;
 
   toggleOptions() {
     this.showOptions = !this.showOptions;
@@ -97,6 +98,10 @@ export class DeckListViewComponent implements OnInit {
   }
 
   addedNewDeck() {
+    if (this.wipCreateDeck) {
+      return;
+    }
+    this.wipCreateDeck = true
     const newDeckName = (document.getElementById("add-new-item-field") as HTMLInputElement).value;
     if (newDeckName == "") {
       this.toast.showErrorToast("Error","Deck Name can not be Empty")
@@ -108,6 +113,7 @@ export class DeckListViewComponent implements OnInit {
       return;
     }
 
+    this.addItem()
     this.cardService.newDecks(newDeckName).subscribe({
       next: res => {
         if (res.status == 201) {
@@ -129,6 +135,9 @@ export class DeckListViewComponent implements OnInit {
             this.toast.showErrorToast("Error", "Could not create a new Deck")
             break;
         }
+      },
+      complete: () => {
+        this.wipCreateDeck = false
       }
     })
   }
@@ -209,4 +218,5 @@ export class DeckListViewComponent implements OnInit {
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
+
 }

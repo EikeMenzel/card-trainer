@@ -3,13 +3,14 @@ package com.service.gateway.security;
 import com.service.gateway.security.jwt.AuthEntryPointJwt;
 import com.service.gateway.security.jwt.AuthTokenFilter;
 import com.service.gateway.security.jwt.JwtTokenResolveFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
 
 @Configuration
@@ -18,6 +19,7 @@ public class WebSecurityConfig {
     private final AuthEntryPointJwt authEntryPointJwt;
     private final AuthTokenFilter authTokenFilter;
     private final JwtTokenResolveFilter jwtTokenResolveFilter;
+
     public WebSecurityConfig(AuthEntryPointJwt authEntryPointJwt, AuthTokenFilter authTokenFilter, JwtTokenResolveFilter jwtTokenResolveFilter) {
         this.authEntryPointJwt = authEntryPointJwt;
         this.authTokenFilter = authTokenFilter;

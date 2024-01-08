@@ -1,12 +1,13 @@
+import {CardDTO} from "../CardDTO";
 import {UpdateCardDTO} from "./UpdateCardDTO";
-import {ImageDTO} from "./ImageDTO";
 
-export class UpdateBasicCardDTO {
+export class UpdateCardBasicDTO {
+
   constructor(
     public textAnswerCardId: number,
     public cardDTO: UpdateCardDTO,
     public textAnswer: string,
-    public imageDTO: ImageDTO | null
+    public imageId: number | null
   ) {
   }
 }

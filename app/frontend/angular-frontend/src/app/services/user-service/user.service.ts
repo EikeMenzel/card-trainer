@@ -67,7 +67,7 @@ export class UserService {
       this.router.navigate(["/login"])
     }
 
-    if(request.status != HttpStatusCode.Unauthorized)
+    if (request.status != HttpStatusCode.Unauthorized)
       this.toast.showErrorToast("User Loading error", "Could not load user Data")
   }
 
