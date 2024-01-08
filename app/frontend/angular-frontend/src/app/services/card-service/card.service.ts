@@ -5,7 +5,10 @@ import {Observable} from "rxjs";
 import {DeckDetailInformationDTO} from "../../models/DeckDetailInformationDTO";
 import {CardDTO} from "../../models/CardDTO";
 import {RatingDTO} from "../../models/learn-session/RatingDTO";
-import {UpdateMCCardDTO} from "../../models/edit-card/update-card/UpdateMCCardDTO";
+import {CreateCardMCDTO} from "../../models/edit-card/CreateCardMCDTO";
+import {CreateCardBasicDTO} from "../../models/edit-card/CreateCardBasicDTO";
+import {UpdateCardBasicDTO} from "../../models/edit-card/UpdateCardBasicDTO";
+import {UpdateCardMCDTO} from "../../models/edit-card/UpdateCardMCDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -88,8 +91,8 @@ export class CardService {
     return this.http.get<number>(`/api/v1/decks/${deckId}/cards-to-learn`, {observe: 'response'});
   }
 
-  createCard(formData: FormData, deckId: string) {
-    return this.http.post(`/api/v1/decks/${deckId}/cards`, formData, {
+    createCard(cardDTO: CreateCardBasicDTO | CreateCardMCDTO, deckId: string) {
+    return this.http.post(`/api/v1/decks/${deckId}/cards`, cardDTO, {
       observe: "response"
     });
   }
@@ -105,5 +108,15 @@ export class CardService {
   updateBasicCard(deckId: string, cardId: string, formData: FormData) {
     return this.http.put(`/api/v1/decks/${deckId}/cards/${cardId}`, formData, {observe: "response"})
 
+  }
+
+  saveImage(selectedFile: File) {
+    const formData = new FormData();
+    formData.append("image", selectedFile, selectedFile.name);
+    return this.http.post(`/api/v1/images`, formData, {observe: "response"})
+  }
+
+  updateCard(cardDTO: UpdateCardBasicDTO | UpdateCardMCDTO, deckId: string, cardId: string) {
+    return this.http.put(`/api/v1/decks/${deckId}/cards/${cardId}`, cardDTO, {observe: "response"})
   }
 }

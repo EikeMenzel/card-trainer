@@ -23,6 +23,17 @@
             </ng-container></span>
         </td>
       </tr>
+      <ng-container *ngIf="cards.length == 0">
+        <tr>
+          <td colspan="2" class="text-center">
+            <p class="text-muted">No cards found! Create one 😊</p>
+            <button class="btn menu-item menu-circle sub-add-button" routerLink="/deck/{{deckId}}/card/new/edit">
+              <i class="bi-plus text-white"></i>
+            </button>
+          </td>
+
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>

@@ -4,8 +4,6 @@ import {Router} from "@angular/router";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {MatDialog} from "@angular/material/dialog";
 import {SessionRenewalModalComponent} from "../../session-renewal-modal/session-renewal-modal.component";
-import {HttpClient} from "@angular/common/http";
-import {ToastService} from "../toast-service/toast.service";
 
 @Injectable({
   providedIn: 'root',
@@ -79,4 +77,10 @@ export class AuthService {
       }
     });
   }
+
+  removeCookie() {
+    this.cookieService.delete(this.cookieName);
+  }
+
+
 }

@@ -11,6 +11,9 @@ export class ErrorHandlerService {
   public getErrorMessageFromResponse(messageResponseDTO: MessageResponseDTO): string {
     switch (messageResponseDTO.status) {
       case 1: {
+        if (messageResponseDTO.response.includes("already exists")) {
+          return "Email already in use";
+        }
         return "Your Email is invalid";
       }
       case 2: {
