@@ -133,7 +133,9 @@ services:
 
   frontend:
     container_name: frontend
-    build: ../frontend/angular-frontend
+    build:
+      context: ../frontend/angular-frontend
+      dockerfile: Dockerfile-dev
     ports:
       - "4200:4200"
     networks:

@@ -11,6 +11,11 @@ import com.service.authenticationservice.services.DbQueryService;
 import com.service.authenticationservice.services.EmailQueryService;
 import com.service.authenticationservice.services.EmailValidator;
 import com.service.authenticationservice.services.PasswordSecurityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +57,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new user", description = "Endpoint to register a new user with username, password, and email.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Invalid username, password or email format",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "409", description = "Conflict - Email already exists",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error - Problem occurred during the registration process",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
+    })
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         if (registerRequest.username().length() < 4 || registerRequest.username().length() > 30) {
             return ResponseEntity.badRequest().body(new MessageResponseDTO(2, "Error, Username needs to be between 4 and 30 characters"));
@@ -93,6 +108,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "User Login", description = "Endpoint to authenticate and log in a user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User authenticated successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Authentication failed",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+    })
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
         try {
             var authentication = authenticationManager.authenticate(
@@ -117,8 +138,17 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/email/verify/{token}")
-    //Needs to be a getMapping, since mail-clients block javascript code. PUT would not be possible.
+    @GetMapping("/email/verify/{token}") //Needs to be a getMapping, since mail-clients block javascript code. PUT would not be possible.
+    @Operation(summary = "Verify User Email", description = "Endpoint to verify a user's email using a verification token.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "308", description = "Permanent Redirect - Email verification successful, redirect to success page"),
+            @ApiResponse(responseCode = "409", description = "Conflict - Email is already verified",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Token is not acceptable",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
+    })
     public ResponseEntity<?> verifyUserEmail(@PathVariable String token) {
         var httpStatusCode = dbQueryService.setVerificationStateToTrue(token);
         if (httpStatusCode.equals(HttpStatus.NO_CONTENT)) {
@@ -134,6 +164,15 @@ public class AuthController {
     }
 
     @PutMapping("/password")
+    @Operation(summary = "Update User Password", description = "Endpoint to update a user's password.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Password updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Password does not meet security requirements or is blocked",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found - User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
+    })
     public ResponseEntity<?> updateUserPassword(@RequestHeader Long userId, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         if (passwordSecurityService.checkPasswordIsInRainbowTable(updatePasswordDTO.password())) //contains check, returns true if the password is in the table
             return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
@@ -146,6 +185,14 @@ public class AuthController {
     }
 
     @PostMapping("/password/reset")
+    @Operation(summary = "Send Password Reset Email", description = "Endpoint to send a password reset email.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Password reset email sent successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Invalid email format",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
+    })
     public ResponseEntity<?> sendPasswordResetMail(@Valid @RequestBody MailDTO mailDTO) {
         if(!EmailValidator.validate(mailDTO.email()))
             return ResponseEntity.badRequest().body(new MessageResponseDTO(1, "Error, invalid Email"));
@@ -157,6 +204,14 @@ public class AuthController {
     }
 
     @PutMapping("/password/reset")
+    @Operation(summary = "Update User Password Unauthenticated", description = "Endpoint to update a user's password without authentication. - token is from POST /password/reset")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Password updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - Invalid password or token",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
+                    content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
+    })
     public ResponseEntity<?> updateUserPasswordUnauthenticated(@Valid @RequestBody PasswordResetDTO passwordResetDTO) {
         if (passwordSecurityService.checkPasswordIsInRainbowTable(passwordResetDTO.password())) //contains check, returns true if the password is in the table
             return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
