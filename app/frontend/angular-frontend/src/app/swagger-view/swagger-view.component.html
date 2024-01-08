@@ -1,0 +1,8 @@
+<select class="form-control" id="serviceSelection" name="serviceSelection" [(ngModel)]="selectedService" (change)="selectService(selectedService)">
+  <option class="dropdown-item" *ngFor="let service of serviceDisplayNames" [value]="service[0]">
+    {{ service[1] }}
+  </option>
+</select>
+
+<div id="swagger-ui"></div>
+

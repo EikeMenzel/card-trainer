@@ -40,7 +40,10 @@ public class WebSecurityConfig {
                                 "/api/v1/login",
                                 "/api/v1/email/verify/{token}",
                                 "/api/v1/password/reset",
-                                "/api/v1/decks/share/{token}"
+                                "/api/v1/decks/share/{token}",
+                                "/api/v1/swagger-auth-service/**",
+                                "/api/v1/auth/swagger-ui/**",
+                                "/api/v1/auth/v3/api-docs"
                         ).permitAll()
                         .pathMatchers("/api/**")
                         .authenticated()
