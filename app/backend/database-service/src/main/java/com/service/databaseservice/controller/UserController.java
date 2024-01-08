@@ -1,11 +1,12 @@
 package com.service.databaseservice.controller;
 
-import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.inc.UpdatePasswordDTO;
+import com.service.databaseservice.payload.inc.UpdatePasswordDTOUnauthorized;
 import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
 import com.service.databaseservice.services.UserService;
+import com.service.databaseservice.services.UserTokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,11 @@ import java.util.Optional;
 @RequestMapping("api/v1/db/users")
 public class UserController {
     private final UserService userService;
+    private final UserTokenService userTokenService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserTokenService userTokenService) {
         this.userService = userService;
+        this.userTokenService = userTokenService;
     }
 
     @GetMapping("/{userId}/email")
@@ -82,7 +85,23 @@ public class UserController {
 
     @PutMapping("/{userId}/password")
     public ResponseEntity<?> updatePassword(@PathVariable Long userId, @RequestBody UpdatePasswordDTO updatePasswordDTO) {
-        return userService.updateUserPassword(userId, updatePasswordDTO)
+        return userService.updateUserPassword(userId, updatePasswordDTO.password())
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+                : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{userId}/password/unauthorized")
+    public ResponseEntity<Void> updatePasswordUnauthorized(@PathVariable Long userId, @RequestBody UpdatePasswordDTOUnauthorized updatePasswordDTOUnauthorized) {
+        if(!userTokenService.belongsTokenToUser(userId, updatePasswordDTOUnauthorized.token()))
+            return ResponseEntity.badRequest().build();
+
+        if(!userTokenService.isUserTokenValid(updatePasswordDTOUnauthorized.token()))
+            return ResponseEntity.notFound().build();
+
+        if(!userTokenService.areTokenTypesIdentical(updatePasswordDTOUnauthorized.token(), "PASSWORD_RESET"))
+            return ResponseEntity.notFound().build();
+
+        return userService.updateUserPassword(userId, updatePasswordDTOUnauthorized.password()) && userTokenService.deleteToken(userId, updatePasswordDTOUnauthorized.token())
                 ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()
                 : ResponseEntity.notFound().build();
     }

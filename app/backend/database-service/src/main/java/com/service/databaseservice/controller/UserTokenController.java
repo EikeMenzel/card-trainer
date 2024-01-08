@@ -37,13 +37,6 @@ public class UserTokenController {
         return ResponseEntity.unprocessableEntity().build();
     }
 
-    @DeleteMapping("/invalidate/{userId}/{token}")
-    public ResponseEntity<?> deleteUserTokenByTokenAndUserId(@PathVariable Long userId, @PathVariable String token) {
-        return userTokenService.deleteToken(userId, token)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
-    }
-
     @GetMapping("/{token}/valid")
     public ResponseEntity<?> isUserTokenValid(@PathVariable String token) {
         return userTokenService.isUserTokenValid(token)
