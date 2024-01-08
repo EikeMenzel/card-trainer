@@ -175,7 +175,7 @@ public class DeckController {
     @PostMapping("/decks/share/{token}")
     public ResponseEntity<?> cloneSharedDeck(@PathVariable String token) {
         Optional<User> userOptional =userTokenService.getUserByUserToken(token);
-        if(userOptional.isEmpty() || !userTokenService.isUserTokenValid(token))
+        if(userOptional.isEmpty() || !userTokenService.isUserTokenValid(token) || !userTokenService.areTokenTypesIdentical(token, "SHARE_DECK"))
             return ResponseEntity.notFound().build();
 
         Optional<Long> deckId = userTokenService.getDeckIdByUserToken(token);
