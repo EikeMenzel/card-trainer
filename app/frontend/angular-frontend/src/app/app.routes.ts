@@ -10,6 +10,7 @@ import {EditDeckViewComponent} from "./edit-deck-view/edit-deck-view.component";
 import {EditCardViewComponent} from "./edit-card-view/edit-card-view.component";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {LearnCardViewComponent} from "./learn-card-view/learn-card-view.component";
+import {SwaggerViewComponent} from "./swagger-view/swagger-view.component";
 
 
 
@@ -26,5 +27,6 @@ export const routes: Routes = [
   {path: 'deck/:deck-id/learn', component: LearnCardViewComponent},
   {path:"suc", component: RegisterSuccessfulComponent},
   {path: 'profile', component: UserProfileComponent},
+  {path: 'swagger', component: SwaggerViewComponent},
   { path: '**', redirectTo: "" },
 ];

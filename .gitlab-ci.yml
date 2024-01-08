@@ -10,17 +10,16 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
 
-build_frontend:
-  stage: build
-  image: node:18.13
-  tags:
-    - docker
-  before_script:
-    - npm install -g @angular/cli
-  script:
-    - cd app/frontend/angular-frontend
-    - npm install
-    - ng build --configuration=production
+#build_frontend:
+#  stage: build
+#  image: node:18.13
+#  tags:
+#    - docker
+#  before_script:
+#    - npm install -g @angular/cli
+#  script:
+#    - cd app/frontend/angular-frontend
+#    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/user-service:latest .
 
 build_backend:
   stage: build
@@ -113,6 +112,6 @@ push_frontend_to_registry: # push images to registry
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
     - export FRONTEND=angular-frontend;
     - cd app/frontend/$FRONTEND
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest .
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest -f Dockerfile-dev .
     - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest
   allow_failure: true

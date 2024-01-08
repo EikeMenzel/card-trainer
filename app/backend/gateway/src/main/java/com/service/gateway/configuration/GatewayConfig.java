@@ -34,7 +34,10 @@ public class GatewayConfig {
                                 "/api/v1/login",
                                 "/api/v1/email/verify/{token}",
                                 "/api/v1/password",
-                                "/api/v1/password/reset"
+                                "/api/v1/password/reset",
+
+                                "/api/v1/auth/swagger-ui/**",
+                                "/api/v1/auth/v3/api-docs"
                         ).uri(authenticationServiceUri))
 
                 .route("user-service",
