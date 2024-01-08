@@ -25,6 +25,12 @@ public class GatewayConfig {
     @Value("${frontend.path}")
     private String frontendServiceUri;
 
+
+    //Services that just expose their documentation:
+    @Value("${mail-service.api.path}")
+    private String mailServiceUri;
+
+
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -36,7 +42,6 @@ public class GatewayConfig {
                                 "/api/v1/password",
                                 "/api/v1/password/reset",
 
-                                "/api/v1/auth/swagger-ui/**",
                                 "/api/v1/auth/v3/api-docs"
                         ).uri(authenticationServiceUri))
 
@@ -82,6 +87,17 @@ public class GatewayConfig {
                                 "/tmp/websocket/**"
                         ).uri("ws://localhost:8085"))
 
+                // API-Services that the frontend can't reach, but to expose the documentation its necessary to expose the following stuff:
+
+                .route("mail-service",
+                        r -> r.path(
+                                "/api/v1/mail/v3/api-docs"
+                        ).uri(mailServiceUri)
+                )
+
+
+
+                // Fallback if a route was not found
                 .route("fallback",
                         r -> r.path("/api/**").filters(f -> f.setStatus(HttpStatus.NOT_FOUND))
                                 .uri("no://op"))

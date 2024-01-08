@@ -12,7 +12,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 export class SwaggerViewComponent implements OnInit {
   serviceDisplayNames = [
     ['auth', 'Authentication Service'],
-    ['another-service', 'Another Service'],
+    ['mail', 'Mail Service'],
     ['yet-another-service', 'Yet Another Service']
   ];
   selectedService = 'auth';
