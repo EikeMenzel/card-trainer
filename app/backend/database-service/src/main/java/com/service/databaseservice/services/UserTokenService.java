@@ -51,6 +51,11 @@ public class UserTokenService {
         }
     }
 
+    public boolean belongsTokenToUser(Long userId, String token) {
+        Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
+        return userToken.map(value -> value.getUser().getId().equals(userId)).orElse(false);
+    }
+
     public boolean isUserTokenValid(String token) {
         Optional<UserToken> userToken = userTokenRepository.getUserTokenByTokenValue(token);
         return userToken.map(value -> value.getExpiryTimestamp().after(Timestamp.from(Instant.now()))).orElse(false);

@@ -3,6 +3,7 @@ package com.service.authenticationservice.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.authenticationservice.payload.inc.UpdatePasswordDTO;
 import com.service.authenticationservice.payload.inc.UserDTO;
+import com.service.authenticationservice.payload.out.UpdatePasswordDTOUnauthorized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -144,19 +145,20 @@ public class DbQueryService {
         }
     }
 
-    public HttpStatusCode deleteUserToken(Long userId, String token) {
+    public HttpStatusCode updateUserPasswordUnauthorized(Long userId, UpdatePasswordDTOUnauthorized updatePasswordDTOUnauthorized) {
         try {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            return restTemplate.exchange(
-                    DB_API_BASE_PATH + "/user-token/invalidate/" + userId + "/" + token,
-                    HttpMethod.DELETE,
-                    entity,
-                    String.class).getStatusCode();
+            ResponseEntity<Void> responseEntity = restTemplate.exchange(
+                    USER_DB_API_PATH + "/" + userId + "/password/unauthorized",
+                    HttpMethod.PUT,
+                    new HttpEntity<>(updatePasswordDTOUnauthorized, headers),
+                    Void.class
+            );
+            return responseEntity.getStatusCode();
         } catch (HttpClientErrorException e) {
             return e.getStatusCode();
         }
     }
+
 }
