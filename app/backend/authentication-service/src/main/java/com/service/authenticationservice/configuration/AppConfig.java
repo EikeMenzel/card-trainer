@@ -2,6 +2,8 @@ package com.service.authenticationservice.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.authenticationservice.payload.inc.RainbowListDTO;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +21,17 @@ public class AppConfig {
     @Value("${db.api.path}")
     private String DB_API_BASE_PATH;
 
+    @Value("${springdoc.swagger-ui.servers}")
+    private String SPRING_DEFAULT_SERVER_SWAGGER_DOC;
+
     public AppConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .addServersItem(new Server().url(SPRING_DEFAULT_SERVER_SWAGGER_DOC).description("Default Server"));
     }
 
     @Bean

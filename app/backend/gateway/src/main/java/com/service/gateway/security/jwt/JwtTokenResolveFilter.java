@@ -30,7 +30,7 @@ public class JwtTokenResolveFilter implements WebFilter {
         this.excludedRoutes.add("/api/v1/register");
         this.excludedRoutes.add("/api/v1/login");
         this.excludedRoutes.add("/api/v1/password/reset");
-
+        this.excludedRoutes.add("/api/v1/auth/v3/api-docs");
     }
 
     @NonNull
@@ -77,6 +77,6 @@ public class JwtTokenResolveFilter implements WebFilter {
             return true;
         }
         // Handle pattern matching
-        return pathMatcher.match("/api/v1/email/verify/*", path) || !path.startsWith("/api") && !path.startsWith("/tmp/websocket") || pathMatcher.match("/api/v1/decks/share/*", path);
+        return pathMatcher.match("/api/v1/email/verify/*", path) || pathMatcher.match("/api/v1/swagger-auth-service/*", path)|| !path.startsWith("/api") && !path.startsWith("/tmp/websocket") || pathMatcher.match("/api/v1/decks/share/*", path);
     }
 }

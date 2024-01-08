@@ -15,6 +15,8 @@ export class WebsocketService implements OnDestroy {
     this.subscribeTopics();
     if(this.authService.isLoggedIn) {
       this.rxStompService.activate();
+      this.rxStompService.deactivate();
+
     } else {
       this.rxStompService.deactivate();
     }
