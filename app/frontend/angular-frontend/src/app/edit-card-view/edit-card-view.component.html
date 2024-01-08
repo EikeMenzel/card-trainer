@@ -8,7 +8,7 @@
           <span>Back to List</span>
         </button>
       </div>
-      <form (ngSubmit)="saveCardToBackend()">
+      <form *ngIf="hasLoaded" (ngSubmit)="saveCardToBackend()">
 
         <!-- Card type selection -->
         <div class="form-group customized-form-group row mb-3 mt-4 align-items-center">
@@ -16,7 +16,8 @@
           <div class="col-sm-8">
             <select class="form-control customized-form-control" id="cardTypeSelect"
                     (change)="updateCardType(cardTypeInput)" #cardTypeInput
-                    name="cardType" [disabled]="this.cardId != 'new'">
+                    name="cardType" [disabled]="this.cardId != 'new'"
+                    [value]="cardType">
               <option value="basic">Basic</option>
               <option value="multipleChoice">Multiple Choice</option>
             </select>
@@ -25,21 +26,21 @@
 
         <!-- Content for 'Basic' cards -->
         <div *ngIf="isBasicCard">
-
           <!-- Card front input -->
           <div class="form-group row mb-4 align-items-center">
             <div class="col-sm-2 col-form-label">Add your question</div>
             <div class="col-sm-8">
               <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard"
-                        [(ngModel)]="cardDTO.question"
+                        [(ngModel)]="questionCardDTO.question"
                         name="cardFront"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
               <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
                 <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
-              <div class="oldImgDisplayWrapper" *ngIf="this.questionImgFromBackend">
-                <img class="oldImgDisplay" [src]="this.questionImgFromBackend" width="50" height="50" alt="Uploaded Img">
+              <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
+                <img class="oldImgDisplay" [src]="'api/v1/images/' + this.questionCardDTO.imageId" width="50"
+                     height="50" alt="Uploaded Img">
                 <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -52,16 +53,18 @@
           <div class="form-group row mb-2 mt-4 align-items-center">
             <div class="col-sm-2 col-form-label">Add the answer</div>
             <div class="col-sm-8">
-              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard" [(ngModel)]="basicAnswer"
+              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard"
+                        [(ngModel)]="choiceAnswers[0].answer"
                         name="cardBack"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
               <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(1)">
                 <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
-              <div class="oldImgDisplayWrapper" *ngIf="this.answerImgFromBackend">
-                <img class="oldImgDisplay" [src]="this.answerImgFromBackend" width="50" height="50" alt="Uploaded Img">
-                <a class="deleteOldImg" (click)="deleteImgBasicAnswer()">
+              <div class="oldImgDisplayWrapper" *ngIf="this.choiceAnswers[0]?.imageId">
+                <img class="oldImgDisplay" [src]="'api/v1/images/' + this.choiceAnswers[0].imageId" width="50"
+                     height="50" alt="Uploaded Img">
+                <a class="deleteOldImg" (click)="deleteImgBasicAnswer(0)">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
               </div>
@@ -76,7 +79,7 @@
           <div class="form-group row mb-4 align-items-center">
             <div class="col-sm-2 col-form-label">Add your question</div>
             <div class="col-sm-8">
-              <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="cardDTO.question"
+              <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="questionCardDTO.question"
                         name="cardFront"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
@@ -84,6 +87,13 @@
                 <i class="fa fa-upload"></i>
                 <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
               </button>
+              <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
+                <img class="oldImgDisplay" [src]="'api/v1/images/' + this.questionCardDTO.imageId" width="50"
+                     height="50" alt="Uploaded Img">
+                <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
+                  <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                </a>
+              </div>
             </div>
           </div>
           <hr>
@@ -93,7 +103,7 @@
             <div class="row mt-4 align-items-center">
               <!-- Option label -->
               <div class="col-sm-2 col-form-label">
-                Option {{i + 1}}
+                Option {{ i + 1 }}
               </div>
               <!-- Textarea for the option -->
               <div class="col-sm-6">
@@ -112,6 +122,13 @@
                         (click)="deleteOption(i)">
                   <fa-icon class="nav-icon fa-xl" [icon]="faTrash"></fa-icon>
                 </button>
+                <div class="oldImgDisplayWrapper" *ngIf="answer.imageId">
+                  <img class="oldImgDisplay" [src]="'api/v1/images/' + answer.imageId" width="50" height="50"
+                       alt="Uploaded Img">
+                  <a class="deleteOldImg" (click)="deleteImgBasicAnswer(i)">
+                    <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                  </a>
+                </div>
               </div>
             </div>
             <!-- Row for correct answer checkbox -->
@@ -119,7 +136,7 @@
               <div class="col-sm-2">
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                         [(ngModel)]="answer.isRightAnswer">
+                         name="isRightAnswer" [checked]="this.choiceAnswers[i].rightAnswer" (change)="isCorrectCheckChanged(i, $event)">
                   <label class="form-check-label" for="flexSwitchCheckDefault">Correct answer</label>
                 </div>
               </div>
@@ -146,7 +163,11 @@
           </div>
         </div>
       </form>
+      <div *ngIf="!hasLoaded" class="d-flex align-items-center justify-content-center">
+        <div class="spinner-border">
 
+        </div>
+      </div>
       <!-- Modal for image upload-->
       <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -164,9 +185,6 @@
               </div>
               <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onFileSelected($event, fileInput)"
                      hidden>
-              <div *ngIf="imageUploadErrorMessage" class="alert alert-danger mb-2 mt-3 alert-message">
-                {{ imageUploadErrorMessage }}
-              </div>
             </div>
             <div class="icon-container">
               <div class="file-list" *ngIf="this.selectedFile != null">
@@ -200,10 +218,10 @@
                 (click)="dontShowSimonAgainOnPageLoad()"></button>
       </div>
       <div class="modal-body welcome-modal-body">
-        <img src="assets/83ba6d2d-99a0-4d7f-bfd5-c75da6b3e209-removebg-preview.png" alt="Simon the frog"
-             class="img-frog mb-2">
+        <img ngSrc="assets/fox1.png" alt="Simon the fox"
+             class="img-frog mb-2" height="490" width="490">
         <p>Here you can edit or create cards, upload images and start your learning journey. Much love and fun,
-          Simon.</p>
+          Simon 🦊</p>
       </div>
     </div>
   </div>

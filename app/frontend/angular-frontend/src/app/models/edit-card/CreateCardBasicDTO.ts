@@ -1,10 +1,11 @@
 import {EditCardDTO} from "./EditCardDTO";
 
-export class EditCardBasicDTO {
+export class CreateCardBasicDTO {
 
   constructor(
     public cardDTO: EditCardDTO,
     public textAnswer: string,
-    public imagePath: string | undefined
-  ) {}
+    public imagePath: number | null
+  ) {
+  }
 }

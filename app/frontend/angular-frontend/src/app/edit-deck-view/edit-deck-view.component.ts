@@ -36,9 +36,6 @@ export class EditDeckViewComponent implements OnInit {
   private loadCards() {
     this.cardService.getAllCardsByDeck(this.deckId).subscribe({
       next: value => {
-        if (value.body == null || value.body?.length == 0) {
-          this.toast.showInfoToast("Info", "You have no questions for this decks")
-        }
         this.cards = value.body ?? [];
       },
       error: err => {

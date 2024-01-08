@@ -84,7 +84,6 @@ export class LoginComponent {
           this.authService.startSessionTimer();
         }
 
-        this.toastService.showSuccessToast("Login", "Login succeeded")
         this.userService.getUpdatedUserInfo()
         this.websocketService.rxStompService.activate();
         this.router.navigate(["/"])

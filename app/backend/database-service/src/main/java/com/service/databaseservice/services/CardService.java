@@ -12,7 +12,6 @@ import com.service.databaseservice.payload.savecard.TextAnswerCardDTO;
 import com.service.databaseservice.repository.DeckRepository;
 import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.repository.cards.*;
-import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,6 +34,7 @@ public class CardService {
     private final ObjectMapper objectMapper;
     private final RepetitionService repetitionService;
     private final ImageRepository imageRepository;
+
     private final Logger logger = LoggerFactory.getLogger(CardService.class);
 
     public CardService(DeckRepository deckRepository, CardTypeRepository cardTypeRepository, CardRepository cardRepository, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository, ChoiceAnswerRepository choiceAnswerRepository, ObjectMapper objectMapper, RepetitionService repetitionService, ImageRepository imageRepository) {
@@ -57,6 +57,7 @@ public class CardService {
         Optional<Deck> optionalDeck = deckRepository.getDeckByIdAndOwnerId(deckId, userId);
         return optionalDeck.map(deck -> cardRepository.findById(cardId).map(card -> card.getDeck().equals(deck)).orElse(false)).orElse(false);
     }
+
     public Integer getCardAmountFromDeckId(Long deckId) {
         return cardRepository.countCardsByDeckId(deckId);
     }
@@ -139,7 +140,7 @@ public class CardService {
     }
 
     private Image getImageFromImageId(Long imageId) {
-        if(imageId == null)
+        if (imageId == null)
             return null;
 
         return imageRepository.findById(imageId).orElse(null);
@@ -164,6 +165,7 @@ public class CardService {
         }
     }
 
+    @Transactional
     public boolean updateMultipleChoiceCard(Long cardId, com.service.databaseservice.payload.inc.updatecard.MultipleChoiceCardDTO multipleChoiceCardDTO, Long userId) {
         Optional<Card> cardOptional = cardRepository.getCardById(cardId);
         Optional<MultipleChoiceCard> multipleChoiceCardOptional = multipleChoiceCardRepository.findById(multipleChoiceCardDTO.getMultipleChoiceCardId());
@@ -196,29 +198,18 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public boolean updateChoiceAnswers(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, MultipleChoiceCard multipleChoiceCard, Long userId) {
         try {
             //delete all Ids that are not sent
             List<Long> excludedIds = getMissingChoiceAnswerIds(choiceAnswerDTOs, multipleChoiceCard.getChoiceAnswerList());
             excludedIds.forEach(choiceAnswerRepository::deleteById);
 
-            //create choiceAnswers
-            boolean createChoiceAnswerResult = choiceAnswerDTOs.stream()
-                    .filter(choiceAnswerDTO -> choiceAnswerDTO.getChoiceAnswerId() == null)
-                    .allMatch(choiceAnswerDTO -> {
-                        if(choiceAnswerDTO.getImageId() == null) {
-                            choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), null, choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
-                        }
-                        else {
-                            Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(choiceAnswerDTO.getImageId(), userId);
-                            if(imageOptional.isEmpty())
-                                return false;
 
-                            choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), imageOptional.get(), choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
-                        }
-                        return true;
-                    });
+            //delete answers that have not been in the body (we assume in this case that the user wants to delete them)
+            deleteChoiceAnswers(choiceAnswerDTOs, multipleChoiceCard);
 
+            boolean createChoiceAnswerResult = isCreateChoiceAnswerResult(choiceAnswerDTOs, multipleChoiceCard, userId);
 
             //actual updateAnswers
             return createChoiceAnswerResult && choiceAnswerDTOs.stream()
@@ -236,7 +227,7 @@ public class CardService {
                                 choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswerDTO.getAnswer(), choiceAnswerDTO.getIsRightAnswer()));
                             } else {
                                 Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(choiceAnswerDTO.getImageId(), userId);
-                                if(imageOptional.isEmpty())
+                                if (imageOptional.isEmpty())
                                     return false;
 
                                 choiceAnswerRepository.save(choiceAnswer.updateChoiceAnswer(choiceAnswer.getAnswer(), imageOptional.get(), choiceAnswerDTO.getIsRightAnswer()));
@@ -253,6 +244,46 @@ public class CardService {
         }
     }
 
+    @Transactional
+    public void deleteChoiceAnswers(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, MultipleChoiceCard multipleChoiceCard) {
+        List<ChoiceAnswer> allByMultipleChoiceCardId = choiceAnswerRepository.getAllByMultipleChoiceCardId(multipleChoiceCard.getId());
+        var idsToRemoveList = allByMultipleChoiceCardId.stream()
+                .filter(choiceAnswer -> choiceAnswerDTOs.stream()
+                        .noneMatch(choiceAnswerDTO -> Objects.equals(choiceAnswerDTO.getChoiceAnswerId(), choiceAnswer.getId()))
+                )
+                .map(ChoiceAnswer::getId)
+                .toList();
+
+        if(idsToRemoveList.isEmpty())
+            return;
+
+        try {
+            choiceAnswerRepository.deleteAllByIds(idsToRemoveList);
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public boolean isCreateChoiceAnswerResult(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, MultipleChoiceCard multipleChoiceCard, Long userId) {
+        //create choiceAnswers
+        return choiceAnswerDTOs.stream()
+                .filter(choiceAnswerDTO -> choiceAnswerDTO.getChoiceAnswerId() == null)
+                .allMatch(choiceAnswerDTO -> {
+                    if (choiceAnswerDTO.getImageId() == null) {
+                        choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), null, choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
+                    } else {
+                        Optional<Image> imageOptional = imageRepository.getImageByIdAndUserId(choiceAnswerDTO.getImageId(), userId);
+                        if (imageOptional.isEmpty())
+                            return false;
+
+                        choiceAnswerRepository.save(new ChoiceAnswer(choiceAnswerDTO.getAnswer(), imageOptional.get(), choiceAnswerDTO.getIsRightAnswer(), multipleChoiceCard));
+                    }
+                    return true;
+                });
+    }
+
+    @Transactional
     public boolean updateTextAnswerCard(Long cardId, com.service.databaseservice.payload.inc.updatecard.TextAnswerCardDTO textAnswerCardDTO, Long userId) {
         Optional<Card> cardOptional = cardRepository.getCardById(cardId);
         Optional<TextAnswerCard> textAnswerCardOptional = textAnswerCardRepository.findById(textAnswerCardDTO.getTextAnswerCardId());
@@ -273,13 +304,14 @@ public class CardService {
     }
 
     //For TextAnswerCard
+    @Transactional
     public boolean updateAnswerCard(com.service.databaseservice.payload.inc.updatecard.TextAnswerCardDTO textAnswerCardDTO, TextAnswerCard textAnswerCard, Card card) {
         try {
             if (textAnswerCardDTO.getImageId() == null) {
                 textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer()));
             } else {
                 Optional<Image> image = imageRepository.getImageByIdAndUserId(textAnswerCardDTO.getImageId(), card.getDeck().getOwner().getId());
-                if(image.isEmpty())
+                if (image.isEmpty())
                     return false;
 
                 textAnswerCardRepository.save(textAnswerCard.updateTextAnswerCard(textAnswerCardDTO.getTextAnswer(), image.get()));
@@ -298,7 +330,7 @@ public class CardService {
                 cardRepository.save(card.updateCard(cardDTO.getQuestion()));
             } else {
                 Optional<Image> image = imageRepository.getImageByIdAndUserId(cardDTO.getImageId(), userId);
-                if(image.isEmpty())
+                if (image.isEmpty())
                     return false;
 
                 cardRepository.save(card.updateCard(cardDTO.getQuestion(), image.get()));

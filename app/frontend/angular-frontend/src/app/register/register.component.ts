@@ -136,7 +136,9 @@ export class RegisterComponent implements OnInit {
         password: password
       };
 
-      this.email = email;
+      if (this.authService.isLoggedIn) {
+        this.authService.removeCookie();
+      }
 
       this.userService.registerUser(registerRequest).subscribe({
         next: (response) => {
