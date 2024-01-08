@@ -43,7 +43,8 @@ public class WebSecurityConfig {
                                 "/api/v1/decks/share/{token}",
                                 "/api/v1/swagger-auth-service/**",
                                 "/api/v1/auth/swagger-ui/**",
-                                "/api/v1/auth/v3/api-docs"
+                                "/api/v1/auth/v3/api-docs",
+                                "/api/v1/mail/v3/api-docs"
                         ).permitAll()
                         .pathMatchers("/api/**")
                         .authenticated()
