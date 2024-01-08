@@ -3,6 +3,7 @@ package com.service.authenticationservice.controller;
 import com.service.authenticationservice.model.MailType;
 import com.service.authenticationservice.payload.inc.*;
 import com.service.authenticationservice.payload.out.MessageResponseDTO;
+import com.service.authenticationservice.payload.out.UpdatePasswordDTOUnauthorized;
 import com.service.authenticationservice.payload.out.UserInfoResponseDTO;
 import com.service.authenticationservice.security.jwt.JwtUtils;
 import com.service.authenticationservice.security.services.UserDetailsImpl;
@@ -146,7 +147,7 @@ public class AuthController {
 
     @PostMapping("/password/reset")
     public ResponseEntity<?> sendPasswordResetMail(@Valid @RequestBody MailDTO mailDTO) {
-        if(EmailValidator.validate(mailDTO.email()))
+        if(!EmailValidator.validate(mailDTO.email()))
             return ResponseEntity.badRequest().body(new MessageResponseDTO(1, "Error, invalid Email"));
 
         Optional<Long> optionalUserId = dbQueryService.getUserIdByEmail(mailDTO.email());
@@ -172,8 +173,7 @@ public class AuthController {
         if (userIdOptional.isEmpty())
             return ResponseEntity.badRequest().body(new MessageResponseDTO(-1, "No user found with this E-Mail-Address"));
 
-        dbQueryService.deleteUserToken(userIdOptional.get(), passwordResetDTO.token());
-        return ResponseEntity.status(dbQueryService.updateUserPassword(userIdOptional.get(), new UpdatePasswordDTO(encoder.encode(passwordResetDTO.password())))).build();
+        return ResponseEntity.status(dbQueryService.updateUserPasswordUnauthorized(userIdOptional.get(), new UpdatePasswordDTOUnauthorized(passwordResetDTO.token(), encoder.encode(passwordResetDTO.password())))).build();
     }
 
 }

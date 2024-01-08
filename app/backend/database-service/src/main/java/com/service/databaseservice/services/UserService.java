@@ -99,25 +99,27 @@ public class UserService {
 
             userRepository.save(user);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return false;
         }
         return true;
     }
 
     @Transactional
-    public boolean updateUserPassword(Long userId, UpdatePasswordDTO updatePasswordDTO) {
+    public boolean updateUserPassword(Long userId, String password) {
         try {
             Optional<User> userOptional = userRepository.getUserById(userId);
             if(userOptional.isEmpty())
                 return false;
 
             var user = userOptional.get();
-            if(updatePasswordDTO.password() == null || updatePasswordDTO.password().equals(""))
+            if(password == null || password.equals(""))
                 return false;
 
-            user.setPassword(updatePasswordDTO.password());
+            user.setPassword(password);
             userRepository.save(user);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return false;
         }
         return true;
