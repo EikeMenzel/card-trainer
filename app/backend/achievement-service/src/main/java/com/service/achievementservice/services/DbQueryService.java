@@ -1,5 +1,8 @@
 package com.service.achievementservice.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.achievementservice.payload.AchievementDetailsDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +17,11 @@ import java.util.Optional;
 public class DbQueryService {
     private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
     private final String dbPath;
-    public DbQueryService(RestTemplate restTemplate, @Value("${db.api.path}") String dbPath) {
+    public DbQueryService(RestTemplate restTemplate, ObjectMapper objectMapper, @Value("${db.api.path}") String dbPath) {
         this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
         this.dbPath = dbPath;
     }
 
@@ -106,6 +111,18 @@ public class DbQueryService {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/user-login-tracker", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
+                    : Optional.empty();
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    public Optional<AchievementDetailsDTO> getAchievementDetails(Long achievementId) {
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/achievements/" + achievementId, String.class);
+            return (responseEntity.getStatusCode() == HttpStatus.OK)
+                    ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<AchievementDetailsDTO>>() {})
                     : Optional.empty();
         } catch (Exception e) {
             logger.debug(e.getMessage());
