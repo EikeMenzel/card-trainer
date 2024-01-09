@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.*;
 public class ImageController {
     private final ImageRepository imageRepository;
     private final ImageService imageService;
-    private final UserService userService;
 
-    public ImageController(ImageRepository imageRepository, ImageService imageService, UserService userService) {
+    public ImageController(ImageRepository imageRepository, ImageService imageService) {
         this.imageRepository = imageRepository;
         this.imageService = imageService;
-        this.userService = userService;
     }
 
     @GetMapping("/users/{userId}/images/{imageId}")
@@ -27,6 +25,15 @@ public class ImageController {
         byte[] imageData = imageRepository.getImageByIdAndUserId(imageId, userId)
                 .map(Utils::extractImageData)
                 .orElse(null);
+
+        if(imageData == null) {
+            imageData = imageRepository.getImageById(imageId)
+                    .stream()
+                    .filter(image -> image.getUser() == null)
+                    .findFirst()
+                    .map(Utils::extractImageData)
+                    .orElse(null);
+        }
 
         return imageData == null
                 ? ResponseEntity.notFound().build()

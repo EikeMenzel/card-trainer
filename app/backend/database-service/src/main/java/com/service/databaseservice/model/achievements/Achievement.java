@@ -1,5 +1,6 @@
 package com.service.databaseservice.model.achievements;
 
+import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,7 +20,9 @@ public class Achievement {
 
     @Column(name = "is_daily", columnDefinition = "BOOLEAN", nullable = false)
     private Boolean isDaily;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    private Image imageData;
     public Achievement() {
     }
 
@@ -37,5 +40,9 @@ public class Achievement {
 
     public Boolean getDaily() {
         return isDaily;
+    }
+
+    public Image getImageData() {
+        return imageData;
     }
 }
