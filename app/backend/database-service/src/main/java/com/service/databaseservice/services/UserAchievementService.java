@@ -3,6 +3,7 @@ package com.service.databaseservice.services;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.achievements.Achievement;
 import com.service.databaseservice.model.achievements.UserAchievement;
+import com.service.databaseservice.payload.out.AchievementDetailsDTO;
 import com.service.databaseservice.repository.UserRepository;
 import com.service.databaseservice.repository.achievements.AchievementRepository;
 import com.service.databaseservice.repository.achievements.UserAchievementRepository;
@@ -51,5 +52,10 @@ public class UserAchievementService {
 
     public boolean doesUserHaveAchievement(Long userId, Long achievementId) {
         return userAchievementRepository.hasUserAchieved(achievementId, userId);
+    }
+
+    public Optional<AchievementDetailsDTO> getAchievementDetails(Long achievementId) {
+        return achievementRepository.findById(achievementId)
+                .map(achievement -> new AchievementDetailsDTO(achievement.getId(), achievement.getName(), achievement.getDescription(), achievement.getDaily(), achievement.getImageData().getId()));
     }
 }

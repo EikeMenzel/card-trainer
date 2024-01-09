@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Blob;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
