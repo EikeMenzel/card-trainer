@@ -13,7 +13,8 @@ export class SwaggerViewComponent implements OnInit {
   serviceDisplayNames = [
     ['auth', 'Authentication Service'],
     ['mail', 'Mail Service'],
-    ['user', 'User Service']
+    ['user', 'User Service'],
+    ['cards', 'Cards Service']
   ];
   selectedService = 'auth';
 
