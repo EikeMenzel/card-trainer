@@ -22,9 +22,14 @@ public class GatewayConfig {
     @Value("${session-service.api.path}")
     private String sessionServiceUri;
 
+    @Value("${achievement-service.api.path}")
+    private String achievementServiceApiUri;
+
+    @Value("${achievement-service.socket.path}")
+    private String achievementServiceSocketUri;
+
     @Value("${frontend.path}")
     private String frontendServiceUri;
-
 
     //Services that just expose their documentation:
     @Value("${mail-service.api.path}")
@@ -80,16 +85,22 @@ public class GatewayConfig {
                                 "/api/v1/learn-sessions/{learnSessionId}/rating",
                                 "/api/v1/learn-sessions/{learnSessionId}/status",
                                 "/api/v1/decks/{deckId}/peek-sessions",
-                                "api/v1/peek-sessions/{peekSessionId}/next-card",
+                                "/api/v1/peek-sessions/{peekSessionId}/next-card",
                                 "/api/v1/peek-sessions/{peekSessionId}/cards/{cardId}",
                                 "/api/v1/peek-sessions/{peekSessionId}/status"
                         ).uri(sessionServiceUri)
                 )
 
-                .route("achievement-service",
+                .route("achievement-service-api",
+                        r -> r.path(
+                                "/api/v1/achievements/{achievementId}"
+                        ).uri(achievementServiceApiUri))
+
+                .route("achievement-service-websocket",
                         r -> r.path(
                                 "/tmp/websocket/**"
-                        ).uri("ws://localhost:8085"))
+                        ).uri(achievementServiceSocketUri))
+
 
                 // API-Services that the frontend can't reach, but to expose the documentation its necessary to expose the following stuff:
 

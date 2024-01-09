@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
     Optional<Image> getImageByIdAndUserId(Long imageId, Long userId);
+    Optional<Image> getImageById(Long imageId);
 }
