@@ -28,7 +28,8 @@ public class UserController {
     @GetMapping()
     @Operation(summary = "Retrieve User Account Information",
             description = "Fetches the account information and achievements for the specified user.<br><br>" +
-                    "<strong>Note:</strong> Ensure the user ID is valid and the user exists in the database.",
+                    "<strong>Note:</strong> Ensure the user ID is valid and the user exists in the database.<br><br>" +
+                    "<strong>⚠️ Warning:</strong> This route will not work, if you aren't logged in!",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful retrieval of account information", content = @Content(schema = @Schema(implementation = UserAccountInformationAchievementsDTO.class))),
                     @ApiResponse(responseCode = "404", description = "User not found")
@@ -49,7 +50,8 @@ public class UserController {
     @PutMapping()
     @Operation(summary = "Update User Account Information",
             description = "Updates the account information for a specified user. Validates user ID, username length (4-30 characters), and email format.<br><br>" +
-                    "<strong>Warning:</strong> Incorrect or invalid data will result in a bad request response.",
+                    "<strong>Warning:</strong> Incorrect or invalid data will result in a bad request response." +
+                    "<br><br><strong>⚠️ Warning:</strong> This route will not work, if you aren't logged in!",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successful update of account information", content = @Content(schema = @Schema(implementation = UserAccountInformationDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid request data")

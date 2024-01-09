@@ -67,7 +67,9 @@ public class GatewayConfig {
                                 "/api/v1/decks/{deckId}/share",
                                 "/api/v1/decks/share/{token}",
                                 "/api/v1/images/{imageId}",
-                                "/api/v1/images"
+                                "/api/v1/images",
+
+                                "/api/v1/cards/v3/api-docs"
                         ).uri(cardsServiceUri)
                 )
 
