@@ -30,9 +30,14 @@ public class JwtTokenResolveFilter implements WebFilter {
         this.excludedRoutes.add("/api/v1/register");
         this.excludedRoutes.add("/api/v1/login");
         this.excludedRoutes.add("/api/v1/password/reset");
+
         this.excludedRoutes.add("/api/v1/auth/v3/api-docs");
         this.excludedRoutes.add("/api/v1/mail/v3/api-docs");
-
+        this.excludedRoutes.add("/api/v1/user/v3/api-docs");
+        this.excludedRoutes.add("/api/v1/cards/v3/api-docs");
+        this.excludedRoutes.add("/api/v1/session/v3/api-docs");
+        this.excludedRoutes.add("/api/v1/achievements/v3/api-docs");
+        this.excludedRoutes.add("/api/v1/database/v3/api-docs");
     }
 
     @NonNull

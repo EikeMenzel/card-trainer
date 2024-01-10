@@ -41,13 +41,13 @@ public class WebSecurityConfig {
                                 "/api/v1/email/verify/{token}",
                                 "/api/v1/password/reset",
                                 "/api/v1/decks/share/{token}",
-                                "/api/v1/swagger-auth-service/**",
-                                "/api/v1/auth/swagger-ui/**",
+
                                 "/api/v1/auth/v3/api-docs",
                                 "/api/v1/mail/v3/api-docs",
                                 "/api/v1/user/v3/api-docs",
                                 "/api/v1/cards/v3/api-docs",
                                 "/api/v1/session/v3/api-docs",
+                                "/api/v1/database/v3/api-docs",
                                 "/api/v1/achievements/v3/api-docs"
                         ).permitAll()
                         .pathMatchers("/api/**")
