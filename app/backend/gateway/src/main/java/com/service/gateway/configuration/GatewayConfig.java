@@ -95,7 +95,9 @@ public class GatewayConfig {
 
                 .route("achievement-service-api",
                         r -> r.path(
-                                "/api/v1/achievements/{achievementId}"
+                                "/api/v1/achievements/{achievementId}",
+
+                                "/api/v1/achievements/v3/api-docs"
                         ).uri(achievementServiceApiUri))
 
                 .route("achievement-service-websocket",
