@@ -11,6 +11,7 @@ import {EditCardViewComponent} from "./edit-card-view/edit-card-view.component";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {LearnCardViewComponent} from "./learn-card-view/learn-card-view.component";
 import {SwaggerViewComponent} from "./swagger-view/swagger-view.component";
+import {HistoryViewComponent} from "./history-view/history-view.component";
 
 
 
@@ -20,6 +21,7 @@ export const routes: Routes = [
   {path: 'register-successful', component: RegisterSuccessfulComponent},
   {path: 'deck/:deck-id', component: DeckViewComponent},
   {path: 'deck/:deck-id/edit', component: EditDeckViewComponent},
+  {path: 'deck/:deck-id/histories', component: HistoryViewComponent},
   {path: 'deck/:deck-id/card/:card-id/edit', component: EditCardViewComponent},
   {path: 'forgot-password', component: ForgotPasswordComponent},
   {path: 'reset-password', component: ResetPasswordComponent},

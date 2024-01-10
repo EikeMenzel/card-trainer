@@ -13,6 +13,7 @@ import {UserService} from "../services/user-service/user.service";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {WebsocketService} from "../services/websocket/websocket-service";
+import {NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ import {WebsocketService} from "../services/websocket/websocket-service";
     HttpClientModule,
     ToasterComponent,
     RouterLinkActive,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgOptimizedImage
   ]
 })
 export class LoginComponent {
