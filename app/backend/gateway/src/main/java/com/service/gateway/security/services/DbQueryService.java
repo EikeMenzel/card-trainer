@@ -24,7 +24,7 @@ public class DbQueryService {
     public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath) {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
-        this.DB_API_BASE_PATH = dbPath;
+        this.DB_API_BASE_PATH = dbPath + "/api/v1/db";
         this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
         this.USER_EMAIL_DB_API_PATH = this.USER_DB_API_PATH + "/emails";
     }
