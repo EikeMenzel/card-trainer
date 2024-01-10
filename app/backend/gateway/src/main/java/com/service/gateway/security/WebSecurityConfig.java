@@ -47,7 +47,8 @@ public class WebSecurityConfig {
                                 "/api/v1/mail/v3/api-docs",
                                 "/api/v1/user/v3/api-docs",
                                 "/api/v1/cards/v3/api-docs",
-                                "/api/v1/session/v3/api-docs"
+                                "/api/v1/session/v3/api-docs",
+                                "/api/v1/achievements/v3/api-docs"
                         ).permitAll()
                         .pathMatchers("/api/**")
                         .authenticated()
