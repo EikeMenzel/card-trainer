@@ -35,6 +35,8 @@ public class GatewayConfig {
     @Value("${mail-service.api.path}")
     private String mailServiceUri;
 
+    @Value("${db.api.path}")
+    private String databaseServiceUri;
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
@@ -113,7 +115,11 @@ public class GatewayConfig {
                                 "/api/v1/mail/v3/api-docs"
                         ).uri(mailServiceUri)
                 )
-
+                .route("database-service",
+                        r -> r.path(
+                                "/api/v1/database/v3/api-docs"
+                        ).uri(databaseServiceUri)
+                )
 
 
                 // Fallback if a route was not found

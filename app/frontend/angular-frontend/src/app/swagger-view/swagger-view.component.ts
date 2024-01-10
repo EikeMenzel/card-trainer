@@ -16,7 +16,8 @@ export class SwaggerViewComponent implements OnInit {
     ['user', 'User Service'],
     ['cards', 'Cards Service'],
     ['session', 'Session Service'],
-    ['achievements', 'Achievement Service']
+    ['achievements', 'Achievement Service'],
+    ['database', 'Database Service']
   ];
   selectedService = 'auth';
 
