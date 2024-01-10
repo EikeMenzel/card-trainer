@@ -87,7 +87,9 @@ public class GatewayConfig {
                                 "/api/v1/decks/{deckId}/peek-sessions",
                                 "/api/v1/peek-sessions/{peekSessionId}/next-card",
                                 "/api/v1/peek-sessions/{peekSessionId}/cards/{cardId}",
-                                "/api/v1/peek-sessions/{peekSessionId}/status"
+                                "/api/v1/peek-sessions/{peekSessionId}/status",
+
+                                "/api/v1/session/v3/api-docs"
                         ).uri(sessionServiceUri)
                 )
 
