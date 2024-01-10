@@ -365,7 +365,7 @@ export class LearnCardViewComponent implements OnInit {
 
 
   fetchLearnSessionResults() { // TODO should open a modal after session is done
-    this.historyService.getHistoryDetails(this.learnSessionId).subscribe({
+    this.historyService.getHistoryDetails(Number(this.deckId),this.learnSessionId).subscribe({
       next: (res) => {
         if (res.body)
           this.learnSessionResults = res.body;
