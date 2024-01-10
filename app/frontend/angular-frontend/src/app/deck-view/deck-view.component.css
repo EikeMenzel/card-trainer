@@ -1,126 +1,167 @@
-
-.card-view-wrapper {
-  border: 1px solid black;
-  border-radius: 50px;
-  background: white;
-  position: relative;
+.deck-view-container {
   display: flex;
-  margin: 15px;
-}
-
-.circle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: white;
-  border: 1px solid black;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  min-height: 90vh;
+}
+
+.deck-view-card {
+  margin-top: auto;
+  margin-bottom: auto;
+  border-radius: 20px;
+  max-width: 100%;
+  min-height: 60vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-main-color);
+}
+
+.deck-view-card .btn {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.deck-view-card h2 {
+  font-size: 1.5rem;
+}
+
+.deck-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.deck-stat-container {
+  display: inline-block;
   text-align: center;
-  display: inline-flex;
 }
 
-.custom-session-button {
+.badge-style {
+  display: inline-block;
+  padding: 2px 20px;
   background-color: var(--primary-color);
-  padding: 5px 5px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-  border-radius: 8px;
-  transition: 0.3s;
-  margin-bottom: 4px;
+  border-radius: 15px;
+  color: white;
+  font-size: 2em;
+  margin: 5px;
 }
 
-.custom-session-button:hover {
-  background-color: white;
-  transition: 0.3s;
-}
-
-.custom-round-Button {
-  display: inline-flex;
-  background-color: var(--primary-color);
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-  transition: 0.3s;
-  border-radius: 50%;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 60px;
-  height: 60px;
-}
-
-.custom-round-Button:hover {
-  background-color: white;
-  transition: 0.3s;
-}
-
-.top-left-item {
-  position: absolute;
-  top: 30px;
-  left: 40px;
-}
-
-.top-right-item {
-  position: absolute;
-  top: 30px;
-  right: 40px;
-}
-
-#export-button, #share-button, #history-button {
-  margin-left: 30px;
-}
-
-#edit-button {
-  margin-right: 30px;
-}
-
-@media screen and (min-width: 769px) {
-  .show-only-smallmedia {
-    display: none;
-    padding: 4px;
-  }
-}
-
-@media screen and (max-width:768px){
-  .show-only-bigmedia {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 1200px){
-  #history-button,#share-button,#export-button {
-    margin-left: 1vw;
-  }
-}
-
-@media screen and (max-width: 991px) {
-  #history-button,#share-button,#export-button {
-    margin-left: 0.2vw;
-  }
-}
-
-@media (max-width: 365px) {
-  h1 {
-    font-size: 1.7rem;
-  }
-}
-@media (max-width: 350px) {
-  h1 {
-    font-size: 1.3rem;
-  }
-}
-
-.sidebar-list-buttons {
-  background: var(--primary-color);
-  border-radius: 30px
+.stat-label {
+  display: block;
+  color: #6c757d;
+  font-size: 1em;
 }
 
 .primary-background-color{
-  background: var(--primary-color);
+  background-color: var(--primary-color);
 }
 
-.disabled-function-color {
-  background-color: grey;
+.progress-chart-container {
+  width: 100%;
+  /* Placeholder for chart dimensions */
+  height: 200px;
+  margin-bottom: 40px;
+  /* Placeholder for chart styling */
+  background-color: var(--bg-main-color);
+  border-radius: 10px;
+}
+
+.deck-actions {
+  margin-top: 90px;
+}
+
+.card-footer {
+  background: none;
+  border-top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.custom-action-button {
+  width: 200px;
+  height: 50px;
+}
+
+.custom-button-footer {
+  width: 100px;
+  height: 40px;
+}
+
+.custom-button-footer,
+.custom-action-button {
+  padding: 10px 24px;
+  font-size: 1rem;
+  margin: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  background-color: var(--primary-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-button-footer:hover,
+.custom-button-footer:active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+
+/* Media Queries für größere Bildschirme */
+@media (min-width: 1920px) {
+  .deck-view-card {
+    min-width: 50%;
+  }
+
+  .deck-view-card .btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .deck-view-card h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .deck-view-card {
+    min-width: 60%;
+  }
+
+  .deck-stat {
+    font-size: 1.5rem;
+    padding: 15px 20px;
+    border-radius: 15px;
+  }
+
+  .custom-button-footer {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    min-width: 200px;
+    height: 60px;
+  }
+
+  .custom-action-button {
+    font-size: 1.5rem;
+    padding: 1.5rem 3rem;
+    width: 400px;
+    height: 70px;
+  }
+
+  .deck-view-card h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-button-footer {
+    width: calc(50% - 10px);
+    margin: 5px;
+  }
+
+  .custom-action-button {
+    width: calc(100% - 40px);
+    margin: 5px;
+  }
 }

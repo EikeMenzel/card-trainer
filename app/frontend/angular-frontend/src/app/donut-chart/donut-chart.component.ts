@@ -23,7 +23,7 @@ export class DonutChartComponent implements OnInit{
       data: {
         labels: this.chartNames,
         datasets: [{
-          label: 'Doughnat Chart',
+          label: 'Donut Chart',
           data: this.chartValues,
           backgroundColor: ["#9ef01a","#70e000","#38b000","#008000","#007200","#006400","#004b23"],
           borderWidth: (this.chartValues == null) ? 3 : 0
