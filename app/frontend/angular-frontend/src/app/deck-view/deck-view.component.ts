@@ -10,7 +10,6 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {FormsModule} from "@angular/forms";
 import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {defaults} from "chart.js";
 
 
 @Component({
@@ -36,7 +35,12 @@ export class DeckViewComponent implements OnInit {
   public emailWarn: boolean = false;
   public buttonIsPressed: boolean = false;
 
-  constructor(private modalService: NgbModal, private router: Router, private activatedRoute: ActivatedRoute, private cardService: CardService, private authService: AuthService, private toastService: ToastService) {
+  constructor(private modalService: NgbModal,
+              private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private cardService: CardService,
+              private authService: AuthService,
+              private toastService: ToastService) {
   }
 
 
@@ -71,7 +75,7 @@ export class DeckViewComponent implements OnInit {
               this.toastService.showErrorToast("Error", "Deck was not Found");
               this.router.navigate([""]);
               break;
-            case defaults:
+            default:
               this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
               break;
           }
@@ -104,7 +108,7 @@ export class DeckViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
             this.authService.logout();
             break;
-          case defaults:
+          default:
             this.toastService.showErrorToast("Error", "Could not Export Deck");
             break;
         }
@@ -155,7 +159,7 @@ export class DeckViewComponent implements OnInit {
       this.emailBorder = "grey";
       this.emailWarn = false;
       this.cardService.shareDeck(Number(this.deckId), this.email).subscribe({
-          next: (res) => {
+          next: () => {
             if (this.modalRef)
               this.modalRef.close();
             this.buttonIsPressed = false;
@@ -176,7 +180,7 @@ export class DeckViewComponent implements OnInit {
               case HttpStatusCode.NotFound:
                 this.toastService.showErrorToast("Error", "User or Deck not found");
                 break;
-              case defaults:
+              default:
                 this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
                 if (this.modalRef)
                   this.modalRef.close();
