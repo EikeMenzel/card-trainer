@@ -155,26 +155,13 @@ export class EditCardViewComponent implements OnInit {
     }
   }
 
-  private saveNewCard(cardDTO: CreateCardBasicDTO | CreateCardMCDTO, deckId: string) {
+  private saveNewCard(cardDTO: CreateCardBasicDTO | CreateCardMCDTO) {
     this.cardService.createCard(cardDTO, this.deckId).subscribe({
       next: value => {
         if (value.status == HttpStatusCode.Created) {
           this.toast.showSuccessToast("Saved", "Your card has been created")
-          this.cardService.getAllCardsByDeck(this.deckId).subscribe({
-            next: cards => {
-              let sort = cards.body?.sort((a, b) => {
-                return b.id - a.id
-              });
-
-              if (sort == undefined) {
-                return
-              }
-
-              let latest = sort[0].id;
-              this.router.navigate([`deck/${this.deckId}/card/${latest}/edit`])
-              this.saveInProgress = false;
-            }
-          })
+          this.saveInProgress = false;
+          this.router.navigate([`/deck/${this.deckId}/edit`])
         }
       },
       error: err => {
@@ -323,7 +310,7 @@ export class EditCardViewComponent implements OnInit {
   private saveBasicCard() {
     if (this.cardId == "new") {
       const cardDTO: CreateCardBasicDTO = new CreateCardBasicDTO(this.questionCardDTO, this.choiceAnswers[0].answer, this.choiceAnswers[0].imageId);
-      this.saveNewCard(cardDTO, this.deckId);
+      this.saveNewCard(cardDTO);
       return
     }
 
@@ -349,7 +336,7 @@ export class EditCardViewComponent implements OnInit {
   private saveMCCard() {
     if (this.cardId == "new") {
       const cardDTO: CreateCardMCDTO = new CreateCardMCDTO(this.questionCardDTO, this.choiceAnswers);
-      this.saveNewCard(cardDTO, this.deckId);
+      this.saveNewCard(cardDTO);
       return
     }
 
