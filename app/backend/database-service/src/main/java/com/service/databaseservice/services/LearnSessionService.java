@@ -82,7 +82,7 @@ public class LearnSessionService {
     }
 
     public boolean doesLearnSessionFromUserExist(Long userId, Long learnSessionId) {
-        return learnSessionRepository.existsLearnSessionByIdAndDeckId(learnSessionId, userId);
+        return learnSessionRepository.existsLearnSessionByIdAndUserId(learnSessionId, userId);
     }
 
     @Transactional
