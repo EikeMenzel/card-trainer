@@ -22,7 +22,7 @@ public class AchievementController {
         this.dbQueryService = dbQueryService;
     }
 
-    @PostMapping("/{userId}/achievements/check-deck")
+    @PostMapping("/users/{userId}/achievements/check-deck")
     @Operation(summary = "Check Deck Achievements",
             description = "Triggers the check for deck-related achievements for the specified user.<br><br>" +
                     "<strong>Note:</strong> User ID must be valid." +
@@ -36,7 +36,7 @@ public class AchievementController {
         achievementService.achievementCreationDeck(userId);
     }
 
-    @PostMapping("/{userId}/achievements/check-session")
+    @PostMapping("/users/{userId}/achievements/check-session")
     @Operation(summary = "Check Session Achievements",
             description = "Triggers the check for session-related achievements for the specified user.<br><br>" +
                     "<strong>Note:</strong> User ID must be valid." +
@@ -51,7 +51,7 @@ public class AchievementController {
         achievementService.achievementStateSessions(userId);
     }
 
-    @PostMapping("/{userId}/achievements/check-cards-learned")
+    @PostMapping("/users/{userId}/achievements/check-cards-learned")
     @Operation(summary = "Check Cards Learned Achievements",
             description = "Triggers the check for cards learned achievements for the specified user.<br><br>" +
                     "<strong>Note:</strong> User ID must be valid." +
