@@ -247,11 +247,11 @@ textarea {
 }
 
 /* Experimental */
-.customized-modal-width {
+.custom-modal-width {
   max-width: 400px;
 }
 
-.customized-modal-dialog-centered {
+.custom-modal-dialog-centered {
   display: flex;
   align-items: center;
   justify-content: center;

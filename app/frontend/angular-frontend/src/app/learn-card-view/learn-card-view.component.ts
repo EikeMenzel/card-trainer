@@ -1,5 +1,5 @@
 import {NgForOf, NgIf, NgOptimizedImage} from "@angular/common";
-import {Component, OnInit} from "@angular/core";
+import {Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import * as bootstrap from "bootstrap";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {BasePageComponent} from "../base-page/base-page.component";
@@ -18,6 +18,8 @@ import {catchError, map, Observable, of} from "rxjs";
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
+import {DonutChartComponent} from "../donut-chart/donut-chart.component";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   standalone: true,
@@ -28,7 +30,8 @@ import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCar
     NgForOf,
     FontAwesomeModule,
     BasePageComponent,
-    NgOptimizedImage
+    NgOptimizedImage,
+    DonutChartComponent
   ],
   styleUrls: ['./learn-card-view.component.css']
 })
@@ -54,6 +57,13 @@ export class LearnCardViewComponent implements OnInit {
 
   buttonIsPressed: boolean = false;
 
+  @ViewChild('content') private donutModal: ElementRef | undefined;
+
+  private modalRef: NgbModalRef | undefined;
+  chartNames: string[] = ['Easy', 'OK', 'Kinda Difficult', 'Difficult', 'I guessed', 'No Clue'];
+  chartData: number[] = []
+  awaitChange: boolean = false;
+
   constructor(
     private cardService: CardService,
     private toastService: ToastService,
@@ -62,6 +72,7 @@ export class LearnCardViewComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
+    private modalService: NgbModal
   ) {
   }
 
@@ -90,7 +101,6 @@ export class LearnCardViewComponent implements OnInit {
             break;
           case HttpStatusCode.NoContent: //No cards left -> set Status to finished
             this.finishLearnSession(Number(this.deckId));
-            this.router.navigate([""]);
             break;
           default:
             this.toastService.showInfoToast("Notice", "Received unhandled status code");
@@ -120,10 +130,10 @@ export class LearnCardViewComponent implements OnInit {
   }
 
   finishLearnSession(deckId: number) {
-    this.cardService.updateLearnSessionStatus(this.learnSessionId).subscribe({
+    this.cardService.finishedLearnSessionStatus(this.learnSessionId).subscribe({
       next: (res) => {
         this.toastService.showSuccessToast("Successful", "Finished Learn-session");
-        //TODO show donut chart modal with the statistics of this session.
+        this.fetchLearnSessionResults();
       },
       error: (err) => {
         const statusCode = err.status;
@@ -146,6 +156,33 @@ export class LearnCardViewComponent implements OnInit {
       }
     });
   }
+
+  getPercentValue(chartData: number[], cardsAmount: number) {
+    let preSave: number[] = []
+    for (let i = 0; i < chartData.length; i++) {
+      preSave[i] = 100 / cardsAmount * chartData[i];
+    }
+    return preSave;
+  }
+
+  openModal() {
+    this.modalRef = this.modalService.open(this.donutModal, {
+      ariaLabelledBy: 'modal-basic-title',
+      beforeDismiss: () => {
+        this.closeModal();
+        return true;
+      }
+    });
+  }
+
+  closeModal() {
+    this.modalRef?.close(this.donutModal);
+    this.awaitChange = false;
+    this.chartData = [];
+    this.learnSessionResults = undefined;
+    this.router.navigate([`/deck/${this.deckId}`]);
+  }
+
   getAnswerImageUrl(index: number): SafeUrl | undefined {
     if (this.imageInformationMultipleChoiceCard && index < this.imageInformationMultipleChoiceCard.answerImages.length) {
       return this.imageInformationMultipleChoiceCard.answerImages[index];
@@ -197,12 +234,9 @@ export class LearnCardViewComponent implements OnInit {
       }
     }
   }
-
   get currentCard() {
     return this.card;
   }
-
-
   flipCard() {
     this.flipped = !this.flipped;
   }
@@ -235,8 +269,8 @@ export class LearnCardViewComponent implements OnInit {
   }
 
   calculateProgress() {
-    console.log(this.cardsLearned);
-    console.log(this.cardLength);
+    console.log(this.cardsLearned); //TODO Delete
+    console.log(this.cardLength); // TODO Delete
     return Math.round((this.cardsLearned / this.cardLength) * 100);
   }
 
@@ -254,23 +288,6 @@ export class LearnCardViewComponent implements OnInit {
       this.selectedChoices = this.selectedChoices.filter(c => c !== choice); // Removes the selection
     }
   }
-
-  isCorrectChoice(choice: string) {
-    if (this.currentCard) {
-      if (this.currentCard.cardDTO.cardType === "BASIC") {
-        return this.textAnswerCard?.textAnswer === choice;
-      }
-      if (this.currentCard.cardDTO.cardType === "MULTIPLE_CHOICE") {
-        if (this.multipleChoiceCard) {
-          for (let i = 0; i < this.multipleChoiceCard?.choiceAnswers.length; i++)
-            if (this.multipleChoiceCard?.choiceAnswers[i].answer === choice)
-              return this.multipleChoiceCard?.choiceAnswers[i].correct === true;
-        }
-      }
-    }
-    return false;
-  }
-
   getImageUrl(imageId: number | undefined | null): Observable<SafeUrl | undefined> {
     if (imageId == null) {
       return of(undefined); // Return an observable with 'undefined'
@@ -369,6 +386,12 @@ export class LearnCardViewComponent implements OnInit {
       next: (res) => {
         if (res.body)
           this.learnSessionResults = res.body;
+        this.openModal()
+        if (this.learnSessionResults) {
+          const chart: number[] = [this.learnSessionResults.difficulty_1, this.learnSessionResults.difficulty_2, this.learnSessionResults.difficulty_3, this.learnSessionResults.difficulty_4, this.learnSessionResults.difficulty_5, this.learnSessionResults.difficulty_6]
+          this.chartData = this.getPercentValue(chart,this.learnSessionResults.cardsLearned);
+          this.awaitChange = true;
+        }
       },
       error: (err) => {
         switch (err.status) {
@@ -419,4 +442,20 @@ export class LearnCardViewComponent implements OnInit {
 
   protected readonly RatingDTO = RatingDTO;
   protected readonly faArrowsRotate = faArrowsRotate;
+
+  openImageModal(imageUrl: SafeUrl | undefined) {
+    if (imageUrl) {
+      const imageElement: HTMLImageElement = document.getElementById('modalImage') as HTMLImageElement;
+      // Use the sanitizer to make the URL secure
+      imageElement.src = this.sanitizer.sanitize(4, imageUrl) || ''; // 4 stands for sanitization of URLs
+
+      // Open the bootstrap modal
+      const modalElement = document.getElementById('imageModal');
+      if (modalElement) {
+        const imageModal = new bootstrap.Modal(modalElement);
+        imageModal.show();
+      }
+    }
+  }
+
 }
