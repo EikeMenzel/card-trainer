@@ -72,7 +72,7 @@ export class CardService {
     }, {observe: 'response'})
   }
 
-  updateLearnSessionStatus(learnSessionId: number) {
+  finishedLearnSessionStatus(learnSessionId: number) {
 
     const headers = new HttpHeaders()
       .append('Content-Type', 'application/json')

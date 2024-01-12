@@ -8,9 +8,11 @@ import {
   NgbInputDatepicker,
   NgbModal
 } from '@ng-bootstrap/ng-bootstrap';
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import {AuthService} from "../services/auth-service/auth-service";
+import {LearningSessionService} from "../services/learn-session-service/learn-session.service";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-navbar',
@@ -33,16 +35,29 @@ export class NavbarComponent {
 
   constructor(
     private modalService: NgbModal,
-    private authService: AuthService
+    private authService: AuthService,
+    private learningSessionService: LearningSessionService,
+    private router: Router
   ) { }
 
   public open(modal: any): void {
     this.modalService.open(modal);
   }
 
-  logoutWarningPopup(): void {
-    if (confirm("Are you sure you want to logout?")) {
-      this.authService.logout();
-    }
+  onClickReturn(targetUrl: string) {
+    this.learningSessionService.getLearningSessionStatus().pipe(
+      take(1)
+    ).subscribe(inSession => {
+      if (inSession) {
+        if (confirm("Are you sure you want to quit your learn session?")) {
+          this.learningSessionService.setLearningSession(false);
+          this.router.navigateByUrl(targetUrl);
+        }
+      } else {
+        this.router.navigateByUrl(targetUrl);
+      }
+    });
   }
+
+
 }

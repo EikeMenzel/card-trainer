@@ -28,7 +28,13 @@
 
 
           <div class="deck-actions mb-4 text-center d-flex flex-column align-items-center">
-            <button class="btn custom-action-button mb-2" routerLink="./learn" [disabled]="deckCardsLeft===0" [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">Start to Learn</button>
+            <button class="btn custom-action-button mb-2"
+                    routerLink="./learn"
+                    (click)="startLearningSession()"
+                    [disabled]="deckCardsLeft===0"
+                    [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">
+              Start to Learn
+            </button>
             <button class="btn custom-action-button mb-2" disabled>Quick Peek</button>
           </div>
 

@@ -3,13 +3,13 @@
   <div class="navbar-nav flex-grow-1 home-section">
     <!-- Home Button -->
     <div class="d-flex align-items-center">
-      <a class="nav-item nav-link house-icon" routerLink="/">
+      <button class="nav-item nav-link house-icon" (click)="onClickReturn('/')">
         <fa-icon class="nav-icon fa-xl house-icon" [icon]="faHouse"></fa-icon>
-      </a>
+      </button>
       <!-- Title -->
       <span class="navbar-text title-text">
-        {{ this.title }}
-      </span>
+      {{ this.title }}
+    </span>
     </div>
   </div>
 
@@ -25,9 +25,9 @@
         <fa-icon class="nav-item fa-xl user-icon" [icon]="faUser"></fa-icon>
       </a>
       <div class="dropdown-menu dropdown-menu-right custom-dropdown-window" ngbDropdownMenu aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="/profile">Profile</a>
+        <button class="dropdown-item" (click)="onClickReturn('/profile')">Profile</button>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#" (click)="logoutWarningPopup()">Logout</a>
+        <button class="dropdown-item" (click)="onClickReturn('#')">Logout</button>
       </div>
     </li>
   </div>
