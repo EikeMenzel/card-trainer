@@ -30,7 +30,9 @@ public class UserAchievementService {
 
     public List<Long> getAllUserAchievementIdsByUserId(Long userId) {
         return userAchievementRepository.getUserAchievementsByUser_Id(userId)
-                .stream().map(entry -> entry.getAchievement().getId())
+                .stream()
+                .filter(entry -> !entry.getAchievement().getDaily())
+                .map(entry -> entry.getAchievement().getId())
                 .collect(Collectors.toList());
     }
    // @Transactional
