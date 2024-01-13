@@ -35,7 +35,8 @@ public class UserAchievementService {
                 .map(entry -> entry.getAchievement().getId())
                 .collect(Collectors.toList());
     }
-   // @Transactional
+
+    @Transactional
     public boolean saveUserAchievement(Long userId, Long achievementId) {
         try {
             Optional<User> userOptional = userRepository.getUserById(userId);

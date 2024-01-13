@@ -65,6 +65,7 @@ public class GatewayConfig {
                                 "/api/v1/decks",
                                 "/api/v1/decks/import",
                                 "/api/v1/decks/{deckId}",
+                                "/api/v1/decks/{deckId}/size",
                                 "/api/v1/decks/{deckId}/histories",
                                 "/api/v1/decks/{deckId}/histories/{historyId}",
                                 "/api/v1/decks/{deckId}/export",
