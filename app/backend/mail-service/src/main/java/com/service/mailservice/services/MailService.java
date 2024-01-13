@@ -36,11 +36,12 @@ public class MailService {
     private void sendHtmlMail(String to, String subject, String content) {
         try {
             var message = mailSender.createMimeMessage();
-            var helper = new MimeMessageHelper(message, true);
+            var helper = new MimeMessageHelper(message, true, "UTF-8");
 
             message.setSubject(subject);
             helper.setTo(to);
             helper.setFrom(sendFrom);
+
             helper.setText(content, true);
             mailSender.send(message);
         } catch (MessagingException messagingException) {
