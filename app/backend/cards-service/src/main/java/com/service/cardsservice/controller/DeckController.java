@@ -146,6 +146,22 @@ public class DeckController {
                 .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{deckId}/size")
+    @Operation(summary = "Retrieve Deck Size",
+            description = "Fetches the size of a specific deck for a given user.<br><br>" +
+                    "<strong>Note:</strong> Ensure the deck ID and user ID are valid." +
+                    "<br><br><strong>⚠️ Warning:</strong> This route will not work, if you aren't logged in!",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Deck size retrieved", content = @Content(schema = @Schema(implementation = Integer.class))),
+                    @ApiResponse(responseCode = "500", description = "Service was not reachable")
+            })
+    public ResponseEntity<Integer> getDeckSize(
+            @Parameter(description = "User ID of the requester", required = true) @RequestHeader Long userId,
+            @Parameter(description = "Deck ID for which the size is to be retrieved", required = true) @PathVariable Long deckId) {
+        return ResponseEntity.ok(deckService.getDeckSize(userId, deckId));
+    }
+
+
     @GetMapping("/{deckId}/export")
     @Operation(summary = "Export Deck",
             description = "Exports a specific deck to a downloadable file format.<br><br>" +

@@ -38,6 +38,9 @@ public class DeckService {
                     List<Integer> getDeckLearnState = dbQueryService.getLearnStateOfDeck(userId, deckId);
                     return new DeckDetailInformationDTO(deckDTO.deckId(), deckDTO.deckName(), cardsAmount, cardsToLearn, lastLearned, getDeckLearnState);
                 });
+    }
 
+    public Integer getDeckSize(Long userId, Long deckId) {
+        return dbQueryService.getCardsAmountByDeck(userId, deckId);
     }
 }
