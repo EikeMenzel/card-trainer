@@ -20,6 +20,7 @@ import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
 import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import {LearningSessionService} from "../services/learn-session-service/learn-session.service";
 
 @Component({
   standalone: true,
@@ -72,7 +73,8 @@ export class LearnCardViewComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private learnSessionService: LearningSessionService,
   ) {
   }
 
@@ -132,6 +134,7 @@ export class LearnCardViewComponent implements OnInit {
   finishLearnSession(deckId: number) {
     this.cardService.finishedLearnSessionStatus(this.learnSessionId).subscribe({
       next: (res) => {
+        this.learnSessionService.setLearningSession(false);
         this.toastService.showSuccessToast("Successful", "Finished Learn-session");
         this.fetchLearnSessionResults();
       },
