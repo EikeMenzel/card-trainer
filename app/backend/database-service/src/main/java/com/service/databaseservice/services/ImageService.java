@@ -27,6 +27,9 @@ public class ImageService {
     }
 
     public Optional<Long> saveImage(Long userId, byte[] data) {
+        if(data == null)
+            return Optional.empty();
+
         try {
             Optional<User> userOptional = userService.getUserFromId(userId);
             return userOptional.flatMap(user -> imageRepository.save(new Image(generateBlob(data), user))

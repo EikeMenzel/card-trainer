@@ -21,7 +21,7 @@ import java.util.zip.ZipInputStream;
 public class ImportService {
     private final ObjectMapper objectMapper;
     private final DbQueryService dbQueryService;
-    private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
+    private final Logger logger = LoggerFactory.getLogger(ImportService.class);
 
     public ImportService(ObjectMapper objectMapper, DbQueryService dbQueryService) {
         this.objectMapper = objectMapper;
@@ -71,6 +71,7 @@ public class ImportService {
     private ExportDTO processJsonFile(ExportDTO exportDTO, File tmpDir) throws IOException {
         for (CardExportDTO cardExportDTO : exportDTO.cardExportDTOList()) {
             cardExportDTO.getCardDTO().setImage(findImageAsByteArray(tmpDir, cardExportDTO.getCardDTO().getImagePath()));
+
             if (cardExportDTO instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
                 for (ChoiceAnswerDTO choice : multipleChoiceCardDTO.getChoiceAnswers()) {
                     choice.setImage(findImageAsByteArray(tmpDir, choice.getImagePath()));
