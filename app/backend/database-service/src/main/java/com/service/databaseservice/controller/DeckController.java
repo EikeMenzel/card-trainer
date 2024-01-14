@@ -4,20 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.import_function.CardDTO;
-import com.service.databaseservice.payload.import_function.ChoiceAnswerDTO;
-import com.service.databaseservice.payload.import_function.TextAnswerCardDTO;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
 import com.service.databaseservice.payload.out.export.CardExportDTO;
 import com.service.databaseservice.payload.out.export.ExportDTO;
 import com.service.databaseservice.payload.out.export.MultipleChoiceCardDTO;
 import com.service.databaseservice.payload.out.export.TextAnswerDTO;
+import com.service.databaseservice.payload.savecard.ChoiceAnswerDTO;
+import com.service.databaseservice.payload.savecard.TextAnswerCardDTO;
 import com.service.databaseservice.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,14 +41,16 @@ public class DeckController {
     private final ExportService exportService;
     private final ObjectMapper objectMapper;
     private final UserTokenService userTokenService;
+    private final ImageService imageService;
 
-    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService, ObjectMapper objectMapper, UserTokenService userTokenService) {
+    public DeckController(DeckService deckService, CardService cardService, RepetitionService repetitionService, ExportService exportService, ObjectMapper objectMapper, UserTokenService userTokenService, ImageService imageService) {
         this.deckService = deckService;
         this.cardService = cardService;
         this.repetitionService = repetitionService;
         this.exportService = exportService;
         this.objectMapper = objectMapper;
         this.userTokenService = userTokenService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/users/{userId}/decks")
@@ -290,10 +294,17 @@ public class DeckController {
 
         exportDTO.cardExportDTOList().forEach(dto -> {
             if (dto instanceof TextAnswerDTO textAnswerDTO) {
-                cardService.saveCard(objectMapper.valueToTree(new TextAnswerCardDTO(new CardDTO(textAnswerDTO.getCardDTO().question(), textAnswerDTO.getCardDTO().image()), textAnswerDTO.getTextAnswer(), textAnswerDTO.getImage())), 1L, deck.get().getId());
+                var cardDTO = new com.service.databaseservice.payload.savecard.CardDTO(textAnswerDTO.getCardDTO().question(), imageService.saveImage(userId, textAnswerDTO.getCardDTO().image()).orElse(null));
+                var jsonNode = objectMapper.valueToTree(new TextAnswerCardDTO(cardDTO, textAnswerDTO.getTextAnswer(), imageService.saveImage(userId,textAnswerDTO.getImage()).orElse(null)));
+                cardService.saveCard(jsonNode, 1L, deck.get().getId());
             } else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
-                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.import_function.MultipleChoiceCardDTO(new CardDTO(multipleChoiceCardDTO.getCardDTO().question(), multipleChoiceCardDTO.getCardDTO().image()),
-                        multipleChoiceCardDTO.getChoiceAnswers().stream().map(choiceAnswerDTO -> new ChoiceAnswerDTO(choiceAnswerDTO.answer(), choiceAnswerDTO.getIsRightAnswer(), choiceAnswerDTO.image())).collect(Collectors.toList())));
+                var cardDTO = new com.service.databaseservice.payload.savecard.CardDTO(multipleChoiceCardDTO.getCardDTO().question(), imageService.saveImage(userId, multipleChoiceCardDTO.getCardDTO().image()).orElse(null));
+                List<ChoiceAnswerDTO> choiceAnswerDTOList = multipleChoiceCardDTO.getChoiceAnswers()
+                        .stream()
+                        .map(choiceAnswerDTO -> new ChoiceAnswerDTO(choiceAnswerDTO.answer(), choiceAnswerDTO.getIsRightAnswer(), imageService.saveImage(userId, choiceAnswerDTO.image()).orElse(null)))
+                        .toList();
+
+                var jsonNode = objectMapper.valueToTree(new com.service.databaseservice.payload.savecard.MultipleChoiceCardDTO(cardDTO, choiceAnswerDTOList));
                 cardService.saveCard(jsonNode, userId, deck.get().getId());
             }
         });
