@@ -1,7 +1,5 @@
 package com.service.achievementservice.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,6 @@ import java.util.Map;
 
 @Service
 public class WebSocketService {
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketService.class);
     private static final Map<Long, List<String>> userSocketMapping = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -23,9 +20,7 @@ public class WebSocketService {
     public void sendAchievementNotification(final Long userId, final Long achievementId) {
         List<String> sockets = userSocketMapping.get(userId);
 
-        sockets.forEach(s -> {
-            messagingTemplate.convertAndSendToUser(s, "topic/achievement-notification", achievementId);
-        });
+        sockets.forEach(s -> messagingTemplate.convertAndSendToUser(s, "topic/achievement-notification", achievementId));
 
     }
 

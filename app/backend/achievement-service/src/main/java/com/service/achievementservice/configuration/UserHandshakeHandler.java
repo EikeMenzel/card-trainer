@@ -5,7 +5,6 @@ import com.sun.security.auth.UserPrincipal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -18,6 +17,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Component
+@SuppressWarnings("java:S1191") // suppresses warning for using Sun proprietary API
 public class UserHandshakeHandler extends DefaultHandshakeHandler {
     private final Logger loggerUserHandShakeHandler = LoggerFactory.getLogger(UserHandshakeHandler.class);
 

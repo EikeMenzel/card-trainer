@@ -1,6 +1,6 @@
 package com.service.databaseservice.services;
 
-import com.service.databaseservice.model.Repetition;
+import com.service.databaseservice.model.RepetitionModel;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.cards.Card;
 import com.service.databaseservice.payload.inc.learnsession.RatingLevelDTO;
@@ -22,7 +22,7 @@ public class RepetitionService {
         this.repetitionRepository = repetitionRepository;
     }
 
-    public Optional<Repetition> getRepetitionByCardId(Long cardId) {
+    public Optional<RepetitionModel> getRepetitionByCardId(Long cardId) {
         return repetitionRepository.getRepetitionByCard_Id(cardId);
     }
 
@@ -30,7 +30,7 @@ public class RepetitionService {
         if(card == null || user == null)
             return false;
         try {
-            repetitionRepository.save(new Repetition(0, -1, 2.5, 0, Timestamp.from(Instant.now()), user, card));
+            repetitionRepository.save(new RepetitionModel(0, -1, 2.5, 0, Timestamp.from(Instant.now()), user, card));
             return true;
         } catch (Exception e) {
             logger.debug(e.getMessage());
@@ -39,7 +39,7 @@ public class RepetitionService {
     }
 
     public boolean updateRepetition(Long cardId, RatingLevelDTO ratingLevelDTO) {
-        Optional<Repetition> repetitionOptional = repetitionRepository.getRepetitionByCard_Id(cardId);
+        Optional<RepetitionModel> repetitionOptional = repetitionRepository.getRepetitionByCard_Id(cardId);
 
         if(repetitionOptional.isEmpty())
             return false;

@@ -1,7 +1,8 @@
 package com.service.mailservice.services;
 
 public class MailContentProvider {
-    public static String dailyLearnReminder = """
+    private MailContentProvider() {}
+    public static final String DAILY_LEARN_REMINDER = """
             <!DOCTYPE html>
             <html lang="de">
             <head>
@@ -70,7 +71,7 @@ public class MailContentProvider {
             </html>
             """;
 
-    public static String mailPasswordReset = """
+    public static final String MAIL_PASSWORD_RESET = """
             <!DOCTYPE html>
             <html lang="de">
             <head>
@@ -138,7 +139,7 @@ public class MailContentProvider {
             </body>
             </html>
             """;
-    public static String MailVerification = """
+    public static final String MAIL_VERIFICATION = """
             <!DOCTYPE html>
             <html lang="de">
             <head>
@@ -205,7 +206,7 @@ public class MailContentProvider {
             </html>
             """;
 
-    public static String shareDeck = """
+    public static final String SHARE_DECK = """
             <!DOCTYPE html>
             <html lang="de">
             <head>

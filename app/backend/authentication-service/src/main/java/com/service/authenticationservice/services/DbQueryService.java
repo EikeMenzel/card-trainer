@@ -19,22 +19,22 @@ import java.util.Optional;
 public class DbQueryService {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
-    private final String DB_API_BASE_PATH;
-    private final String USER_DB_API_PATH;
-    private final String USER_EMAIL_DB_API_PATH;
+    private final String dbApiBasePath;
+    private final String userDbApiPath;
+    private final String userEmailDbApiPath;
     private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
 
     public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath) {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
-        this.DB_API_BASE_PATH = dbPath;
-        this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
-        this.USER_EMAIL_DB_API_PATH = this.USER_DB_API_PATH + "/emails";
+        this.dbApiBasePath = dbPath;
+        this.userDbApiPath = this.dbApiBasePath + "/users";
+        this.userEmailDbApiPath = this.userDbApiPath + "/emails";
     }
 
     public Optional<UserDTO> getUserByEmail(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userEmailDbApiPath + "/" + email, String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), UserDTO.class))
@@ -47,7 +47,7 @@ public class DbQueryService {
 
     public Optional<Long> getUserIdByEmail(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email + "/id", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userEmailDbApiPath + "/" + email + "/id", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Long.valueOf(Objects.requireNonNull(responseEntity.getBody())))
                     : Optional.empty();
@@ -58,7 +58,7 @@ public class DbQueryService {
 
     public Optional<Boolean> doesUserWithEmailExist(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email + "/exists", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userEmailDbApiPath + "/" + email + "/exists", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();
@@ -69,7 +69,7 @@ public class DbQueryService {
 
     public Optional<String> getUserEmailFromId(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/email", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + "/email", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.ofNullable(responseEntity.getBody())
                     : Optional.empty();
@@ -80,7 +80,7 @@ public class DbQueryService {
 
     public Optional<Boolean> getVerificationStateUser(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/verified", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + "/verified", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();
@@ -89,9 +89,9 @@ public class DbQueryService {
         }
     }
 
-    public Boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(DB_API_BASE_PATH + "/user-token/" + token+ "/valid", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbApiBasePath + "/user-token/" + token+ "/valid", String.class);
             return responseEntity.getStatusCode() == HttpStatus.NO_CONTENT;
         } catch (Exception e) {
             return false;
@@ -102,7 +102,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                USER_DB_API_PATH + "/",
+                userDbApiPath + "/",
                 new HttpEntity<>(userDTO, headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -113,7 +113,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<Void> responseEntity = restTemplate.exchange(
-                    DB_API_BASE_PATH + "/user-token/" + token,
+                    dbApiBasePath + "/user-token/" + token,
                     HttpMethod.PUT,
                     new HttpEntity<>(headers),
                     Void.class
@@ -134,7 +134,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<Void> responseEntity = restTemplate.exchange(
-                    USER_DB_API_PATH + "/" + userId + "/password",
+                    userDbApiPath + "/" + userId + "/password",
                     HttpMethod.PUT,
                     new HttpEntity<>(updatePasswordDTO, headers),
                     Void.class
@@ -150,7 +150,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<Void> responseEntity = restTemplate.exchange(
-                    USER_DB_API_PATH + "/" + userId + "/password/unauthorized",
+                    userDbApiPath + "/" + userId + "/password/unauthorized",
                     HttpMethod.PUT,
                     new HttpEntity<>(updatePasswordDTOUnauthorized, headers),
                     Void.class

@@ -2,6 +2,7 @@ package com.service.gateway.security.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.gateway.security.JsonProcessingRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,8 @@ public class AuthEntryPointJwt implements ServerAuthenticationEntryPoint {
                     try {
                         responseBytes = new ObjectMapper().writeValueAsBytes(response);
                     } catch (JsonProcessingException ex) {
-                        throw new RuntimeException(ex);
+                        throw new JsonProcessingRuntimeException(
+                                "Error processing JSON for unauthorized response", ex);
                     }
                     return exchange.getResponse().bufferFactory().wrap(responseBytes);
                 }));

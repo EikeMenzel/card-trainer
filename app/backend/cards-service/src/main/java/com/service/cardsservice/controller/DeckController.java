@@ -34,7 +34,7 @@ public class DeckController {
     private final AchievementQueryService achievementQueryService;
     private final ExportService exportService;
     private final ImportService importService;
-    private final String GATEWAY_PATH;
+    private final String gatewayPath;
 
     public DeckController(DeckService deckService, DbQueryService dbQueryService, AchievementQueryService achievementQueryService, ExportService exportService, ImportService importService, @Value("${gateway.path}") String gatewayPath) {
         this.deckService = deckService;
@@ -42,7 +42,7 @@ public class DeckController {
         this.achievementQueryService = achievementQueryService;
         this.exportService = exportService;
         this.importService = importService;
-        this.GATEWAY_PATH = gatewayPath;
+        this.gatewayPath = gatewayPath;
     }
 
     @GetMapping()
@@ -175,19 +175,19 @@ public class DeckController {
     public ResponseEntity<ByteArrayResource> exportDeck(
             @Parameter(description = "User ID of the requester", required = true) @RequestHeader Long userId,
             @Parameter(description = "Deck ID to be exported", required = true) @PathVariable Long deckId) throws IOException {
-        byte[] zipData = exportService.zipDeck(userId, deckId);
+        Optional<byte[]> zipData = exportService.zipDeck(userId, deckId);
 
-        if (zipData == null || zipData.length == 0)
+        if (zipData.isEmpty() || zipData.get().length == 0)
             return ResponseEntity.notFound().build();
 
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=card-trainer.zip");
 
-        var resource = new ByteArrayResource(zipData);
+        var resource = new ByteArrayResource(zipData.get());
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .contentLength(zipData.length)
+                .contentLength(zipData.get().length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
@@ -285,7 +285,7 @@ public class DeckController {
     public ResponseEntity<Void> copySharedDeck(@PathVariable @Size(min = 36, max = 50) String token) {
         var httpStatusCode = dbQueryService.shareDeck(token);
         if (httpStatusCode == HttpStatus.CREATED)
-            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(GATEWAY_PATH + "/")).build();
+            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(gatewayPath + "/")).build();
 
         return ResponseEntity.status(httpStatusCode).build();
     }

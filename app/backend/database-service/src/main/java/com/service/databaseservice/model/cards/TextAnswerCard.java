@@ -2,11 +2,6 @@ package com.service.databaseservice.model.cards;
 
 import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.springframework.context.annotation.Lazy;
-
-import java.sql.Blob;
-import java.sql.Types;
 
 @Entity
 @Table(name = "text_answer_card")

@@ -64,8 +64,11 @@ public class UserController {
             return ResponseEntity.badRequest().build();
 
         Pair<Optional<UserAccountInformationDTO>, HttpStatusCode> httpStatusPair = dbQueryService.updateAccountInformation(userId, userAccountInformationDTO);
-        if (httpStatusPair.getRight().is2xxSuccessful())
-            return ResponseEntity.status(httpStatusPair.getRight()).body(httpStatusPair.getLeft().get());
+        if (httpStatusPair.getRight().is2xxSuccessful()) {
+            Optional<UserAccountInformationDTO> userAccountInformationDTOOptional = httpStatusPair.getLeft();
+            var accountInformationDTO = userAccountInformationDTOOptional.orElse(null);
+            return ResponseEntity.status(httpStatusPair.getRight()).body(accountInformationDTO);
+        }
         return ResponseEntity.status(httpStatusPair.getRight()).build();
     }
 }

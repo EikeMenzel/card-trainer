@@ -10,11 +10,11 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class AppConfig {
     @Value("${springdoc.swagger-ui.servers}")
-    private String SPRING_DEFAULT_SERVER_SWAGGER_DOC;
+    private String springDefaultServerSwaggerDoc;
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url(SPRING_DEFAULT_SERVER_SWAGGER_DOC).description("Default Server"));
+                .addServersItem(new Server().url(springDefaultServerSwaggerDoc).description("Default Server"));
     }
     @Bean
     public RestTemplate restTemplate() {
