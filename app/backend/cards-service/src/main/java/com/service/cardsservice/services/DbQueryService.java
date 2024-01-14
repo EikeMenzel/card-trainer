@@ -28,22 +28,25 @@ import java.util.Optional;
 public class DbQueryService {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
-    private final String DB_API_BASE_PATH;
-    private final String USER_DB_API_PATH;
-    private final String EMAIL_API_PATH;
+    private final String dbApiBasePath;
+    private final String userDbApiPath;
+    private final String emailApiPath;
     private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
-
-    public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath, @Value("${email-service.api.path}") String emailServicePath) {
+    private final String decksPath;
+    private final String cardsPath;
+    public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath, @Value("${email-service.api.path}") String emailServicePath, @Value("${decks.path}") String decksPath, @Value("${cards.path}") String cardsPath) {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
-        this.DB_API_BASE_PATH = dbPath;
-        this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
-        this.EMAIL_API_PATH = emailServicePath;
+        this.dbApiBasePath = dbPath;
+        this.userDbApiPath = this.dbApiBasePath + "/users";
+        this.emailApiPath = emailServicePath;
+        this.decksPath = decksPath;
+        this.cardsPath = cardsPath;
     }
 
     public Integer getCardsAmountByDeck(Long userId, Long deckId) {
         try {
-            String url = USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/count";
+            String url = userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath + "/count";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Integer.parseInt(Objects.requireNonNull(responseEntity.getBody()))
@@ -56,7 +59,7 @@ public class DbQueryService {
 
     public Integer getCardsToLearnAmountByDeck(Long userId, Long deckId) {
         try {
-            String url = USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards-to-learn/count";
+            String url = userDbApiPath + "/" + userId + decksPath + "/" + deckId + "/cards-to-learn/count";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
@@ -70,7 +73,7 @@ public class DbQueryService {
 
     public Optional<Timestamp> getLastLearnedTimestampByDeck(Long userId, Long deckId) {
         try {
-            String url = USER_DB_API_PATH + "/" + userId + "/learn-sessions/" + deckId + "/timestamp";
+            String url = userDbApiPath + "/" + userId + "/learn-sessions/" + deckId + "/timestamp";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional
@@ -87,7 +90,7 @@ public class DbQueryService {
 
     public List<Integer> getLearnStateOfDeck(Long userId, Long deckId) {
         try {
-            String url = USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/learn-state";
+            String url = userDbApiPath + "/" + userId + decksPath + "/" + deckId + "/learn-state";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
@@ -102,7 +105,7 @@ public class DbQueryService {
 
     public List<DeckDTO> getAllDecksByUserId(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath, String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<DeckDTO>>() {
             })
@@ -115,7 +118,7 @@ public class DbQueryService {
 
     public Optional<DeckDTO> getDeckByUserIdAndDeckId(Long userId, Long deckId) {
         try {
-            String url = USER_DB_API_PATH + "/" + userId + "/decks/" + deckId;
+            String url = userDbApiPath + "/" + userId + decksPath + "/" + deckId;
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.ofNullable(objectMapper.readValue(responseEntity.getBody(), DeckDTO.class))
@@ -130,7 +133,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                USER_DB_API_PATH + "/" + userId + "/decks/",
+                userDbApiPath + "/" + userId + decksPath + "/",
                 new HttpEntity<>(deckNameDTO, headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -143,7 +146,7 @@ public class DbQueryService {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             return restTemplate.exchange(
-                    USER_DB_API_PATH + "/" + userId + "/decks/" + deckId,
+                    userDbApiPath + "/" + userId + decksPath + "/" + deckId,
                     HttpMethod.DELETE,
                     entity,
                     String.class).getStatusCode();
@@ -158,7 +161,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<Void> responseEntity = restTemplate.exchange(
-                    USER_DB_API_PATH + "/" + userId + "/decks/" + deckId,
+                    userDbApiPath + "/" + userId + decksPath + "/" + deckId,
                     HttpMethod.PUT,
                     new HttpEntity<>(deckNameDTO, headers),
                     Void.class
@@ -172,7 +175,7 @@ public class DbQueryService {
 
     public Optional<ExportDTO> getCardExportDTOsForExportDeck(Long userId, Long deckId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/export", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath + "/export", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<ExportDTO>() {
             }))
@@ -185,7 +188,7 @@ public class DbQueryService {
 
     public List<HistoryDTO> getAllHistoriesByUserIdAndDeckId(Long userId, Long deckId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/histories", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath + "/" + deckId + "/histories", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<HistoryDTO>>() {
             })
@@ -198,7 +201,7 @@ public class DbQueryService {
 
     public Optional<HistoryDetailDTO> getDetailsHistoryByUserIdAndDeckIdAndHistoryId(Long userId, Long deckId, Long historyId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/histories/" + historyId, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath + "/" + deckId + "/histories/" + historyId, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? objectMapper.readValue(responseEntity.getBody(), new TypeReference<Optional<HistoryDetailDTO>>() {
             })
@@ -211,7 +214,7 @@ public class DbQueryService {
 
     public Pair<List<CardDTO>, HttpStatusCode> getAllCardsByDeckIdAndUserId(Long userId, Long deckId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath, String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Pair.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<CardDTO>>() {
             }), responseEntity.getStatusCode())
@@ -229,7 +232,7 @@ public class DbQueryService {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             return restTemplate.exchange(
-                    USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/" + cardId,
+                    userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath + "/" + cardId,
                     HttpMethod.DELETE,
                     entity,
                     String.class).getStatusCode();
@@ -243,7 +246,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards",
+                userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath,
                 new HttpEntity<>(cardNode, headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -254,7 +257,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                    USER_DB_API_PATH + "/" + userId + "/decks/import",
+                    userDbApiPath + "/" + userId + decksPath + "/import",
                     new HttpEntity<>(objectMapper.writerWithView(Views.Database.class).writeValueAsString(exportDTO), headers),
                     String.class);
 
@@ -273,7 +276,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                EMAIL_API_PATH + "/SHARE_DECK",
+                emailApiPath + "/SHARE_DECK",
                 new HttpEntity<>(new EmailRequestDTO(userId.get(), deckId), headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -281,7 +284,7 @@ public class DbQueryService {
 
     public Optional<Long> getUserIdByEmail(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/emails/" + email + "/id", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/emails/" + email + "/id", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Long.valueOf(Objects.requireNonNull(responseEntity.getBody())))
                     : Optional.empty();
@@ -293,7 +296,7 @@ public class DbQueryService {
 
     public HttpStatusCode existsDeckByUserIdAndDeckId(Long userId, Long deckId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/exists", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath + "/" + deckId + "/exists", String.class);
             return responseEntity.getStatusCode();
         } catch (HttpClientErrorException e) {
             logger.debug(e.getMessage());
@@ -305,7 +308,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                DB_API_BASE_PATH + "/decks/share/" + token,
+                dbApiBasePath + decksPath + "/share/" + token,
                 new HttpEntity<>(headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -313,7 +316,7 @@ public class DbQueryService {
 
     public Optional<Object> getCardDetails(Long userId, Long deckId, Long cardID) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/" + cardID, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath + "/" + cardID, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.ofNullable(responseEntity.getBody())
                     : Optional.empty();
@@ -325,7 +328,7 @@ public class DbQueryService {
 
     public Optional<byte[]> getImage(Long userId, Long imageId) {
         try {
-            String url = USER_DB_API_PATH + "/" + userId + "/images/" + imageId;
+            String url = userDbApiPath + "/" + userId + "/images/" + imageId;
             ResponseEntity<byte[]> responseEntity = restTemplate.getForEntity(url, byte[].class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.ofNullable(responseEntity.getBody())
@@ -341,7 +344,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<Void> responseEntity = restTemplate.exchange(
-                    USER_DB_API_PATH + "/" + userId + "/decks/" + deckId + "/cards/" + cardId,
+                    userDbApiPath + "/" + userId + decksPath + "/" + deckId + cardsPath + "/" + cardId,
                     HttpMethod.PUT,
                     new HttpEntity<>(cardNode, headers),
                     Void.class
@@ -358,7 +361,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                    DB_API_BASE_PATH + "/users/" + userId + "/images",
+                    dbApiBasePath + "/users/" + userId + "/images",
                     new HttpEntity<>(new ImageDataDTO(imageData), headers),
                     String.class);
 
@@ -376,7 +379,7 @@ public class DbQueryService {
             var headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                    USER_DB_API_PATH + "/" + userId + "/user-login-tracker",
+                    userDbApiPath + "/" + userId + "/user-login-tracker",
                     new HttpEntity<>(headers),
                     String.class);
 

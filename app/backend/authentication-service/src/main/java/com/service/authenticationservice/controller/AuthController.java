@@ -42,18 +42,19 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final boolean skipVerify;
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    private static final String passwordBlockedPasswordMessage = "Error, Password is a blocked password";
-    private static final String passwordConstraintsMessage = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/ and the password needs to be between 8 and 72 characters";
-    private final String GATEWAY_PATH;
+    private static final String ERROR_PASSWORD_IS_A_BLOCKED_PASSWORD = "Error, Password is a blocked password";
+    private static final String PASSWORD_CONSTRAINTS_MESSAGE = "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/ and the password needs to be between 8 and 72 characters";
+    private final String gatewayPath;
+    @SuppressWarnings("java:S107")
     public AuthController(PasswordSecurityService passwordSecurityService, DbQueryService dbQueryService, EmailQueryService emailQueryService, PasswordEncoder encoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils, @Value("${email.skip.verify}") String skipVerify, @Value("${gateway.path}") String gatewayPath) {
-        this.skipVerify = skipVerify.equalsIgnoreCase("true");
+        this.skipVerify = skipVerify != null && skipVerify.equalsIgnoreCase("true");
         this.passwordSecurityService = passwordSecurityService;
         this.dbQueryService = dbQueryService;
         this.emailQueryService = emailQueryService;
         this.encoder = encoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
-        GATEWAY_PATH = gatewayPath;
+        this.gatewayPath = gatewayPath;
     }
 
     @PostMapping("/register")
@@ -67,16 +68,16 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - Problem occurred during the registration process",
                     content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
     })
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
+    public ResponseEntity<MessageResponseDTO> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
         if (registerRequest.username().length() < 4 || registerRequest.username().length() > 30) {
             return ResponseEntity.badRequest().body(new MessageResponseDTO(2, "Error, Username needs to be between 4 and 30 characters"));
         }
 
         if (passwordSecurityService.checkPasswordIsInRainbowTable(registerRequest.password())) //contains check, returns true if the password is in the table
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, ERROR_PASSWORD_IS_A_BLOCKED_PASSWORD));
 
         if (!passwordSecurityService.checkPasswordSecurity(registerRequest.password())) { //false if requirements not meet
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, PASSWORD_CONSTRAINTS_MESSAGE));
         }
 
         if (!EmailValidator.validate(registerRequest.email())) { //checks for Regex of an email + email-length
@@ -114,6 +115,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Unauthorized - Authentication failed",
                     content = @Content(schema = @Schema(implementation = MessageResponseDTO.class))),
     })
+    @SuppressWarnings("java:S1452") // needs to be a wildcard, because multiple different objects are handled
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO loginDTO) {
         try {
             var authentication = authenticationManager.authenticate(
@@ -149,10 +151,10 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
                     content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
     })
-    public ResponseEntity<?> verifyUserEmail(@PathVariable String token) {
+    public ResponseEntity<MessageResponseDTO> verifyUserEmail(@PathVariable String token) {
         var httpStatusCode = dbQueryService.setVerificationStateToTrue(token);
         if (httpStatusCode.equals(HttpStatus.NO_CONTENT)) {
-            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(GATEWAY_PATH + "/verify-successful")).build();
+            return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(gatewayPath + "/verify-successful")).build();
         } else if (httpStatusCode.equals(HttpStatus.CONFLICT)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO(1, "Email is already verified"));
         } else if (httpStatusCode.equals(HttpStatus.BAD_REQUEST)) {
@@ -173,12 +175,12 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
                     content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
     })
-    public ResponseEntity<?> updateUserPassword(@RequestHeader Long userId, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+    public ResponseEntity<MessageResponseDTO> updateUserPassword(@RequestHeader Long userId, @Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         if (passwordSecurityService.checkPasswordIsInRainbowTable(updatePasswordDTO.password())) //contains check, returns true if the password is in the table
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, ERROR_PASSWORD_IS_A_BLOCKED_PASSWORD));
 
         if (!passwordSecurityService.checkPasswordSecurity(updatePasswordDTO.password())) { //false if requirements not meet
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, PASSWORD_CONSTRAINTS_MESSAGE));
         }
 
         return ResponseEntity.status(dbQueryService.updateUserPassword(userId, new UpdatePasswordDTO(encoder.encode(updatePasswordDTO.password())))).build();
@@ -193,7 +195,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
                     content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
     })
-    public ResponseEntity<?> sendPasswordResetMail(@Valid @RequestBody MailDTO mailDTO) {
+    public ResponseEntity<MessageResponseDTO> sendPasswordResetMail(@Valid @RequestBody MailDTO mailDTO) {
         if(!EmailValidator.validate(mailDTO.email()))
             return ResponseEntity.badRequest().body(new MessageResponseDTO(1, "Error, invalid Email"));
 
@@ -212,12 +214,13 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An error occurred",
                     content = @Content(schema = @Schema(implementation = MessageResponseDTO.class)))
     })
-    public ResponseEntity<?> updateUserPasswordUnauthenticated(@Valid @RequestBody PasswordResetDTO passwordResetDTO) {
+    @SuppressWarnings("java:S5411") // Boolean is already primitive at @isTokenValid
+    public ResponseEntity<MessageResponseDTO> updateUserPasswordUnauthenticated(@Valid @RequestBody PasswordResetDTO passwordResetDTO) {
         if (passwordSecurityService.checkPasswordIsInRainbowTable(passwordResetDTO.password())) //contains check, returns true if the password is in the table
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordBlockedPasswordMessage));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, ERROR_PASSWORD_IS_A_BLOCKED_PASSWORD));
 
         if (!passwordSecurityService.checkPasswordSecurity(passwordResetDTO.password())) { //false if requirements not meet
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, passwordConstraintsMessage));
+            return ResponseEntity.badRequest().body(new MessageResponseDTO(3, PASSWORD_CONSTRAINTS_MESSAGE));
         }
 
         if (!dbQueryService.isTokenValid(passwordResetDTO.token())) {
@@ -225,10 +228,7 @@ public class AuthController {
         }
 
         Optional<Long> userIdOptional = dbQueryService.getUserIdByEmail(passwordResetDTO.email());
-        if (userIdOptional.isEmpty())
-            return ResponseEntity.badRequest().body(new MessageResponseDTO(-1, "No user found with this E-Mail-Address"));
-
-        return ResponseEntity.status(dbQueryService.updateUserPasswordUnauthorized(userIdOptional.get(), new UpdatePasswordDTOUnauthorized(passwordResetDTO.token(), encoder.encode(passwordResetDTO.password())))).build();
+        return userIdOptional.<ResponseEntity<MessageResponseDTO>>map(aLong -> ResponseEntity.status(dbQueryService.updateUserPasswordUnauthorized(aLong, new UpdatePasswordDTOUnauthorized(passwordResetDTO.token(), encoder.encode(passwordResetDTO.password())))).build()).orElseGet(() -> ResponseEntity.badRequest().body(new MessageResponseDTO(-1, "No user found with this E-Mail-Address")));
     }
 
 }

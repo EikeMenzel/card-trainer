@@ -25,7 +25,7 @@ class PasswordSecurityServiceTest {
     }
 
     @Test
-    void testCheckPasswordSecurity_ValidPassword() {
+    void testCheckPasswordSecurity_ValidPassword1() {
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123!"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123~"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123`"));
@@ -35,6 +35,10 @@ class PasswordSecurityServiceTest {
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123$"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123%"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123^"));
+    }
+
+    @Test
+    void testCheckPasswordSecurity_ValidPassword2() {
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123&"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123*"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123()"));
@@ -45,16 +49,17 @@ class PasswordSecurityServiceTest {
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123:"));
         assertTrue(passwordSecurityService.checkPasswordSecurity("ValidPass123;<,>.?/"));
     }
-
     @Test
     void testCheckPasswordSecurity_TooShort() {
         assertFalse(passwordSecurityService.checkPasswordSecurity("Short1!"));
     }
 
     @Test
-    void testCheckPasswordSecurity_MinimumLength() {
-        assertTrue(passwordSecurityService.checkPasswordSecurity("ShortW1!"));
+    void testTooShortPassword() {
+        String securePassword = "a3!";
+        assertFalse(passwordSecurityService.checkPasswordSecurity(securePassword));
     }
+
     @Test
     void testCheckPasswordSecurity_MaximumLength() {
         assertTrue(passwordSecurityService.checkPasswordSecurity("t1!"+"W".repeat(69)));

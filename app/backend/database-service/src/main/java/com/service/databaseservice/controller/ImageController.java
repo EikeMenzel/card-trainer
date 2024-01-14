@@ -1,7 +1,6 @@
 package com.service.databaseservice.controller;
 
 import com.service.databaseservice.payload.inc.ImageDataDTO;
-import com.service.databaseservice.payload.out.export.ExportDTO;
 import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.services.ImageService;
 import com.service.databaseservice.services.Utils;

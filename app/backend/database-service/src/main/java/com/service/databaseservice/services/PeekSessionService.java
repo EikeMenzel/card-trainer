@@ -3,7 +3,6 @@ package com.service.databaseservice.services;
 import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.cards.Card;
-import com.service.databaseservice.model.sessions.LearnSession;
 import com.service.databaseservice.model.sessions.PeekSession;
 import com.service.databaseservice.model.sessions.PeekSessionCards;
 import com.service.databaseservice.model.sessions.StatusType;
@@ -19,9 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class PeekSessionService {
@@ -32,7 +32,7 @@ public class PeekSessionService {
     private final PeekSessionCardsRepository peekSessionCardsRepository;
     private final CardService cardService;
     private final CardRepository cardRepository;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom ();
     private final Logger logger = LoggerFactory.getLogger(PeekSessionService.class);
     public PeekSessionService(StatusTypeRepository statusTypeRepository, UserRepository userRepository, DeckRepository deckRepository, PeekSessionRepository peekSessionRepository, PeekSessionCardsRepository peekSessionCardsRepository, CardService cardService, CardRepository cardRepository) {
         this.statusTypeRepository = statusTypeRepository;
@@ -88,7 +88,7 @@ public class PeekSessionService {
         return peekSessionCardsRepository.getAllByPeekSessionId(peekSessionId)
                 .stream()
                 .map(PeekSessionCards::getCard)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Transactional

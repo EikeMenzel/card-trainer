@@ -84,11 +84,11 @@ public class MailService {
             Optional<String> optionalDeckDTO = dbQueryService.getDeckNameByDeckId(deckId);
             optionalDeckDTO.ifPresent(deckName -> {
                 String token = TokenService.generateShareDeckToken(deckId);
-                String content = mailContentBuilder.getContent(MailType.SHARE_DECK, token, deckName, userAccountInformationDTO.getUsername());
+                String content = mailContentBuilder.getContent(MailType.SHARE_DECK, token, deckName, userAccountInformationDTO.username());
 
                 var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofDays(7))), MailType.SHARE_DECK.toString(), userId));
                 if (httpStatusCode == HttpStatus.CREATED) {
-                    sendHtmlMail(userAccountInformationDTO.getEmail(), "Share-Deck-Mail", content);
+                    sendHtmlMail(userAccountInformationDTO.email(), "Share-Deck-Mail", content);
                 }
             });
         });
