@@ -38,7 +38,7 @@ class CardServiceTest {
         when(choiceAnswerRepository.findById(1L)).thenReturn(Optional.of(choiceAnswer));
 
         choiceAnswerRepository.deleteById(1L);
-        assertThat(choiceAnswerRepository.count()).isEqualTo(0);
+        assertThat(choiceAnswerRepository.count()).isZero();
 
         multipleChoiceCardRepository.deleteById(1L);
     }

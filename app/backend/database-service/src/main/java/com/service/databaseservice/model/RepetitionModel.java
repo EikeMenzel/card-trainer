@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "repetition")
-public class Repetition {
+public class RepetitionModel { // renamed because of java:S1700
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,7 @@ public class Repetition {
     @ManyToOne
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
-    public Repetition(Integer repetition, Integer quality, double prevEaseFactor, Integer prevInterval, Timestamp nextLearnTimestamp, User user, Card card) {
+    public RepetitionModel(Integer repetition, Integer quality, double prevEaseFactor, Integer prevInterval, Timestamp nextLearnTimestamp, User user, Card card) {
         this.repetition = repetition;
         this.quality = quality;
         this.prevEaseFactor = prevEaseFactor;
@@ -44,7 +44,7 @@ public class Repetition {
         this.card = card;
     }
 
-    public Repetition() {
+    public RepetitionModel() {
     }
 
     public Long getId() {

@@ -17,14 +17,14 @@ public class ChoiceAnswerDTO {
     }
 
     public String getAnswer() {
-        return answer;
+        return this.answer;
     }
     @JsonProperty("rightAnswer")
     public boolean getIsRightAnswer() {
-        return isRightAnswer;
+        return this.isRightAnswer;
     }
 
     public Long getImageId() {
-        return imageId;
+        return this.imageId;
     }
 }

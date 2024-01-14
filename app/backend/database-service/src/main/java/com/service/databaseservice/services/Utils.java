@@ -9,6 +9,7 @@ import java.sql.SQLException;
 public class Utils {
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);
     private Utils() {}
+    @java.lang.SuppressWarnings("java:S1168")
     public static byte[] extractImageData(Image image) {
         if (image == null)
             return null;

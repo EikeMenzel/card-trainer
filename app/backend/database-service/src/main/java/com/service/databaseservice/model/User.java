@@ -32,6 +32,7 @@ public class User {
     @Column(name = "lang_code", length = 3, nullable = false)
     private String langCode = "EN";
 
+    @SuppressWarnings("java:S107")
     public User(Long id, String username, String email, String password, Boolean isVerified, Boolean getsNotified, Integer cardsPerSession, String langCode) {
         this.id = id;
         this.username = username;

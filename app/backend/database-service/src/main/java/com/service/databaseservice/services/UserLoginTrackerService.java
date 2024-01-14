@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 public class UserLoginTrackerService {
-    private final Logger logger = LoggerFactory.getLogger(UserLoginTracker.class);
+    private final Logger logger = LoggerFactory.getLogger(UserLoginTrackerService.class);
     private final UserLoginTrackerRepository userLoginTrackerRepository;
     private final UserRepository userRepository;
 

@@ -56,6 +56,7 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "User not found"),
                     @ApiResponse(responseCode = "500", description = "Service could not be reached")
             })
+    @SuppressWarnings("java:S5411") // @isUserVerified is already a primitive type
     public ResponseEntity<Boolean> getIsUserVerified(
             @Parameter(description = "User ID to check verification status for", required = true) @PathVariable Long userId) {
         return userService.isUserVerified(userId)
@@ -106,6 +107,7 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "Email not found"),
                     @ApiResponse(responseCode = "500", description = "Service could not be reached")
             })
+    @SuppressWarnings("java:S5411") // @doesEmailExist is already a primitive type
     public ResponseEntity<Boolean> doesEmailExist(
             @Parameter(description = "Email address to check existence for", required = true) @PathVariable String email) {
         return userService.doesEmailExist(email)
@@ -170,6 +172,7 @@ public class UserController {
                     @ApiResponse(responseCode = "409", description = "Email already exists"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
+    @SuppressWarnings("java:S5411") // @doesEmailExist is already a primitive type
     public ResponseEntity<UserAccountInformationDTO> updateUserAccountInformation(
             @Parameter(description = "User ID of the account to be updated", required = true) @PathVariable Long userId,
             @Parameter(description = "The DTO to update account information", required = true,

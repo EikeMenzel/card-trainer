@@ -13,7 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,12 +29,12 @@ public class ExportService {
         this.objectMapper = objectMapper;
     }
 
-    public byte[] zipDeck(Long userId, Long deckId) throws IOException {
+    public Optional<byte[]> zipDeck(Long userId, Long deckId) throws IOException {
         File uniqueDir = createTempDirectories();
 
         Optional<ExportDTO> exportDTOOptional = dbQueryService.getCardExportDTOsForExportDeck(userId, deckId);
-        if(exportDTOOptional.isEmpty())
-            return null;
+        if (exportDTOOptional.isEmpty())
+            return Optional.empty();
 
         processImages(exportDTOOptional.get(), uniqueDir);
 
@@ -45,10 +46,10 @@ public class ExportService {
 
         byte[] zipFileData = Files.readAllBytes(zipFile.toPath());
 
-        deleteDirectory(uniqueDir);
+        Utils.deleteDirectory(uniqueDir);
         deleteZip(zipFile);
 
-        return zipFileData;
+        return Optional.of(zipFileData);
     }
 
     private void saveJsonToFile(ExportDTO exportDTO, File uniqueDir) {
@@ -90,6 +91,7 @@ public class ExportService {
 
         return uniqueDir;
     }
+
     private String saveImageToFile(byte[] imageData, File uniqueDir) throws IOException {
         if (imageData != null) {
             String imageFileName = UUID.randomUUID() + "." + getImageFormat(imageData);
@@ -131,24 +133,11 @@ public class ExportService {
         }
     }
 
-
-    private void deleteDirectory(File directory) throws IOException {
-        if(directory.exists())
-            Files.walk(directory.toPath())
-                    .sorted((a, b) -> -a.compareTo(b))
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            logger.error(e.getMessage());
-                        }
-                    });
+    private void deleteZip(File zipFile) throws IOException {
+        if (zipFile.exists())
+            Files.delete(zipFile.toPath());
     }
 
-    private void deleteZip(File zipFile) {
-        if(zipFile.exists())
-            zipFile.delete();
-    }
     private String getImageFormat(byte[] imageData) {
         if (imageData.length >= 2) {
             if (imageData[0] == (byte) 0xFF && imageData[1] == (byte) 0xD8) {

@@ -19,16 +19,16 @@ import java.util.Optional;
 public class DbQueryService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final String DB_API_BASE_PATH;
-    private final String USER_DB_API_PATH;
-    private final String USER_TOKEN_DB_API_PATH;
+    private final String dbApiBasePath;
+    private final String userDbApiPath;
+    private final String userTokenDbApiPath;
     private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
 
 
     public DbQueryService(@Value("${db.api.path}") String dbPath, RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.DB_API_BASE_PATH = dbPath;
-        this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
-        this.USER_TOKEN_DB_API_PATH = this.DB_API_BASE_PATH + "/user-token";
+        this.dbApiBasePath = dbPath;
+        this.userDbApiPath = this.dbApiBasePath + "/users";
+        this.userTokenDbApiPath = this.dbApiBasePath + "/user-token";
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
@@ -37,7 +37,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                USER_TOKEN_DB_API_PATH + "/",
+                userTokenDbApiPath + "/",
                 new HttpEntity<>(userTokenDTO, headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -45,7 +45,7 @@ public class DbQueryService {
 
     public Optional<String> getUserEmailFromId(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity( USER_DB_API_PATH + "/" + userId + "/email", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity( userDbApiPath + "/" + userId + "/email", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.ofNullable(responseEntity.getBody())
                     : Optional.empty();
@@ -56,7 +56,7 @@ public class DbQueryService {
 
     public Optional<List<UserDailyReminderDTO>> getAllEmailsForDailyLearn() {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/email", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/email", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<>() {}))
                     : Optional.empty();
@@ -69,7 +69,7 @@ public class DbQueryService {
     //necessary for deckName
     public Optional<String> getDeckNameByDeckId(Long deckId) {
         try {
-            String url = DB_API_BASE_PATH + "/decks/" + deckId + "/name";
+            String url = dbApiBasePath + "/decks/" + deckId + "/name";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.ofNullable(responseEntity.getBody())
@@ -83,7 +83,7 @@ public class DbQueryService {
     //necessary for username
     public Optional<UserAccountInformationDTO> getAccountInformation(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/account", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + "/account", String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), UserAccountInformationDTO.class))

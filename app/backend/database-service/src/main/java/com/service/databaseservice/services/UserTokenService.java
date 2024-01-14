@@ -33,13 +33,15 @@ public class UserTokenService {
             Optional<TokenType> tokenType = tokenTypeRepository.findTokenTypeByType(String.valueOf(userTokenDTO.tokenType()));
 
             if(tokenType.isEmpty()) {
-                logger.error(String.format("Token-type was not valid: %s", userTokenDTO.tokenType()));
+                if(logger.isErrorEnabled())
+                    logger.error(String.format("Token-type was not valid: %s", userTokenDTO.tokenType()));
                 return false;
             }
 
             Optional<User> userOptional = userService.getUserFromId(userTokenDTO.userId());
             if(userOptional.isEmpty()) {
-                logger.error(String.format("No user with this id found: %d", userTokenDTO.userId()));
+                if(logger.isErrorEnabled())
+                    logger.error(String.format("No user with this id found: %d", userTokenDTO.userId()));
                 return false;
             }
 
