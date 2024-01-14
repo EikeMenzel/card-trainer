@@ -1,7 +1,6 @@
 package com.service.databaseservice.services;
 
 import com.service.databaseservice.model.User;
-import com.service.databaseservice.payload.inc.UpdatePasswordDTO;
 import com.service.databaseservice.payload.out.UserAccountInformationDTO;
 import com.service.databaseservice.payload.out.UserDTO;
 import com.service.databaseservice.payload.out.UserDailyReminderDTO;
@@ -36,7 +35,7 @@ public class UserService {
         return user.map(User::getId);
     }
 
-    public Boolean doesEmailExist(String email) {
+    public boolean doesEmailExist(String email) {
         return userRepository.existsByEmail(email);
     }
 
@@ -49,7 +48,7 @@ public class UserService {
         return user.map(value -> new UserDTO(value.getId(), value.getUsername(), value.getEmail(), value.getPassword(), value.getVerified()));
     }
 
-    public Boolean isUserVerified(Long userId) {
+    public boolean isUserVerified(Long userId) {
         return userRepository.existsByIdAndIsVerifiedTrue(userId);
     }
 
@@ -129,7 +128,11 @@ public class UserService {
         if(loginDates == null || loginDates.isEmpty())
             return 0;
 
-        List<LocalDate> localDates = loginDates.stream().map(this::convertToLocalDateViaSqlDate).toList();
+        List<LocalDate> localDates =
+                loginDates
+                        .stream()
+                        .map(this::convertToLocalDateViaSqlDate)
+                        .collect(Collectors.toList());
 
         var streak = 0;
         var today = LocalDate.now();

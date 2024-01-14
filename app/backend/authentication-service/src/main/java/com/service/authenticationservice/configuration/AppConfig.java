@@ -14,15 +14,16 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
 @Configuration
+@SuppressWarnings("common-java:DuplicatedBlocks") // Both is necessary on multiple services
 public class AppConfig {
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
     private final ObjectMapper objectMapper;
 
     @Value("${db.api.path}")
-    private String DB_API_BASE_PATH;
+    private String dbApiBasePath;
 
     @Value("${springdoc.swagger-ui.servers}")
-    private String SPRING_DEFAULT_SERVER_SWAGGER_DOC;
+    private String springDefaultServerSwaggerDoc;
 
     public AppConfig(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -31,7 +32,7 @@ public class AppConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url(SPRING_DEFAULT_SERVER_SWAGGER_DOC).description("Default Server"));
+                .addServersItem(new Server().url(springDefaultServerSwaggerDoc).description("Default Server"));
     }
 
     @Bean
@@ -44,7 +45,7 @@ public class AppConfig {
         try {
             var rainbowListDTO =  objectMapper.readValue(
                     restTemplate()
-                            .getForEntity(DB_API_BASE_PATH + "/rainbows", String.class)
+                            .getForEntity(dbApiBasePath + "/rainbows", String.class)
                             .getBody(),
                     RainbowListDTO.class
             );

@@ -16,22 +16,21 @@ import java.util.Optional;
 public class DbQueryService {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
-    private final String DB_API_BASE_PATH;
-    private final String USER_DB_API_PATH;
-    private final String USER_EMAIL_DB_API_PATH;
+    private final String userDbApiPath;
+    private final String userEmailDbApiPath;
     private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
 
     public DbQueryService(ObjectMapper objectMapper, RestTemplate restTemplate, @Value("${db.api.path}") String dbPath) {
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
-        this.DB_API_BASE_PATH = dbPath + "/api/v1/db";
-        this.USER_DB_API_PATH = this.DB_API_BASE_PATH + "/users";
-        this.USER_EMAIL_DB_API_PATH = this.USER_DB_API_PATH + "/emails";
+        String dbApiBasePath = dbPath + "/api/v1/db";
+        this.userDbApiPath = dbApiBasePath + "/users";
+        this.userEmailDbApiPath = this.userDbApiPath + "/emails";
     }
 
     public Optional<UserDTO> getUserByEmail(String email) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_EMAIL_DB_API_PATH + "/" + email, String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userEmailDbApiPath + "/" + email, String.class);
 
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), UserDTO.class))
@@ -44,7 +43,7 @@ public class DbQueryService {
 
     public Optional<String> getUserEmailFromId(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(USER_DB_API_PATH + "/" + userId + "/email", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/" + userId + "/email", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.ofNullable(responseEntity.getBody())
                     : Optional.empty();

@@ -14,6 +14,7 @@ public class CardType {
     private String type;
 
     public CardType() {
+        /* NoArgsConstructor for Hibernate */
     }
 
     public Long getId() {

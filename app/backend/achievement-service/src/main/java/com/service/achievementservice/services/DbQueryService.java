@@ -19,15 +19,17 @@ public class DbQueryService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final String dbPath;
-    public DbQueryService(RestTemplate restTemplate, ObjectMapper objectMapper, @Value("${db.api.path}") String dbPath) {
+    private final String usersPath;
+    public DbQueryService(RestTemplate restTemplate, ObjectMapper objectMapper, @Value("${db.api.path}") String dbPath, @Value("${users.path}") String usersPath) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.dbPath = dbPath;
+        this.usersPath = usersPath;
     }
 
     public Optional<Integer> getDeckCount(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/decks/count", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + usersPath + userId + "/decks/count", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Integer.valueOf(Objects.requireNonNull(responseEntity.getBody())).describeConstable()
                     : Optional.empty();
@@ -39,7 +41,7 @@ public class DbQueryService {
 
     public Optional<Integer> getLearnSessionCount(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/learn-sessions/count", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + usersPath + userId + "/learn-sessions/count", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Integer.valueOf(Objects.requireNonNull(responseEntity.getBody())).describeConstable()
                     : Optional.empty();
@@ -51,7 +53,7 @@ public class DbQueryService {
 
     public Optional<Integer> getCardsLearnedCount(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/cards-learned", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + usersPath + userId + "/cards-learned", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Integer.valueOf(Objects.requireNonNull(responseEntity.getBody())).describeConstable()
                     : Optional.empty();
@@ -74,7 +76,7 @@ public class DbQueryService {
 
     public Optional<Integer> getCardsLearnedDailyCount(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/learn-sessions/cards-learned/daily", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + usersPath + userId + "/learn-sessions/cards-learned/daily", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Integer.valueOf(Objects.requireNonNull(responseEntity.getBody())).describeConstable()
                     : Optional.empty();
@@ -86,7 +88,7 @@ public class DbQueryService {
 
     public Optional<Boolean> doesUserCompletedLearnSessionToday(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/learn-sessions/daily", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + usersPath + userId + "/learn-sessions/daily", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();
@@ -100,7 +102,7 @@ public class DbQueryService {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                dbPath + "/user-achievements/users/" + userId + "/achievements",
+                dbPath + "/user-achievements"  + usersPath + userId + "/achievements",
                 new HttpEntity<>(achievementId, headers),
                 String.class);
         return responseEntity.getStatusCode();
@@ -108,7 +110,7 @@ public class DbQueryService {
 
     public Optional<Boolean> didUserLoginToday(Long userId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/users/" + userId + "/user-login-tracker", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + usersPath + userId + "/user-login-tracker", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();

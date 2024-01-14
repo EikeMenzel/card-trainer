@@ -13,6 +13,7 @@ public class PasswordSecurityService {
         this.queryRainbowTable = queryRainbowTable;
     }
 
+    @SuppressWarnings("java:S135")
     public boolean checkPasswordSecurity(String password) {
         var minLength = 8;
         var maxLength = 72;
@@ -22,11 +23,10 @@ public class PasswordSecurityService {
         }
 
         var hasDigit = false;
-        var hasSymbole = false;
+        var hasSymbol = false;
         var hasUnknownChar = false;
         var hasUppercase = !password.equals(password.toLowerCase());
         var hasLowercase = !password.equals(password.toUpperCase());
-
         for (char c: password.toCharArray()) {
             if (Character.isLetter(c)) continue;
 
@@ -37,12 +37,12 @@ public class PasswordSecurityService {
 
             var allowedSymbols = "~`! @#$%^&*()_-+={[}]|:;<,>.?/";
             if(allowedSymbols.indexOf(c) != -1)
-                hasSymbole = true;
+                hasSymbol = true;
             else
                 hasUnknownChar = true;
         }
 
-        return hasDigit && hasUppercase && hasLowercase && hasSymbole && !hasUnknownChar;
+        return hasDigit && hasUppercase && hasLowercase && hasSymbol && !hasUnknownChar;
     }
 
     public boolean checkPasswordIsInRainbowTable(String password) {

@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
@@ -21,7 +20,7 @@ import java.util.zip.ZipInputStream;
 public class ImportService {
     private final ObjectMapper objectMapper;
     private final DbQueryService dbQueryService;
-    private final Logger logger = LoggerFactory.getLogger(DbQueryService.class);
+    private final Logger logger = LoggerFactory.getLogger(ImportService.class);
 
     public ImportService(ObjectMapper objectMapper, DbQueryService dbQueryService) {
         this.objectMapper = objectMapper;
@@ -59,7 +58,7 @@ public class ImportService {
             try {
                 var exportDTO = processJsonFile(exportDTOOptional.get(), tmpDir);
                 HttpStatusCode statusCode =  dbQueryService.importDeck(userId, exportDTO);
-                deleteDirectory(tmpDir);
+                Utils.deleteDirectory(tmpDir);
                 return statusCode;
             } catch (IOException e) {
                 logger.info(e.getMessage());
@@ -84,6 +83,7 @@ public class ImportService {
         return exportDTO;
     }
 
+    @java.lang.SuppressWarnings("java:S1168")
     public byte[] findImageAsByteArray(File tmpDir, String imageName) throws IOException {
         if(imageName == null)
             return null;
@@ -130,16 +130,5 @@ public class ImportService {
 
         return uniqueDir;
     }
-    private void deleteDirectory(File directory) throws IOException {
-        if(directory.exists())
-            Files.walk(directory.toPath())
-                    .sorted((a, b) -> -a.compareTo(b))
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException e) {
-                            logger.error(e.getMessage());
-                        }
-                    });
-    }
+
 }

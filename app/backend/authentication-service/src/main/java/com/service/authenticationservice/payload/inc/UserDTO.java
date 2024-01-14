@@ -2,7 +2,7 @@ package com.service.authenticationservice.payload.inc;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-
+@SuppressWarnings("common-java:DuplicatedBlocks") // necessary on multiple services
 public class UserDTO {
     @Min(value = 0) private Long id;
     @Size(min = 4, max = 30) private String username;

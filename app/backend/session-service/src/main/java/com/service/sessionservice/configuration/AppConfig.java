@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@SuppressWarnings("common-java:DuplicatedBlocks") // Both is necessary on multiple services
 public class AppConfig {
     @Value("${springdoc.swagger-ui.servers}")
-    private String SPRING_DEFAULT_SERVER_SWAGGER_DOC;
+    private String springDefaultServerSwaggerDoc;
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -19,6 +20,6 @@ public class AppConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url(SPRING_DEFAULT_SERVER_SWAGGER_DOC).description("Default Server"));
+                .addServersItem(new Server().url(springDefaultServerSwaggerDoc).description("Default Server"));
     }
 }

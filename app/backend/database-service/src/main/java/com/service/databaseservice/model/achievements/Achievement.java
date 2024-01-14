@@ -24,6 +24,7 @@ public class Achievement {
     @JoinColumn(name = "image_id")
     private Image imageData;
     public Achievement() {
+        /* NoArgsConstructor for Hibernate */
     }
 
     public Long getId() {

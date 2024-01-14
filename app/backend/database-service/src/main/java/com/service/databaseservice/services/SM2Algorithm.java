@@ -1,13 +1,13 @@
 package com.service.databaseservice.services;
 
-import com.service.databaseservice.model.Repetition;
+import com.service.databaseservice.model.RepetitionModel;
 import com.service.databaseservice.payload.inc.learnsession.RatingLevelDTO;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class SM2Algorithm {
-    public static Repetition calc(Repetition repetition, RatingLevelDTO ratingLevelDTO) {
+    public static RepetitionModel calc(RepetitionModel repetition, RatingLevelDTO ratingLevelDTO) {
         int interval;
         double easeFactor = repetition.getPrevEaseFactor();
         int repetitions = repetition.getRepetition();

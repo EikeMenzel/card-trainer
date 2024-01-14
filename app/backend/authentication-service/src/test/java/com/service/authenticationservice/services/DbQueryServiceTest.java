@@ -2,7 +2,9 @@ package com.service.authenticationservice.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.authenticationservice.payload.inc.UpdatePasswordDTO;
 import com.service.authenticationservice.payload.inc.UserDTO;
+import com.service.authenticationservice.payload.out.UpdatePasswordDTOUnauthorized;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -41,7 +43,7 @@ class DbQueryServiceTest {
     private String USER_EMAIL_DB_API_PATH;
     @BeforeEach
     void setUp() throws JsonProcessingException {
-        Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(UserDTO.class)))
+        Mockito.when(objectMapper.readValue(anyString(), eq(UserDTO.class)))
                 .thenReturn(new UserDTO(1L, "TestUser", "password1233!", "test@example.com", false));
     }
 
@@ -261,6 +263,64 @@ class DbQueryServiceTest {
                 .thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, dbQueryService.setVerificationStateToTrue("serverErrorToken"));
+    }
+
+    @Test
+    void whenUpdatePassword_thenReturnsStatusOK() {
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword");
+        when(restTemplate.exchange(
+                anyString(),
+                any(HttpMethod.class),
+                any(HttpEntity.class),
+                eq(Void.class))
+        ).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+        HttpStatusCode status = dbQueryService.updateUserPassword(1L, updatePasswordDTO);
+        assertEquals(HttpStatus.OK, status);
+    }
+
+    @Test
+    void whenUpdatePassword_UserNotFound_thenReturnsStatusNotFound() {
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword");
+        when(restTemplate.exchange(
+                anyString(),
+                any(HttpMethod.class),
+                any(HttpEntity.class),
+                eq(Void.class))
+        ).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        HttpStatusCode status = dbQueryService.updateUserPassword(1L, updatePasswordDTO);
+        assertEquals(HttpStatus.NOT_FOUND, status);
+    }
+
+    @Test
+    void whenUpdatePasswordUnauthorized_thenReturnsStatusOK() {
+        UpdatePasswordDTOUnauthorized updatePasswordDTOUnauthorized =
+                new UpdatePasswordDTOUnauthorized("token", "newPassword");
+        when(restTemplate.exchange(
+                anyString(),
+                any(HttpMethod.class),
+                any(HttpEntity.class),
+                eq(Void.class))
+        ).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+        HttpStatusCode status = dbQueryService.updateUserPasswordUnauthorized(1L, updatePasswordDTOUnauthorized);
+        assertEquals(HttpStatus.OK, status);
+    }
+
+    @Test
+    void whenUpdatePasswordUnauthorized_BadRequest_thenReturnsStatusBadRequest() {
+        UpdatePasswordDTOUnauthorized updatePasswordDTOUnauthorized =
+                new UpdatePasswordDTOUnauthorized("invalidToken", "newPassword");
+        when(restTemplate.exchange(
+                anyString(),
+                any(HttpMethod.class),
+                any(HttpEntity.class),
+                eq(Void.class))
+        ).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+
+        HttpStatusCode status = dbQueryService.updateUserPasswordUnauthorized(1L, updatePasswordDTOUnauthorized);
+        assertEquals(HttpStatus.BAD_REQUEST, status);
     }
 
 }
