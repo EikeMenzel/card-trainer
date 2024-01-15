@@ -1,34 +1,30 @@
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-
-  <div class="navbar-nav flex-grow-1 home-section">
-    <!-- Home Button -->
-    <div class="d-flex align-items-center">
-      <button class="nav-item nav-link house-icon" (click)="onClickReturn('/')">
-        <fa-icon class="nav-icon fa-xl house-icon" [icon]="faHouse"></fa-icon>
-      </button>
-      <!-- Title -->
-      <span class="navbar-text title-text">
-      {{ this.title }}
-    </span>
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar p-3">
+  <!-- House Icon and Title -->
+  <div class="row align-items-center">
+    <div class="col-auto custom-toggle" (click)="onClickReturn('/')">
+      <fa-icon class="nav-icon fa-2xl house-icon" [icon]="faHouse"></fa-icon>
+    </div>
+    <div class="col-auto d-none d-sm-block custom-text-color text-start">
+      <span class="d-none d-sm-inline ml-2 text-green">{{ this.title }}</span>
     </div>
   </div>
 
-
-  <div class="navbar-nav ml-auto user-section">
-    <!-- Username -->
-    <span class="navbar-text username-text d-none d-lg-inline-block">
-      {{ this.username }}
-    </span>
-    <!-- Dropdown Menu for User Profile -->
-    <li class="nav-item dropdown" ngbDropdown>
+  <!-- Navbar items -->
+  <div class="row ms-auto">
+    <!-- Username on the right, only visible on wider screens -->
+    <div class="col-auto d-none d-sm-block custom-text-color text-center align-self-center">
+      <span class="nav-link">{{ username }}</span>
+    </div>
+    <!-- Dropdown Menu -->
+    <div class="col-auto dropdown" ngbDropdown>
       <a class="nav-link dropdown-toggle custom-toggle" id="navbarDropdown" ngbDropdownToggle>
-        <fa-icon class="nav-item fa-xl user-icon" [icon]="faUser"></fa-icon>
+        <fa-icon class="user-icon fa-2xl" [icon]="faUser"></fa-icon>
       </a>
-      <div class="dropdown-menu dropdown-menu-right custom-dropdown-window" ngbDropdownMenu aria-labelledby="navbarDropdown">
+      <div class="dropdown-menu dropdown-menu-right custom-dropdown-window custom-dropdown-menue" ngbDropdownMenu aria-labelledby="navbarDropdown">
         <button class="dropdown-item" (click)="onClickReturn('/profile')">Profile</button>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item" (click)="onClickReturn('#')">Logout</button>
+        <button class="dropdown-item" (click)="logoutWarningPopup()">Logout</button>
       </div>
-    </li>
+    </div>
   </div>
 </nav>
