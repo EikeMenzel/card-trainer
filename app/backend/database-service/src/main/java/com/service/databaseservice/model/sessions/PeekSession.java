@@ -40,6 +40,13 @@ public class PeekSession {
         this.status = status;
     }
 
+    public PeekSession(Long id, StatusType status, Deck deck, User user) {
+        this.id = id;
+        this.status = status;
+        this.deck = deck;
+        this.user = user;
+    }
+
     public PeekSession() {
     }
 

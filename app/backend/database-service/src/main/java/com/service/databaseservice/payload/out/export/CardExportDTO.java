@@ -18,6 +18,9 @@ public class CardExportDTO {
         this.type = type;
     }
 
+    public CardExportDTO() {
+    }
+
     public CardDTO getCardDTO() {
         return cardDTO;
     }

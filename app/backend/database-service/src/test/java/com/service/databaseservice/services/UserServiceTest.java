@@ -15,7 +15,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -245,5 +248,93 @@ class UserServiceTest {
 
         assertFalse(result);
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void getUserByEmail_ExistingUser() {
+        String email = "test@example.com";
+        User user = new User(1L, "username", email, "password",false, false, 10, "en");
+
+        when(userRepository.getUserByEmail(email)).thenReturn(Optional.of(user));
+
+        Optional<UserDTO> result = userService.getUserByEmail(email);
+
+        assertTrue(result.isPresent());
+        assertEquals(email, result.get().getEmail());
+    }
+
+    @Test
+    void getUserByEmail_NonExistingUser() {
+        String email = "test@example.com";
+        when(userRepository.getUserByEmail(email)).thenReturn(Optional.empty());
+
+        Optional<UserDTO> result = userService.getUserByEmail(email);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void updateUserPassword_Success() {
+        Long userId = 1L;
+        String newPassword = "newPassword123";
+        User user = new User();
+
+        when(userRepository.getUserById(userId)).thenReturn(Optional.of(user));
+
+        assertTrue(userService.updateUserPassword(userId, newPassword));
+        verify(userRepository).save(user);
+        assertEquals(newPassword, user.getPassword());
+    }
+
+    @Test
+    void updateUserPassword_UserNotFound() {
+        Long userId = 1L;
+        String newPassword = "newPassword123";
+
+        when(userRepository.getUserById(userId)).thenReturn(Optional.empty());
+
+        assertFalse(userService.updateUserPassword(userId, newPassword));
+    }
+
+    @Test
+    void updateUserPassword_InvalidPassword() {
+        Long userId = 1L;
+        String newPassword = "";
+
+        assertFalse(userService.updateUserPassword(userId, newPassword));
+    }
+
+    @Test
+    void updateUserPassword_WithNullPassword() {
+        Long userId = 1L;
+        User user = new User();
+        when(userRepository.getUserById(userId)).thenReturn(Optional.of(user));
+
+        assertFalse(userService.updateUserPassword(userId, null));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateUserPassword_WithEmptyPassword() {
+        Long userId = 1L;
+        User user = new User();
+        when(userRepository.getUserById(userId)).thenReturn(Optional.of(user));
+
+        assertFalse(userService.updateUserPassword(userId, ""));
+        verify(userRepository, never()).save(any(User.class));
+    }
+    @Test
+    void convertToLocalDateViaSqlDate_ConvertsCorrectly() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2022, Calendar.JULY, 5);
+        java.util.Date utilDate = calendar.getTime();
+
+        LocalDate expectedLocalDate = utilDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        LocalDate actualLocalDate = userService.convertToLocalDateViaSqlDate(utilDate);
+
+        assertEquals(expectedLocalDate, actualLocalDate);
     }
 }
