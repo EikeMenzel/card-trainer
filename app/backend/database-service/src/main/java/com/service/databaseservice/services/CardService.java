@@ -55,6 +55,7 @@ public class CardService {
 
     public boolean doesCardBelongToOwnerAndDeck(Long userId, Long deckId, Long cardId) {
         Optional<Deck> optionalDeck = deckRepository.getDeckByIdAndOwnerId(deckId, userId);
+
         return optionalDeck.map(deck -> cardRepository.findById(cardId).map(card -> card.getDeck().equals(deck)).orElse(false)).orElse(false);
     }
 
@@ -185,7 +186,7 @@ public class CardService {
         }
     }
 
-    private List<Long> getMissingChoiceAnswerIds(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, List<ChoiceAnswer> choiceAnswers) {
+    List<Long> getMissingChoiceAnswerIds(List<com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO> choiceAnswerDTOs, List<ChoiceAnswer> choiceAnswers) {
         Set<Long> dtoIds = choiceAnswerDTOs.stream()
                 .filter(Objects::nonNull) // Filter out null IDs; Only used for Creating new ChoiceAnswer
                 .map(com.service.databaseservice.payload.inc.updatecard.ChoiceAnswerDTO::getChoiceAnswerId)
