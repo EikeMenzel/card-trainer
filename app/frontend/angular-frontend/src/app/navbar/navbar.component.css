@@ -1,92 +1,16 @@
 .custom-navbar {
-  background-color: white;
-  border-bottom: 1px solid var(--primary-color);
-  padding: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
-  justify-content: space-between;
-  display: flex;
+  background-color: var(--bg-main-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
+.custom-toggle {
+  cursor: pointer;
+}
 .house-icon,
-.user-icon {
+.user-icon,
+.custom-text-color,
+.custom-toggle {
   color: var(--primary-color);
-  align-self: center;
 }
-
-.home-section,
-.user-section {
-  display: flex;
-  align-items: center;
-}
-
-.title-text {
-  margin-left: 10px;
-}
-
-.username-text {
-  margin-right: 10px;
-}
-
 .custom-dropdown-window {
   transform: translateX(-120px);
-}
-
-.custom-toggle {
-  color: var(--primary-color)
-}
-
-.nav-item.dropdown a.nav-link.dropdown-toggle {
-  cursor: pointer;
-}
-
-.dropdown-menu a.dropdown-item {
-  cursor: pointer;
-}
-
-.dropdown-item:active {
-  background-color: var(--primary-color);
-}
-
-
-@media (max-width: 768px) {
-  .navbar-nav {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    width: auto;
-  }
-
-  .custom-dropdown-window {
-    transform: translateX(-120px);
-  }
-
-  .nav-item.dropdown {
-    position: relative;
-  }
-
-  .nav-icon {
-    line-height: 1;
-    vertical-align: middle;
-  }
-
-  .user-section {
-    margin-top: 10px;
-  }
-
-  .user-icon {
-    position: relative;
-    top: -2px;
-  }
-
-  .home-section,
-  .user-section {
-    height: 40px;
-  }
 }

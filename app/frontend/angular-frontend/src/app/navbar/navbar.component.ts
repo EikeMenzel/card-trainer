@@ -59,5 +59,9 @@ export class NavbarComponent {
     });
   }
 
-
+  logoutWarningPopup(): void {
+    if (confirm("Are you sure you want to logout?")) {
+      this.authService.logout();
+    }
+  }
 }
