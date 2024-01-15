@@ -3,10 +3,12 @@
   <div class="edit-card container mt-5">
     <div class="edit-card-form mt-2">
       <div>
-        <button class="btn" [routerLink]="'/deck/' + this.deckId + '/edit'">
-          <fa-icon [icon]="faArrowLeft"></fa-icon>
-          <span>Back to List</span>
-        </button>
+        <div class="align-items-start mb-2" [routerLink]="'/deck/' + this.deckId + '/edit'">
+          <button class="btn return-button p-2">
+            <fa-icon [icon]="faReply" class="fa fa-solid"></fa-icon>
+            Return to Deck
+          </button>
+        </div>
       </div>
       <form *ngIf="hasLoaded" (ngSubmit)="saveCardToBackend()">
 
