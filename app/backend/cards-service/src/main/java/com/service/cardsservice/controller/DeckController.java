@@ -232,7 +232,11 @@ public class DeckController {
         if (!Objects.equals(multipartFile.getContentType(), "application/x-zip-compressed"))
             return ResponseEntity.unprocessableEntity().build();
 
-        return ResponseEntity.status(importService.processZipFile(multipartFile, userId)).build();
+
+        var statusCode = importService.processZipFile(multipartFile, userId);
+        return statusCode == HttpStatus.INTERNAL_SERVER_ERROR
+                ? ResponseEntity.unprocessableEntity().build()
+                : ResponseEntity.status(statusCode).build();
     }
 
     @PostMapping("/{deckId}/share")
