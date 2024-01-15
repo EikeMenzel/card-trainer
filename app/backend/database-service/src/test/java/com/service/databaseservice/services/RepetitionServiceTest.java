@@ -1,6 +1,6 @@
 package com.service.databaseservice.services;
 
-import com.service.databaseservice.model.Repetition;
+import com.service.databaseservice.model.RepetitionModel;
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.model.cards.Card;
 import com.service.databaseservice.payload.inc.learnsession.RatingLevelDTO;
@@ -40,10 +40,10 @@ class RepetitionServiceTest {
     @Test
     void getRepetitionByCardId_ExistingCard() {
         Long cardId = 1L;
-        Repetition repetition = new Repetition();
+        RepetitionModel repetition = new RepetitionModel();
         when(repetitionRepository.getRepetitionByCard_Id(cardId)).thenReturn(Optional.of(repetition));
 
-        Optional<Repetition> result = repetitionService.getRepetitionByCardId(cardId);
+        Optional<RepetitionModel> result = repetitionService.getRepetitionByCardId(cardId);
 
         assertTrue(result.isPresent());
         assertEquals(repetition, result.get());
@@ -54,7 +54,7 @@ class RepetitionServiceTest {
         Long cardId = 1L;
         when(repetitionRepository.getRepetitionByCard_Id(cardId)).thenReturn(Optional.empty());
 
-        Optional<Repetition> result = repetitionService.getRepetitionByCardId(cardId);
+        Optional<RepetitionModel> result = repetitionService.getRepetitionByCardId(cardId);
 
         assertFalse(result.isPresent());
     }
@@ -65,7 +65,7 @@ class RepetitionServiceTest {
         User user = new User();
 
         assertTrue(repetitionService.initRepetition(card, user));
-        verify(repetitionRepository).save(any(Repetition.class));
+        verify(repetitionRepository).save(any(RepetitionModel.class));
     }
 
     @Test
@@ -81,6 +81,6 @@ class RepetitionServiceTest {
         when(repetitionRepository.getRepetitionByCard_Id(cardId)).thenReturn(Optional.empty());
 
         assertFalse(repetitionService.updateRepetition(cardId, ratingLevelDTO));
-        verify(repetitionRepository, never()).save(any(Repetition.class));
+        verify(repetitionRepository, never()).save(any(RepetitionModel.class));
     }
 }
