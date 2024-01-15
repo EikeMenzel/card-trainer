@@ -5,7 +5,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
 import {ToastService} from "../services/toast-service/toast.service";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faArrowLeft, faFileImage, faPlus, faSave} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faFileImage, faPlus, faReply, faSave, faSearch} from "@fortawesome/free-solid-svg-icons";
 import {faUpload} from "@fortawesome/free-solid-svg-icons/faUpload";
 import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import {CookieService} from "ngx-cookie-service";
@@ -369,4 +369,7 @@ export class EditCardViewComponent implements OnInit {
   isCorrectCheckChanged(i: number, $event: Event) {
     this.choiceAnswers[i].rightAnswer = ($event.target as HTMLInputElement).checked;
   }
+
+  protected readonly faSearch = faSearch;
+  protected readonly faReply = faReply;
 }

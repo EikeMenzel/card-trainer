@@ -40,9 +40,9 @@ export class DeckListViewComponent implements OnInit {
     private router: Router,
     private toast: ToastService,
     private userService: AuthService,
-    private modalService: NgbModal
-  ) {
-  }
+    private modalService: NgbModal,
+  ) { }
+
 
   ngOnInit() {
     if (!this.userService.isLoggedIn) {
