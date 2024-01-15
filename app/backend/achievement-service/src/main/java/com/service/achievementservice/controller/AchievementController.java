@@ -66,7 +66,7 @@ public class AchievementController {
         achievementService.achievementCardsLearned(userId);
     }
 
-    @PostMapping("/{userId}/achievements/check-daily-login")
+    @PostMapping("/users/{userId}/achievements/check-daily-login")
     @Operation(summary = "Check Daily Login Achievement",
             description = "Triggers the check for the daily login achievement for the specified user.<br><br>" +
                     "<strong>Note:</strong> User ID must be valid." +
