@@ -17,8 +17,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -137,5 +136,153 @@ class UserTokenServiceTest {
 
         verify(userTokenRepository, times(2)).getUserTokenByTokenValue(anyString());
         verify(userTokenRepository, never()).save(any(UserToken.class));
+    }
+
+    @Test
+    void belongsTokenToUser_WhenTokenBelongsToUser() {
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken randomToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("RANDOM"),
+                user);
+
+        when(userTokenRepository.getUserTokenByTokenValue("tokenValue")).thenReturn(Optional.of(randomToken));
+
+        assertTrue(userTokenService.belongsTokenToUser(1L, "tokenValue"));
+    }
+
+    @Test
+    void belongsTokenToUser_WhenTokenDoesNotBelongToUser() {
+        User user1 = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        User user2 = new User(2L, "username", "email@example.com", "password",false, false, 10, "en");
+
+        UserToken randomToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("RANDOM"),
+                user1);
+
+
+        when(userTokenRepository.getUserTokenByTokenValue("tokenValue")).thenReturn(Optional.of(randomToken));
+
+        assertFalse(userTokenService.belongsTokenToUser(user2.getId(), "tokenValue"));
+    }
+
+    @Test
+    void isUserWithTokenVerified_WhenUserIsVerified() {
+        User user = new User(1L, "username", "email@example.com", "password",true, false, 10, "en");
+        UserToken randomToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("RANDOM"),
+                user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(randomToken.getTokenValue())).thenReturn(Optional.of(randomToken));
+
+        assertTrue(userTokenService.isUserWithTokenVerified(randomToken.getTokenValue()));
+    }
+
+    @Test
+    void isUserWithTokenVerified_WhenUserIsNotVerified() {
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken randomToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), new TokenType("RANDOM"),
+                user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(randomToken.getTokenValue())).thenReturn(Optional.of(randomToken));
+
+        assertFalse(userTokenService.isUserWithTokenVerified(randomToken.getTokenValue()));
+    }
+
+    @Test
+    void areTokenTypesIdentical_WhenTypesMatch() {
+        TokenType type = new TokenType("tokenType");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(userToken.getTokenValue())).thenReturn(Optional.of(userToken));
+
+        assertTrue(userTokenService.areTokenTypesIdentical("tokenValue", "tokenType"));
+    }
+
+    @Test
+    void areTokenTypesIdentical_WhenTypesDoNotMatch() {
+        TokenType type = new TokenType("tokenType");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(userToken.getTokenValue())).thenReturn(Optional.of(userToken));
+
+        assertFalse(userTokenService.areTokenTypesIdentical("tokenValue", "FalseType"));
+    }
+
+    @Test
+    void deleteToken_WhenTokenBelongsToUser() {
+        TokenType type = new TokenType("tokenType");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(any())).thenReturn(Optional.of(userToken));
+
+        assertTrue(userTokenService.deleteToken(1L, "tokenValue"));
+        verify(userTokenRepository).delete(userToken);
+    }
+
+    @Test
+    void deleteToken_WhenTokenDoesNotBelongToUser() {
+        TokenType type = new TokenType("tokenType");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("tokenValue", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+        Long userId = 2L; // Different from user's ID
+
+        when(userTokenRepository.getUserTokenByTokenValue(any())).thenReturn(Optional.of(userToken));
+
+        assertFalse(userTokenService.deleteToken(userId, "tokenValue"));
+        verify(userTokenRepository, never()).delete(any(UserToken.class));
+    }
+
+    @Test
+    void getDeckIdByUserToken_WhenTokenIsValid() {
+        TokenType type = new TokenType("SHARE_DECK");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("123-Deck", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(any())).thenReturn(Optional.of(userToken));
+
+        assertEquals(Optional.of(123L), userTokenService.getDeckIdByUserToken(userToken.getTokenValue()));
+    }
+
+    @Test
+    void getDeckIdByUserToken_WhenTokenIsInvalid() {
+        TokenType type = new TokenType("SHARE_DECK");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("-1-Deck", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+
+        when(userTokenRepository.getUserTokenByTokenValue(any())).thenReturn(Optional.of(userToken));
+
+        assertEquals(Optional.empty(), userTokenService.getDeckIdByUserToken(userToken.getTokenValue()));
+    }
+
+    @Test
+    void getUserByUserToken_WhenTokenIsValid() {
+        TokenType type = new TokenType("SHARE_DECK");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("1-Deck", Timestamp.from(Instant.now().plusSeconds(3600)), type, user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(any())).thenReturn(Optional.of(userToken));
+
+        assertEquals(Optional.of(user), userTokenService.getUserByUserToken("1-Deck"));
+    }
+
+    @Test
+    void getUserByUserToken_WhenTokenIsInvalid() {
+        TokenType type = new TokenType("OTHER_TYPE");
+
+        User user = new User(1L, "username", "email@example.com", "password",false, false, 10, "en");
+        UserToken userToken = new UserToken("tokenValue", Timestamp.from(Instant.now().minusSeconds(3600)), type, user);
+
+        when(userTokenRepository.getUserTokenByTokenValue(any())).thenReturn(Optional.of(userToken));
+
+        assertEquals(Optional.empty(), userTokenService.getUserByUserToken("tokenValue"));
     }
 }

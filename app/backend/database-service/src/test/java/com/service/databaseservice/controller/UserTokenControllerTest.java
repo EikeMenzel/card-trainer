@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.naming.ServiceUnavailableException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
@@ -121,5 +122,27 @@ class UserTokenControllerTest {
         verify(userTokenService, times(1)).areTokenTypesIdentical(anyString(), anyString());
         verify(userTokenService, never()).isUserWithTokenVerified(anyString());
         verify(userTokenService, never()).setUserEmailAsVerified(anyString());
+    }
+
+    @Test
+    void testIsUserTokenValid_TokenIsValid() {
+        String validToken = "validToken";
+        when(userTokenService.isUserTokenValid(validToken)).thenReturn(true);
+
+        ResponseEntity<Void> response = userTokenController.isUserTokenValid(validToken);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(userTokenService, times(1)).isUserTokenValid(validToken);
+    }
+
+    @Test
+    void testIsUserTokenValid_TokenIsInvalid() {
+        String invalidToken = "invalidToken";
+        when(userTokenService.isUserTokenValid(invalidToken)).thenReturn(false);
+
+        ResponseEntity<Void> response = userTokenController.isUserTokenValid(invalidToken);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        verify(userTokenService, times(1)).isUserTokenValid(invalidToken);
     }
 }

@@ -98,11 +98,15 @@ public class UserTokenService {
     }
 
     public Optional<Long> getDeckIdByUserToken(String token) {
-        Optional<UserToken> userTokenOptional = userTokenRepository.getUserTokenByTokenValue(token);
-        if(userTokenOptional.isPresent() && Objects.equals(userTokenOptional.get().getTokenType().getType(), "SHARE_DECK")) {
-            String tokenValue = userTokenOptional.get().getTokenValue();
-            var tokenValueSplit = tokenValue.split("-");
-            return Optional.of(Long.valueOf(tokenValueSplit[0]));
+        try {
+            Optional<UserToken> userTokenOptional = userTokenRepository.getUserTokenByTokenValue(token);
+            if(userTokenOptional.isPresent() && Objects.equals(userTokenOptional.get().getTokenType().getType(), "SHARE_DECK")) {
+                String tokenValue = userTokenOptional.get().getTokenValue();
+                var tokenValueSplit = tokenValue.split("-");
+                return Optional.of(Long.valueOf(tokenValueSplit[0]));
+            }
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
         }
         return Optional.empty();
     }
