@@ -27,6 +27,21 @@ public class Achievement {
         /* NoArgsConstructor for Hibernate */
     }
 
+    public Achievement(Long id, String name, String description, Boolean isDaily, Image imageData) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.isDaily = isDaily;
+        this.imageData = imageData;
+    }
+
+    public Achievement(String name, String description, Boolean isDaily, Image imageData) {
+        this.name = name;
+        this.description = description;
+        this.isDaily = isDaily;
+        this.imageData = imageData;
+    }
+
     public Long getId() {
         return id;
     }

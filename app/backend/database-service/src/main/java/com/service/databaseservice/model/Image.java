@@ -30,6 +30,12 @@ public class Image {
     public Image() {
     }
 
+    public Image(Long id, Blob data, User user) {
+        this.id = id;
+        this.data = data;
+        this.user = user;
+    }
+
     public Image(Blob data, User user) {
         this.data = data;
         this.user = user;

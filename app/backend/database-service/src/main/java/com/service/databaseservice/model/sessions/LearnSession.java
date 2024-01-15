@@ -127,6 +127,10 @@ public class LearnSession {
         this.rating6 = rating6;
     }
 
+    public void setFinishedAt(Timestamp finishedAt) {
+        this.finishedAt = finishedAt;
+    }
+
     public LearnSession setLearnStatus(StatusType status) {
         this.status = status;
         return this;
