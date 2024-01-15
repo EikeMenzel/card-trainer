@@ -5,24 +5,26 @@ import {CardService} from "../services/card-service/card.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {ToastService} from "../services/toast-service/toast.service";
 import {CardDTO} from "../models/CardDTO";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {FormsModule} from "@angular/forms";
+import {faReply, faSearch, faSort, faArrowUpZA} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-edit-deck-view',
   standalone: true,
-  imports: [CommonModule, BasePageComponent, RouterLink],
+  imports: [CommonModule, BasePageComponent, RouterLink, FaIconComponent, FormsModule],
   templateUrl: './edit-deck-view.component.html',
   styleUrl: './edit-deck-view.component.css'
 })
 export class EditDeckViewComponent implements OnInit {
 
-  cards: CardDTO[] = [];
+  originalCards: CardDTO[] = [];
+  displayedCards: CardDTO[] = [];
+  searchTerm: string = '';
+  sortOrder: string = '';
   deckId: string = this.getDeckID();
   showOptions: boolean = false;
   showDelete: boolean = false;
-
-  private getDeckID() {
-    return this.route.snapshot.paramMap.get("deck-id") ?? ""
-  }
 
   constructor(private cardService: CardService,
               private route: ActivatedRoute,
@@ -36,7 +38,8 @@ export class EditDeckViewComponent implements OnInit {
   private loadCards() {
     this.cardService.getAllCardsByDeck(this.deckId).subscribe({
       next: value => {
-        this.cards = value.body ?? [];
+        this.originalCards = value.body ?? [];
+        this.applyFilters()
       },
       error: err => {
         console.log(err)
@@ -45,13 +48,51 @@ export class EditDeckViewComponent implements OnInit {
     })
   }
 
-  toggleDeleteItem() {
-    this.showDelete = !this.showDelete
+  onSearchChange() {
+    this.applyFilters();
+  }
+
+  onSortOrderChange() {
+    this.applyFilters();
+  }
+
+  private applyFilters() {
+    let filteredCards = [...this.originalCards];
+
+    // Apply search filter
+    if (this.searchTerm) {
+      filteredCards = filteredCards.filter(card =>
+        card.question.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply sort order
+    switch (this.sortOrder) {
+      case 'oldest':
+        // No specific sorting, use the default order (by ID)
+        filteredCards.sort((a, b) => a.id - b.id);
+        break;
+      case 'newest':
+        // No specific sorting, use the default order (by ID)
+        filteredCards.sort((a, b) => b.id - a.id);
+        break;
+      case 'nameAsc':
+        filteredCards.sort((a, b) => a.question.localeCompare(b.question));
+        break;
+      case 'nameDesc':
+        filteredCards.sort((a, b) => b.question.localeCompare(a.question));
+        break;
+    }
+    this.displayedCards = filteredCards;
   }
 
   toggleOptions() {
     this.showOptions = !this.showOptions;
     document.getElementById("")?.classList.toggle("show")
+  }
+
+  toggleDeleteItem() {
+    this.showDelete = !this.showDelete
   }
 
   deleteItem($event: MouseEvent, cardId: number) {
@@ -66,4 +107,16 @@ export class EditDeckViewComponent implements OnInit {
       }
     })
   }
+
+  private getDeckID() {
+    return this.route.snapshot.paramMap.get("deck-id") ?? ""
+  }
+
+  onClickReturn() {
+    return this.getDeckID()
+  }
+
+  protected readonly faSearch = faSearch;
+  protected readonly faReply = faReply;
+  protected readonly faArrowUpZA = faArrowUpZA;
 }
