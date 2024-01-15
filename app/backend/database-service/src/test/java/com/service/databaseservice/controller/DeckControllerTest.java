@@ -2,7 +2,8 @@ package com.service.databaseservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.databaseservice.model.Deck;
-import com.service.databaseservice.model.Repetition;
+import com.service.databaseservice.model.RepetitionModel;
+
 import com.service.databaseservice.model.User;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
@@ -64,6 +65,8 @@ class DeckControllerTest {
     @MockBean
     private UserTokenService userTokenService;
 
+    @MockBean
+    private ImageService imageService;
     @InjectMocks
     private DeckController deckController;
 
@@ -182,7 +185,7 @@ class DeckControllerTest {
     void whenGetCardsToLearnAmount_ValidData_thenReturnsOk() throws Exception {
         when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
         when(cardService.getCardsByDeckId(anyLong())).thenReturn(new ArrayList<>());
-        when(repetitionService.getRepetitionByCardId(anyLong())).thenReturn(Optional.of(new Repetition()));
+        when(repetitionService.getRepetitionByCardId(anyLong())).thenReturn(Optional.of(new RepetitionModel()));
 
         mockMvc.perform(get("/api/v1/db/users/1/decks/2/cards-to-learn/count")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -202,7 +205,7 @@ class DeckControllerTest {
     void whenCountCardValues_ValidData_thenReturnsOk() throws Exception {
         when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
         when(cardService.getCardsByDeckId(anyLong())).thenReturn(new ArrayList<>());
-        when(repetitionService.getRepetitionByCardId(anyLong())).thenReturn(Optional.of(new Repetition()));
+        when(repetitionService.getRepetitionByCardId(anyLong())).thenReturn(Optional.of(new RepetitionModel()));
 
         mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-state")
                         .contentType(MediaType.APPLICATION_JSON))
