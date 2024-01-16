@@ -65,6 +65,7 @@ export class LearnCardViewComponent implements OnInit {
   chartColors: string[] = ["#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"];
   chartData: number[] = []
   awaitChange: boolean = false;
+  isSessionFinished: boolean = false;
 
   constructor(
     private cardService: CardService,
@@ -87,6 +88,11 @@ export class LearnCardViewComponent implements OnInit {
     this.nextCard();
   }
 
+  ngOnDestroy(){
+    if (!this.isSessionFinished) {
+      this.cardService.cancelLearnSessionStatus(this.learnSessionId).subscribe();
+    }
+  }
 
   fetchNextCard() {
     this.cardService.getDetailCardInformation(Number(this.deckId)).subscribe({
@@ -104,6 +110,7 @@ export class LearnCardViewComponent implements OnInit {
             break;
           case HttpStatusCode.NoContent: //No cards left -> set Status to finished
             this.finishLearnSession(Number(this.deckId));
+            this.isSessionFinished = true;
             break;
           default:
             this.toastService.showInfoToast("Notice", "Received unhandled status code");

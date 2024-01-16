@@ -83,6 +83,17 @@ export class CardService {
     })
   }
 
+  cancelLearnSessionStatus(learnSessionId: number) {
+
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/learn-sessions/${learnSessionId}/status`, JSON.stringify("CANCELED"), {
+      observe: 'response',
+      headers
+    })
+  }
+
   getImageOfCard(imageId: number) {
     return this.http.get(`/api/v1/images/${imageId}`, {responseType: 'blob', observe: 'response'})
   }
