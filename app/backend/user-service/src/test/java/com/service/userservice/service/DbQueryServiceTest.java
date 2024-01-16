@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application.properties")
-public class DbQueryServiceTest {
+class DbQueryServiceTest {
 
     @MockBean
     private RestTemplate restTemplate;
