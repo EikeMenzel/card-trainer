@@ -4,6 +4,15 @@
   "newProjectRoot": "projects",
   "projects": {
     "angular-frontend": {
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "de-DE": {
+            "translation": "src/locale/messages.de.xlf",
+            "baseHref": "de-DE/"
+          }
+        }
+      },
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,6 +22,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "localize": [
+              "de-DE"
+            ],
             "outputPath": "dist/angular-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
