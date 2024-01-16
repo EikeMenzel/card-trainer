@@ -61,7 +61,8 @@ export class LearnCardViewComponent implements OnInit {
   @ViewChild('content') private donutModal: ElementRef | undefined;
 
   private modalRef: NgbModalRef | undefined;
-  chartNames: string[] = ['Easy', 'OK', 'Kinda Difficult', 'Difficult', 'I guessed', 'No Clue'];
+  chartNames: string[] = ['Easy', 'Ok', 'Kinda difficult', 'Difficult', 'I guessed', 'No clue'];
+  chartColors: string[] = ["#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"];
   chartData: number[] = []
   awaitChange: boolean = false;
 
@@ -127,15 +128,16 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
 
   finishLearnSession(deckId: number) {
+    this.buttonIsPressed = true;
     this.cardService.finishedLearnSessionStatus(this.learnSessionId).subscribe({
       next: (res) => {
         this.learnSessionService.setLearningSession(false);
-        this.toastService.showSuccessToast("Successful", "Finished Learn-session");
         this.fetchLearnSessionResults();
       },
       error: (err) => {
@@ -156,6 +158,7 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
@@ -272,8 +275,6 @@ export class LearnCardViewComponent implements OnInit {
   }
 
   calculateProgress() {
-    console.log(this.cardsLearned); //TODO Delete
-    console.log(this.cardLength); // TODO Delete
     return Math.round((this.cardsLearned / this.cardLength) * 100);
   }
 
@@ -352,6 +353,7 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
@@ -379,19 +381,21 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     })
   }
 
 
-  fetchLearnSessionResults() { // TODO should open a modal after session is done
+  fetchLearnSessionResults() {
+    this.buttonIsPressed = true;
     this.historyService.getHistoryDetails(Number(this.deckId),this.learnSessionId).subscribe({
       next: (res) => {
         if (res.body)
           this.learnSessionResults = res.body;
         this.openModal()
         if (this.learnSessionResults) {
-          const chart: number[] = [this.learnSessionResults.difficulty_1, this.learnSessionResults.difficulty_2, this.learnSessionResults.difficulty_3, this.learnSessionResults.difficulty_4, this.learnSessionResults.difficulty_5, this.learnSessionResults.difficulty_6]
+          const chart: number[] = [this.learnSessionResults.difficulty_6, this.learnSessionResults.difficulty_5, this.learnSessionResults.difficulty_4, this.learnSessionResults.difficulty_3, this.learnSessionResults.difficulty_2, this.learnSessionResults.difficulty_1]
           this.chartData = this.getPercentValue(chart,this.learnSessionResults.cardsLearned);
           this.awaitChange = true;
         }
@@ -460,5 +464,4 @@ export class LearnCardViewComponent implements OnInit {
       }
     }
   }
-
 }
