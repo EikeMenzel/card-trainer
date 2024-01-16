@@ -1,5 +1,7 @@
 export interface DeckDTO {
-  deckName: string;
   deckId: number;
+  deckName: string;
+  deckSize: number;
   cardsToLearn: number;
+  lastLearned: Date
 }
