@@ -137,7 +137,7 @@ export class DeckViewComponent implements OnInit {
       chartData = [100];
       return chartData;
     } else {
-      this.chartNames = ['Not Learned Cards', 'Easy', 'OK', 'Kinda Difficult', 'Difficult', 'I guessed', 'No Clue']
+      this.chartNames = ['Cards not learned', 'Easy', 'Ok', 'Kinda difficult', 'Difficult', 'I guessed', 'No clue']
       return this.getPercentValue(chartData);
     }
   }
