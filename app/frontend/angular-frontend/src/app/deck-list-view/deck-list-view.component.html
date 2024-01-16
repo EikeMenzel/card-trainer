@@ -1,74 +1,120 @@
 <app-base-page [PageTitle]="'Your Decks'">
+
+  <div class="container search-and-sort-container mt-5">
+    <div class="row align-items-center justify-content-end">
+      <!-- Search -->
+      <div class="col-12 col-md-6 col-lg-3 mb-3">
+        <div class="search-container align-items-center d-flex">
+          <fa-icon class="custom-icon fa-l fa-solid" [icon]="faSearch"></fa-icon>
+          <input type="text"
+                 placeholder="Search"
+                 class="form-control search-input custom-search-bar"
+                 aria-label="Search"
+                 [(ngModel)]="searchTerm"
+                 (ngModelChange)="onSearchChange()">
+        </div>
+      </div>
+
+      <!-- Sort -->
+      <div class="col-12 col-md-6 col-lg-3 mb-3">
+        <div class="sort-container align-items-center d-flex">
+          <fa-icon [icon]="faArrowUpZA" class="custom-icon fa-l fa-solid"></fa-icon>
+          <select class="form-select sort-select custom-sort-bar" aria-label="Sort order" [(ngModel)]="sortOrder" (ngModelChange)="onSortOrderChange()">
+            <option value="" disabled selected>Sort by</option>
+            <option value="oldest" selected>Oldest created</option>
+            <option value="newest">Newest created</option>
+            <option value="nameAsc">Name ascending</option>
+            <option value="nameDesc">Name descending</option>
+            <option value="cardsToLearnAsc">Least cards left</option>
+            <option value="cardsToLearnDesc">Most cards left</option>
+            <option value="lastLearnedAsc">Last learned ascending</option>
+            <option value="lastLearnedDesc">Last learned descending</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <div class="success-container">
     <table class="table container" id="list">
+
       <thead>
       <tr>
-        <td><strong>Name</strong></td>
-        <td class="deck-card-left">
-          <strong>Card Left</strong>
-        </td>
+        <td class="text-start"><strong>Name</strong></td>
+        <td class="text-end"><strong>Card(s) left</strong></td>
       </tr>
       </thead>
+
       <tbody>
-      <ng-container *ngFor="let deck of deckList;">
+
+
+      <ng-container *ngFor="let deck of filteredList;">
         <ng-container *ngIf="deck.deckId != -1; else newItem">
-          <tr routerLink="/deck/{{deck.deckId}}">
-            <td>{{deck.deckName}}</td>
-            <td class="deck-card-left">
-              <a class="delete-button" *ngIf="this.showDelete" (click)="deleteItem($event, deck.deckId)">
-                <i class="bi-trash-fill text-danger"></i>
+          <tr class="hover-highlight" routerLink="/deck/{{deck.deckId}}">
+            <td class="align-middle">{{deck.deckName}}</td>
+            <td class="pos-delete-button align-middle">
+              <a class="delete-button" *ngIf="showDelete" (click)="deleteItem($event, deck.deckId)">
+                <fa-icon class="fa text-danger" [icon]="faTrashCan"></fa-icon>
               </a>
-              <span>{{deck.cardsToLearn}}  </span>
-              <i class="bi bi-arrow-right"></i>
+              <span>{{deck.cardsToLearn}}</span>
             </td>
           </tr>
         </ng-container>
+
         <ng-template #newItem>
           <tr>
-            <td>
+            <td class="align-middle">
               <form (ngSubmit)="addedNewDeck()">
-                <input id="add-new-item-field" class="form-control" type="text" placeholder="Enter Deck Name"
-                       maxlength="255">
+                <input id="add-new-item-field" class="form-control" type="text" placeholder="Enter Deck Name" maxlength="255">
               </form>
             </td>
-            <td></td>
+            <td class="align-middle">
+              <button class="btn btn-secondary" (click)="cancelAddItem()">Cancel</button>
+            </td>
           </tr>
         </ng-template>
+
       </ng-container>
+
       <ng-container *ngIf="deckList.length == 0">
         <tr>
-          <td colspan="2">
+          <td colspan="2" class="align-middle">
             <div class="text-container text-center">
               <p>You have not created any decks yet. Let's create one! 😊</p>
-              <button class="btn menu-item menu-circle sub-add-button" (click)="addItem()">
-                <i class="bi-plus text-white"></i>
+              <button class="btn menu-item menu-circle text-white custom-add-button" (click)="addItem()">
+                <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
               </button>
             </div>
-
           </td>
         </tr>
       </ng-container>
       </tbody>
+
     </table>
   </div>
 
+
   <div class="menu-wrapper">
     <div *ngIf="showOptions" class="options-panel">
-      <!-- Place your options here -->
-      <button class="btn menu-item menu-circle sub-menu-circle sub-add-button" (click)="addItem()">
-        <i class="bi-plus text-white"></i>
+      <button class="btn btn-success menu-item menu-circle sub-menu-circle"
+              (click)="isSearchActive ? showSearchActiveToast() : addItem()">
+        <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
       </button>
-      <button class="btn btn-primary menu-item menu-circle sub-menu-circle" (click)="showImportModal(content)">
-        <i class="bi-upload text-white"></i>
+      <button class="btn btn-primary menu-item menu-circle sub-menu-circle"
+              (click)="isSearchActive ? showSearchActiveToast() : showImportModal(content)">
+        <fa-icon class="fa-l fa-solid" [icon]="faFileImport"></fa-icon>
       </button>
-      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()">
-        <i class="bi-trash-fill text-white"></i>
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle"
+              (click)="toggleDeleteItem()">
+        <fa-icon class="fa-l fa-solid" [icon]="faTrashCan"></fa-icon>
       </button>
     </div>
     <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button"
-            (click)="toggleOptions()"><i class="bi-list-ul"></i></button>
+            (click)="toggleOptions()">
+      <fa-icon class="fa-l fa-solid" [icon]="faListUl"></fa-icon>
+    </button>
   </div>
-
 </app-base-page>
 
 <ng-template #content let-modal>
