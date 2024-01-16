@@ -167,7 +167,7 @@ public class DbQueryService {
                     Void.class
             );
             return responseEntity.getStatusCode();
-        } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
+        } catch (HttpClientErrorException | HttpServerErrorException e) { // Necessary if status-code 409 or 400 is returned.
             logger.debug(e.getMessage());
             return e.getStatusCode();
         }

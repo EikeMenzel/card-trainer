@@ -42,6 +42,10 @@ export class CardService {
     return this.http.get<DeckDetailInformationDTO>(`api/v1/decks/${id}`, {observe: 'response'})
   }
 
+  updateDeckDetails(deckId: number, newDeckname: string): Observable<HttpResponse<any>> {
+    return this.http.put<HttpResponse<any>>(`api/v1/decks/${deckId}`, {"deckName": newDeckname}, { observe: 'response' });
+  }
+
   getExportFile(deckId: number): Observable<HttpResponse<ArrayBuffer>> {
     return this.http.get(`api/v1/decks/${deckId}/export`, {observe: 'response', responseType: 'arraybuffer'});
   }

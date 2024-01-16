@@ -32,6 +32,7 @@
 .deck-stat-container {
   display: inline-block;
   text-align: center;
+
 }
 
 .badge-style {
@@ -108,7 +109,7 @@
 }
 
 
-/* Media Queries für größere Bildschirme */
+/* Media Queries for bigger screens */
 @media (min-width: 1920px) {
   .deck-view-card {
     min-width: 50%;
@@ -164,4 +165,42 @@
     width: calc(100% - 40px);
     margin: 5px;
   }
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-button,
+.cancel-button,
+.save-button {
+  background-color: transparent;
+  border: none;
+  color: var(--primary-color);
+}
+
+.edit-icon,
+.cancel-icon,
+.save-icon {
+  color: var(--primary-color);
+}
+
+.edit-button:hover,
+.cancel-button:hover,
+.save-button:hover {
+  cursor: pointer;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.title-input {
+  flex: 1;
+  max-width: 300px;
 }
