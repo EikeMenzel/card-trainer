@@ -173,7 +173,7 @@
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-ok" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_4)">
-      <span *ngIf="!buttonIsPressed">OK</span>
+      <span *ngIf="!buttonIsPressed">Ok</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-kinda-difficult" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_3)">
@@ -216,7 +216,8 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
   </div>
   <div class="modal-body">
-      <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
+    <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColors"></app-donut-chart>
+    <b>Cards Learned: {{cardsLearned}}</b>
   </div>
   <div></div>
   <div class="modal-footer">

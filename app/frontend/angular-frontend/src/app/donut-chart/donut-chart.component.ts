@@ -12,12 +12,17 @@ Chart.register(...registerables);
   styleUrl: './donut-chart.component.css'
 })
 
-export class DonutChartComponent implements OnInit{
+export class DonutChartComponent implements OnInit {
   @Input() public chartNames: string[] = []
   @Input() public chartValues: number[] = []
+  @Input() public chartColors: string[] = []
   public chart: any;
 
+
   ngOnInit(): void {
+    if (this.chartColors.length == 0) {
+      this.chartColors = ["#c4c4c4", "#cce5ff", "#ccffcc", "#fff2cc", "#FAC898", "#FFB8A9", "#E96954"];
+    }
     this.chart = new Chart("doughnetChart", {
       type: 'doughnut',
       data: {
@@ -25,7 +30,7 @@ export class DonutChartComponent implements OnInit{
         datasets: [{
           label: 'Donut Chart',
           data: this.chartValues,
-          backgroundColor: ["var(--primary-color)","#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"],
+          backgroundColor: this.chartColors,
           borderWidth: (this.chartValues == null) ? 3 : 0
         }]
       },
