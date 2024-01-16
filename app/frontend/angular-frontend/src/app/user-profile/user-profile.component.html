@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-12 col-md-4">
       <div class="profile-header text-center custom-margin-top-65">
-        <img src="assets/fox2.png" alt="User Profile" class="rounded-circle mb-3">
+        <img src="assets/fox2.png" alt="User Profile" i18n-alt class="rounded-circle mb-3">
       </div>
     </div>
 
@@ -21,22 +21,22 @@
 
           <!-- Name input -->
           <div class="form-group mb-2">
-            <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" placeholder="" [(ngModel)]="userProfile.username"
+            <label for="nameInput" i18n>Name</label>
+            <input type="text" class="form-control" id="nameInput" placeholder="Username" i18n-placeholder [(ngModel)]="userProfile.username"
                    name="name">
           </div>
 
           <!-- Email input -->
           <div class="form-group mb-4">
-            <label for="emailInput">E-Mail address</label>
-            <input type="email" class="form-control" id="emailInput" placeholder="" [(ngModel)]="userProfile.email"
+            <label for="emailInput" i18n>E-Mail address</label>
+            <input type="email" class="form-control" id="emailInput" placeholder="Email" i18n-placeholder [(ngModel)]="userProfile.email"
                    name="email">
           </div>
 
           <!-- Update Password button -->
           <div class="form-group row mb-2">
             <div class="col-sm-4">
-              <button type="button" class="btn update-pw-button w-100" (click)="openModal(content)">Update password
+              <button type="button" class="btn update-pw-button w-100" (click)="openModal(content)" i18n>Update password
               </button>
             </div>
           </div>
@@ -44,8 +44,8 @@
           <!-- Update Password Modal -->
           <ng-template #content let-modal>
             <div class="modal-header update-pw-header">
-              <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel">Update your password</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+              <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel" i18n>Update your password</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" i18n-aria-label
                       (click)="modal.close();emptyPasswordModalFields()"></button>
             </div>
             <form (submit)="changePassword()">
@@ -53,19 +53,19 @@
                 <div>
                   <!-- New password input -->
                   <div class="form-group mb-2">
-                    <label for="newPassword">New password</label>
+                    <label for="newPassword" i18n>New password</label>
                     <input type="password" class="form-control" id="newPassword" [(ngModel)]="newPassword"
                            name="newPassword" required>
                   </div>
                   <!-- Re-enter new password input -->
                   <div class="form-group mb-4">
-                    <label for="reenterNewPassword">Re-enter new password</label>
+                    <label for="reenterNewPassword" i18n>Re-enter new password</label>
                     <input type="password" class="form-control" id="reenterNewPassword"
                            [(ngModel)]="reenterNewPassword" name="reenterNewPassword" required>
                   </div>
                   <div class="modal-footer update-pw-footer mb-2">
                     <button [disabled]="buttonModalIsPressed" type="submit" class="btn change-pw-button w-100">
-                      <span *ngIf="!buttonModalIsPressed">Change password</span>
+                      <span *ngIf="!buttonModalIsPressed" i18n>Change password</span>
                       <span *ngIf="buttonModalIsPressed" class="spinner-border spinner-border-sm"></span>
                     </button>
                   </div>
@@ -78,7 +78,7 @@
 
           <!-- Number of cards input -->
           <div class="form-group row mb-2">
-            <label for="numberOfCards" class="col-sm-8 col-form-label">Number of cards to be learned per session</label>
+            <label for="numberOfCards" class="col-sm-8 col-form-label" i18n>Number of cards to be learned per session</label>
             <div class="col-sm-4">
               <input type="number" class="form-control" id="numberOfCards" name="numberOfCards" min="1"
                      [(ngModel)]="userProfile.cardsToLearn">
@@ -87,11 +87,11 @@
 
           <!-- Inline form group for language selection -->
           <div class="form-group row mb-4">
-            <label for="languageSelect" class="col-sm-8 col-form-label">Language</label>
+            <label for="languageSelect" class="col-sm-8 col-form-label" i18n>Language</label>
             <div class="col-sm-4">
               <select class="form-control" id="languageSelect" name="language" [(ngModel)]="userProfile.langCode">
-                <option value="DE">German</option>
-                <option value="EN">English</option>
+                <option value="DE" i18n>German</option>
+                <option value="EN" i18n>English</option>
               </select>
             </div>
           </div>
@@ -100,7 +100,7 @@
           <div class="form-check form-switch mb-4">
             <input class="form-check-input switch-button-input" type="checkbox" id="receiveNotifications"
                    name="receiveNotifications" [(ngModel)]="userProfile.receiveLearnNotification">
-            <label class="form-check-label switch-button-label" for="receiveNotifications">Receive a learning
+            <label class="form-check-label switch-button-label" for="receiveNotifications" i18n>Receive a learning
               notification</label>
           </div>
 
@@ -109,12 +109,12 @@
 
             <!-- Logout button -->
             <div class="col-sm-2">
-              <button type="button" class="btn logout-button w-100" (click)="this.logoutWarningPopup()">Logout</button>
+              <button type="button" class="btn logout-button w-100" (click)="this.logoutWarningPopup()" i18n>Logout</button>
             </div>
 
             <!-- Save button -->
             <div class="col-sm-2">
-              <button type="submit" class="btn save-button w-100">Save</button>
+              <button type="submit" class="btn save-button w-100" i18n>Save</button>
             </div>
           </div>
         </form>

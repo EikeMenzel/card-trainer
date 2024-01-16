@@ -6,7 +6,7 @@
         <div class="align-items-start mb-2" [routerLink]="'/deck/' + this.deckId + '/edit'">
           <button class="btn return-button p-2">
             <fa-icon [icon]="faReply" class="fa fa-solid"></fa-icon>
-            Return to Deck
+            <span i18n>Return to Deck</span>
           </button>
         </div>
       </div>
@@ -14,14 +14,14 @@
 
         <!-- Card type selection -->
         <div class="form-group customized-form-group row mb-3 mt-4 align-items-center">
-          <label for="cardTypeSelect" class="col-sm-2 col-form-label customized-col-form-label">Card type</label>
+          <label for="cardTypeSelect" class="col-sm-2 col-form-label customized-col-form-label" i18n>Card type</label>
           <div class="col-sm-8">
             <select class="form-control customized-form-control" id="cardTypeSelect"
                     (change)="updateCardType(cardTypeInput)" #cardTypeInput
                     name="cardType" [disabled]="this.cardId != 'new'"
                     [value]="cardType">
-              <option value="basic">Basic</option>
-              <option value="multipleChoice">Multiple Choice</option>
+              <option value="basic" i18n>Basic</option>
+              <option value="multipleChoice" i18n>Multiple Choice</option>
             </select>
           </div>
         </div>
@@ -30,7 +30,7 @@
         <div *ngIf="isBasicCard">
           <!-- Card front input -->
           <div class="form-group row mb-4 align-items-center">
-            <div class="col-sm-2 col-form-label">Add your question</div>
+            <div class="col-sm-2 col-form-label" i18n>Add your question</div>
             <div class="col-sm-8">
               <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard"
                         [(ngModel)]="questionCardDTO.question"
@@ -42,7 +42,7 @@
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
                 <img class="oldImgDisplay" [src]="'api/v1/images/' + this.questionCardDTO.imageId" width="50"
-                     height="50" alt="Uploaded Img">
+                     height="50" i18n-alt alt="Uploaded Img">
                 <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -53,7 +53,7 @@
 
           <!-- Card back input -->
           <div class="form-group row mb-2 mt-4 align-items-center">
-            <div class="col-sm-2 col-form-label">Add the answer</div>
+            <div class="col-sm-2 col-form-label" i18n>Add the answer</div>
             <div class="col-sm-8">
               <textarea rows="10" cols="40" class="form-control custom-textarea-backcard"
                         [(ngModel)]="choiceAnswers[0].answer"
@@ -65,7 +65,7 @@
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.choiceAnswers[0]?.imageId">
                 <img class="oldImgDisplay" [src]="'api/v1/images/' + this.choiceAnswers[0].imageId" width="50"
-                     height="50" alt="Uploaded Img">
+                     height="50" i18n-alt alt="Uploaded Img">
                 <a class="deleteOldImg" (click)="deleteImgBasicAnswer(0)">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -79,7 +79,7 @@
 
           <!-- Card front input -->
           <div class="form-group row mb-4 align-items-center">
-            <div class="col-sm-2 col-form-label">Add your question</div>
+            <div class="col-sm-2 col-form-label" i18n>Add your question</div>
             <div class="col-sm-8">
               <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="questionCardDTO.question"
                         name="cardFront"></textarea>
@@ -91,7 +91,7 @@
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
                 <img class="oldImgDisplay" [src]="'api/v1/images/' + this.questionCardDTO.imageId" width="50"
-                     height="50" alt="Uploaded Img">
+                     height="50" i18n-alt alt="Uploaded Img">
                 <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -105,7 +105,7 @@
             <div class="row mt-4 align-items-center">
               <!-- Option label -->
               <div class="col-sm-2 col-form-label">
-                Option {{ i + 1 }}
+                <span i18n>Option </span> {{ i + 1 }}
               </div>
               <!-- Textarea for the option -->
               <div class="col-sm-6">
@@ -126,7 +126,7 @@
                 </button>
                 <div class="oldImgDisplayWrapper" *ngIf="answer.imageId">
                   <img class="oldImgDisplay" [src]="'api/v1/images/' + answer.imageId" width="50" height="50"
-                       alt="Uploaded Img">
+                       i18n-alt alt="Uploaded Img">
                   <a class="deleteOldImg" (click)="deleteImgBasicAnswer(i)">
                     <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                   </a>
@@ -138,8 +138,9 @@
               <div class="col-sm-2">
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                         name="isRightAnswer" [checked]="this.choiceAnswers[i].rightAnswer" (change)="isCorrectCheckChanged(i, $event)">
-                  <label class="form-check-label" for="flexSwitchCheckDefault">Correct answer</label>
+                         name="isRightAnswer" [checked]="this.choiceAnswers[i].rightAnswer"
+                         (change)="isCorrectCheckChanged(i, $event)">
+                  <label class="form-check-label" for="flexSwitchCheckDefault" i18n>Correct answer</label>
                 </div>
               </div>
             </div>
@@ -175,15 +176,15 @@
         <div class="modal-dialog">
           <div class="modal-content upload-image-modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="uploadModalLabel">Upload image</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+              <h5 class="modal-title" id="uploadModalLabel" i18n>Upload image</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" i18n-aria-label aria-label="Close"
                       (click)="closeModal()"></button>
             </div>
             <div class="modal-body upload-image-modal-body">
               <!-- Drag & Drop Area -->
               <div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
-                Drag & Drop files here or
-                <a href="#" class="browse-link" (click)="openFilePicker($event)">click to browse</a>
+                <span i18n>Drag & Drop files here or</span>
+                <a href="#" class="browse-link" (click)="openFilePicker($event)" i18n>Click to browse</a>
               </div>
               <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onFileSelected($event, fileInput)"
                      hidden>
@@ -199,7 +200,7 @@
             </div>
             <div class="modal-footer upload-image-modal-footer">
               <button type="button" class="btn image-upload-done-button btn-square btn-rounded" data-bs-dismiss="modal"
-                      aria-label="Close" (click)="confirmImageSave()">
+                      aria-label="Close" i18n-aria-label (click)="confirmImageSave()" i18n>
                 Done
               </button>
             </div>
@@ -215,14 +216,14 @@
   <div class="modal-dialog customized-modal-width modal-dialog-centered customized-modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header welcome-modal-header">
-        <h5 class="modal-title" id="welcomeModalLabel">Hey, Simon here!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+        <h5 class="modal-title" id="welcomeModalLabel" i18n>Hey, Simon here!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" i18n-aria-label aria-label="Close"
                 (click)="dontShowSimonAgainOnPageLoad()"></button>
       </div>
       <div class="modal-body welcome-modal-body">
-        <img ngSrc="assets/fox1.png" alt="Simon the fox"
+        <img ngSrc="assets/fox1.png" i18n-alt alt="Simon the fox"
              class="img-fox mb-2" height="490" width="490">
-        <p>Here you can edit or create cards, upload images and start your learning journey. Much love and fun,
+        <p i18n>Here you can edit or create cards, upload images and start your learning journey. Much love and fun,
           Simon 🦊</p>
       </div>
     </div>

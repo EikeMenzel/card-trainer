@@ -21,9 +21,9 @@
         <fa-icon class="user-icon fa-2xl" [icon]="faUser"></fa-icon>
       </a>
       <div class="dropdown-menu dropdown-menu-right custom-dropdown-window custom-dropdown-menue" ngbDropdownMenu aria-labelledby="navbarDropdown">
-        <button class="dropdown-item" (click)="onClickReturn('/profile')">Profile</button>
+        <button class="dropdown-item" (click)="onClickReturn('/profile')" i18n>Profile</button>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item" (click)="logoutWarningPopup()">Logout</button>
+        <button class="dropdown-item" (click)="logoutWarningPopup()" i18n>Logout</button>
       </div>
     </div>
   </div>

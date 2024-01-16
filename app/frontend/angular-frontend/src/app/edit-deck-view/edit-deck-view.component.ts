@@ -7,7 +7,8 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {CardDTO} from "../models/CardDTO";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
-import {faReply, faSearch, faSort, faArrowUpZA} from "@fortawesome/free-solid-svg-icons";
+import {faReply, faSearch, faArrowUpZA} from "@fortawesome/free-solid-svg-icons";
+import {$localize} from "@angular/localize/init";
 
 @Component({
   selector: 'app-edit-deck-view',
@@ -25,6 +26,9 @@ export class EditDeckViewComponent implements OnInit {
   deckId: string = this.getDeckID();
   showOptions: boolean = false;
   showDelete: boolean = false;
+  public pageTitle: string = $localize`Edit Deck`;
+  public basicCardName: string = $localize`Basic Card`;
+  public MCCardName: string = $localize`Basic Card`;
 
   constructor(private cardService: CardService,
               private route: ActivatedRoute,
@@ -119,4 +123,5 @@ export class EditDeckViewComponent implements OnInit {
   protected readonly faSearch = faSearch;
   protected readonly faReply = faReply;
   protected readonly faArrowUpZA = faArrowUpZA;
+  protected readonly $localize = $localize;
 }

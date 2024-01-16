@@ -11,6 +11,7 @@ import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {HttpStatusCode} from "@angular/common/http";
 import {defaults} from "chart.js";
+import {$localize} from "@angular/localize/init";
 
 @Component({
   selector: 'app-deck-list-view',
@@ -29,6 +30,7 @@ export class DeckListViewComponent implements OnInit {
   importFile: string = "";
   private selectedFile: File | null = null;
   private wipCreateDeck: boolean = false;
+  pageTitle: string = $localize`Your Deck`;
 
   toggleOptions() {
     this.showOptions = !this.showOptions;
@@ -218,5 +220,4 @@ export class DeckListViewComponent implements OnInit {
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
-
 }

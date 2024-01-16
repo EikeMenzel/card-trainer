@@ -8,8 +8,8 @@
             <!-- Simon -->
             <div class="text-center">
               <img src="assets/fox3.png" alt="Profile Image" class="simon">
-              <h2 class="my-3">Hey!</h2>
-              <p>
+              <h2 class="my-3" i18n>Hey!</h2>
+              <p i18n>
                 Don´t have an account yet? No worries!<br>
                 Sign up by entering the information below.</p>
             </div>
@@ -27,17 +27,17 @@
 
               <!-- Username -->
               <div class="form-group mb-3">
-                <label for="username">Username</label>
+                <label for="username" i18n>Username</label>
                 <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
-                       placeholder="Enter your username" name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
+                       placeholder="Enter your username" i18n-placeholder name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
                 <div class="error">
                   {{usernameError}}
                 </div>
               </div>
               <!-- Password with toggle button inside the input field -->
               <div class="form-group mb-3">
-                <label for="password">Password</label>
-                <span class="password-policy" title=
+                <label for="password" i18n>Password</label>
+                <span class="password-policy" i18n-title title=
                 "A password must be:
                 • between 8 - 72 characters long
                 • contain at least one number
@@ -45,7 +45,7 @@
               </span>
                 <div class="input-group mb-1">
                   <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'"
-                         class="form-control" placeholder="Enter your password" name="password" id="password" ngModel
+                         class="form-control" placeholder="Enter your password" i18n-placeholder name="password" id="password" ngModel
                          required (ngModelChange)="validateInput('password',passwordValue.value)" #passwordValue>
                   <div class="input-group-append">
                     <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
@@ -60,10 +60,10 @@
 
               <!-- Password repeat -->
               <div class="form-group mb-3">
-                <label for="password-repeat">Confirm Password</label>
+                <label for="password-repeat" i18n>Confirm Password</label>
                 <div class="input-group mb-1">
                   <input [style.border-color]="passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'"
-                         class="form-control" id="password-repeat" placeholder="Re-enter your password"
+                         class="form-control" id="password-repeat" i18n-placeholder placeholder="Re-enter your password"
                          name="password-repeat" ngModel required (ngModelChange)="validateInput('passwordRepeat',passwordRepValue.value)" #passwordRepValue>
                   <div class="input-group-append">
                     <button type="button" class="btn toggle-password"
@@ -78,7 +78,7 @@
               </div>
 
               <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">
-                <span *ngIf="!buttonIsPressed">Sign Up</span>
+                <span *ngIf="!buttonIsPressed" i18n>Sign Up</span>
                 <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
               </button>
             </form>
@@ -86,7 +86,7 @@
 
           <!-- Login -->
           <div class="card-footer text-center mb-4">
-            Already have an account? <a routerLink="/login" class="sign-in-link">Sign In</a>
+            <span i18n>Already have an account? </span> <a routerLink="/login" class="sign-in-link" i18n>Sign In</a>
           </div>
         </div>
       </div>

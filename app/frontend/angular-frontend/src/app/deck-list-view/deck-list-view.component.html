@@ -1,11 +1,11 @@
-<app-base-page [PageTitle]="'Your Decks'">
+<app-base-page [PageTitle]="this.pageTitle">
   <div class="success-container">
     <table class="table container" id="list">
       <thead>
       <tr>
-        <td><strong>Name</strong></td>
+        <td><strong i18n>Name</strong></td>
         <td class="deck-card-left">
-          <strong>Card Left</strong>
+          <strong i18n>Card Left</strong>
         </td>
       </tr>
       </thead>
@@ -27,7 +27,7 @@
           <tr>
             <td>
               <form (ngSubmit)="addedNewDeck()">
-                <input id="add-new-item-field" class="form-control" type="text" placeholder="Enter Deck Name"
+                <input id="add-new-item-field" class="form-control" type="text" i18n-placeholder placeholder="Enter Deck Name"
                        maxlength="255">
               </form>
             </td>
@@ -39,7 +39,7 @@
         <tr>
           <td colspan="2">
             <div class="text-container text-center">
-              <p>You have not created any decks yet. Let's create one! 😊</p>
+              <p i18n>You have not created any decks yet. Let's create one! 😊</p>
               <button class="btn menu-item menu-circle sub-add-button" (click)="addItem()">
                 <i class="bi-plus text-white"></i>
               </button>
@@ -73,8 +73,8 @@
 
 <ng-template #content let-modal>
   <div class="modal-header primary-background-color">
-    <h4 class="modal-title" id="modal-basic-title">Import your Deck</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+    <h4 class="modal-title" id="modal-basic-title" i18n>Import your Deck</h4>
+    <button type="button" class="btn-close" i18n-aria-label aria-label="Close" (click)="modal.close()"></button>
   </div>
   <form (submit)="onSubmitImportDeck($event)">
     <div class="modal-body">
@@ -82,8 +82,8 @@
              [(ngModel)]="importFile">
     </div>
     <div class="modal-footer">
-      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
-        <span *ngIf="!buttonIsPressed">Import</span>
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" i18n-value value="Send E-Mail">
+        <span *ngIf="!buttonIsPressed" i18n>Import</span>
         <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
       </button>
     </div>

@@ -1,8 +1,8 @@
-<h2 mat-dialog-title>Session Expiring</h2>
+<h2 mat-dialog-title i18n>Session Expiring</h2>
 <mat-dialog-content>
-  <p>Your session is about to expire. Do you want to renew it?</p>
+  <p i18n>Your session is about to expire. Do you want to renew it?</p>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button mat-button class="renew-button" (click)="renewSession()">Renew Session</button>
-  <button mat-button class="cancel-button" (click)="logout()">Logout</button>
+  <button mat-button class="renew-button" (click)="renewSession()" i18n>Renew Session</button>
+  <button mat-button class="cancel-button" (click)="logout()" i18n>Logout</button>
 </mat-dialog-actions>

@@ -4,9 +4,9 @@
       <ng-container *ngIf="histories.length != 0">
       <thead>
       <tr>
-        <td><strong>Learn Session</strong></td>
-        <td><strong>Completed</strong></td>
-        <td><strong>Cards Learned</strong></td>
+        <td><strong i18n>Learn Session</strong></td>
+        <td><strong i18n>Completed</strong></td>
+        <td><strong i18n>Cards Learned</strong></td>
       </tr>
       </thead>
       </ng-container>
@@ -24,8 +24,8 @@
         <tr>
           <td colspan="2">
             <div class="text-container text-center">
-              <p>You have not done any Sessions yet. Start your first learn session and see the results here 😁</p>
-              <button class="btn primary-background-color" routerLink="/deck/{{deckId}}">Return to Deck</button>
+              <p i18n>You have not done any Sessions yet. Start your first learn session and see the results here 😁</p>
+              <button class="btn primary-background-color" routerLink="/deck/{{deckId}}" i18n>Return to Deck</button>
             </div>
           </td>
         </tr>
@@ -38,17 +38,17 @@
 
 <ng-template #content let-modal>
   <div class="modal-header primary-background-color">
-    <h4 class="modal-title" id="modal-basic-title">History Session Result</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal(content)"></button>
+    <h4 class="modal-title" id="modal-basic-title" i18n>History Session Result</h4>
+    <button type="button" class="btn-close" aria-label="Close" i18n-aria-label (click)="closeModal(content)"></button>
   </div>
   <div class="modal-body">
     <div *ngIf="learnedCards > 0">
     <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
     </div>
-    <div *ngIf="learnedCards == 0">No Cards were learned during this Session</div>
+    <div *ngIf="learnedCards == 0" i18n>No Cards were learned during this Session</div>
   </div>
   <div></div>
   <div class="modal-footer">
-    <button class="btn primary-background-color" value="Close" (click)="closeModal(content)">Close</button>
+    <button class="btn primary-background-color" i18n-value value="Close" (click)="closeModal(content)" i18n>Close</button>
   </div>
 </ng-template>

@@ -1,4 +1,4 @@
-<app-base-page [PageTitle]="'Edit Deck'">
+<app-base-page [PageTitle]="this.pageTitle">
 
   <div class="container search-and-sort-container my-3">
     <!-- Return Button -->
@@ -6,7 +6,7 @@
       <div class="col-md-6 col-lg-4">
         <button class="btn return-button" [routerLink]="'/deck/' + this.onClickReturn()">
           <fa-icon [icon]="faReply" class="fa fa-solid"></fa-icon>
-          Return to Deck
+          <span i18n>Return to Deck</span>
         </button>
       </div>
     </div>
@@ -17,7 +17,7 @@
       <div class="col-12 col-md-6 col-lg-3 mb-3">
         <div class="search-container align-items-center d-flex">
           <fa-icon [icon]="faSearch" class="custom-icon fa-l fa-solid"></fa-icon>
-          <input type="text" placeholder="Search" class="form-control search-input custom-search-bar" aria-label="Search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()">
+          <input type="text" i18n-placeholder placeholder="Search" class="form-control search-input custom-search-bar" i18n-aria-label aria-label="Search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()">
         </div>
       </div>
 
@@ -25,12 +25,12 @@
       <div class="col-12 col-md-6 col-lg-3 mb-3">
         <div class="sort-container align-items-center d-flex">
           <fa-icon [icon]="faArrowUpZA" class="custom-icon fa-l fa-solid"></fa-icon>
-          <select class="form-select sort-select custom-sort-bar" aria-label="Sort order" [(ngModel)]="sortOrder" (ngModelChange)="onSortOrderChange()">
-            <option value="" disabled>Sort by</option>
+          <select class="form-select sort-select custom-sort-bar" aria-label="Sort order" i18n-aria-label [(ngModel)]="sortOrder" (ngModelChange)="onSortOrderChange()">
+            <option value="" disabled i18n>Sort by</option>
             <option value="oldest" selected>Oldest</option>
-            <option value="newest">Newest</option>
-            <option value="nameAsc">Name ascending</option>
-            <option value="nameDesc">Name descending</option>
+            <option value="newest" i18n>Newest</option>
+            <option value="nameAsc" i18n>Name ascending</option>
+            <option value="nameDesc" i18n>Name descending</option>
           </select>
         </div>
       </div>
@@ -42,8 +42,8 @@
       <!-- <thead> -->
       <thead>
       <tr>
-        <td class="text-start"><strong>Question</strong></td>
-        <td class="text-end"><strong>Question Type</strong></td>
+        <td class="text-start"><strong i18n>Question</strong></td>
+        <td class="text-end"><strong i18n>Question Type</strong></td>
       </tr>
       </thead>
 
@@ -57,7 +57,7 @@
         </td>
         <td class="align-middle">
           <div class="row g-2 justify-content-end align-items-center">
-            <div class="col-auto">{{card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card"}}</div>
+            <div class="col-auto">{{card.type == 'BASIC' ? this.basicCardName : this.MCCardName}}</div>
             <div class="col-auto">
 
               <!-- Delete -->
@@ -75,7 +75,7 @@
       <ng-container *ngIf="displayedCards.length == 0">
         <tr>
           <td colspan="2" class="text-center">
-            <p class="text-muted">No cards found! Create one 😊</p>
+            <p class="text-muted" i18n>No cards found! Create one 😊</p>
             <button class="btn menu-item menu-circle sub-add-button" routerLink="/deck/{{deckId}}/card/new/edit">
               <i class="bi-plus text-white"></i>
             </button>
