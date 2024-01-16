@@ -110,45 +110,14 @@
   font-size: 16px;
   cursor: pointer;
   margin: 0 5px; /* Added horizontal space between the buttons */
-}
-.button-easy,
-.button-ok,
-.button-kinda-difficult,
-.button-difficult,
-.button-I-guessed,
-.button-no-clue {
   background-repeat: no-repeat;
   background-position: center left;
-  padding-left: 50px;
-}
-.button-easy {
-  background-color: #cce5ff;
-  background-image: url(../../assets/easy.svg);
-}
-.button-ok {
-  background-color: #ccffcc;
-  background-image: url(../../assets/ok.svg);
-}
-.button-kinda-difficult {
-  background-color: #fff2cc;
-  background-image: url(../../assets/kinda-difficult.svg);
-}
-.button-difficult {
-  background-color: #FAC898;
-  background-image: url(../../assets/difficult.svg);
-}
-.button-I-guessed {
-  background-color: #FFB8A9;
-  background-image: url(../../assets/guessed.svg);
-}
-.button-no-clue {
-  background-color: #E96954;
-  background-image: url(../../assets/no-clue.svg);
+  background-color: var(--primary-color);
 }
 
 /* For small screens */
 @media (max-width: 824px) {
-  .feedback-button-container {
+  .next-button-container {
     width: 75vw;
     margin-left: auto;
     margin-right: auto;
@@ -156,19 +125,11 @@
     flex-wrap: wrap;
     justify-content: space-between;
   }
-  .feedback-button {
+  .next-button {
     width: calc(50% - 4px); /* 50% of the container width minus a little space for the edge */
     margin: 2px; /* Small distance between the buttons */
     padding: 10px 0; /* Customizable vertical upholstery */
     flex: 0 0 auto; /* Prevents the buttons from being stretched */
-  }
-  .button-easy,
-  .button-ok,
-  .button-kinda-difficult,
-  .button-difficult,
-  .button-I-guessed,
-  .button-no-clue {
-    background-image: none;
   }
 }
 
@@ -205,21 +166,13 @@
 
 /* For extra extra large screens, e.g. 2560x1444 */
 @media (min-width: 1920px) {
-  .feedback-button {
+  .next-button {
     font-size: 1.25rem;
     padding: 15px 30px;
     margin: 0 10px;
     border-radius: 30px;
-  }
-  .button-easy,
-  .button-ok,
-  .button-kinda-difficult,
-  .button-difficult,
-  .button-I-guessed,
-  .button-no-clue {
     background-repeat: no-repeat;
     background-position: center left;
-    padding-left: 60px;
   }
   .rotate-button-turn-to-back,
   .rotate-button-turn-to-front {

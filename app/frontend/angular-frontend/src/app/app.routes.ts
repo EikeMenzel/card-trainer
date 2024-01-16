@@ -12,6 +12,7 @@ import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {LearnCardViewComponent} from "./learn-card-view/learn-card-view.component";
 import {SwaggerViewComponent} from "./swagger-view/swagger-view.component";
 import {HistoryViewComponent} from "./history-view/history-view.component";
+import {PeekCardViewComponent} from "./peek-learn-card-view/peek-learn-card-view.component";
 
 
 
@@ -27,6 +28,7 @@ export const routes: Routes = [
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: '', component: DeckListViewComponent},
   {path: 'deck/:deck-id/learn', component: LearnCardViewComponent},
+  {path: 'deck/:deck-id/peek', component:PeekCardViewComponent},
   {path:"suc", component: RegisterSuccessfulComponent},
   {path: 'profile', component: UserProfileComponent},
   {path: 'swagger', component: SwaggerViewComponent},
