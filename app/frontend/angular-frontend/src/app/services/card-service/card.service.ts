@@ -119,4 +119,34 @@ export class CardService {
   updateCard(cardDTO: UpdateCardBasicDTO | UpdateCardMCDTO, deckId: string, cardId: string) {
     return this.http.put(`/api/v1/decks/${deckId}/cards/${cardId}`, cardDTO, {observe: "response"})
   }
+
+  startPeekSession(deckId:number) {
+   return this.http.post<number>(`api/v1/decks/${deckId}/peek-sessions`,{obeserve:"response"})
+  }
+
+  getNextPeekCard(peekSessionId: number){
+    return this.http.get(`api/v1/peek-sessions/${peekSessionId}/next-card`,{observe:"response"})
+  }
+
+  finishStatusOfCardPeek(peekSessionId: number) {
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/peek-sessions/${peekSessionId}/status`,JSON.stringify("FINISHED"),{observe:"response", headers})
+  }
+
+  savePeekSessionCard(peekSessionId: number,cardId:number){
+    return this.http.post(`api/v1/peek-sessions/${peekSessionId}/cards/${cardId}`,{observe:'response'})
+  }
+
+  getNumberofCardsInDeck(deckId: number) {
+    return this.http.get<number>(`api/v1/decks/${deckId}/size`,{observe:'response'});
+  }
+
+  setCancelledPeekStatus(peekSessionId: number) {
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/peek-sessions/${peekSessionId}/status`,JSON.stringify("CANCELED"),{observe:"response", headers})
+  }
 }
