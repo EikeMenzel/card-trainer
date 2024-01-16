@@ -7,17 +7,40 @@
 
             <!-- Deck Information -->
             <div class="text-center">
-              <h2 class="my-3"> {{ deckTitle }} </h2>
-              <div class="deck-info d-flex justify-content-between">
-                <div class="deck-stat-container">
-                  <div class="badge-style">{{ deckCardsLeft }}</div>
-                  <div class="stat-label">Cards left</div>
-                </div>
-                <div class="deck-stat-container">
-                  <div class="badge-style">{{ deckSize }}</div>
-                  <div class="stat-label">Deck size</div>
+              <!-- Editierbarer Titel -->
+              <div *ngIf="!editMode; else editTemplate">
+                <div class="title-container d-flex justify-content-center align-items-center my-3">
+                  <h2 class="title-text">{{ deckTitle }}</h2>
+                  <button class="edit-button" title="Edit" (click)="enableEditMode()">
+                    <fa-icon class="edit-icon fa-xl" [icon]="faPencil"></fa-icon>
+                  </button>
                 </div>
               </div>
+
+              <!-- Template for editmode-->
+              <ng-template #editTemplate>
+                <div class="title-container d-flex justify-content-center align-items-center my-3">
+                  <input type="text" class="form-control title-input" [(ngModel)]="editableTitle" (keyup.enter)="saveEdit()"/>
+                  <button class="save-button" title="Save" (click)="saveEdit()">
+                    <fa-icon class="save-icon fa-xl" [icon]="faSave"></fa-icon>
+                  </button>
+                  <button class="cancel-button" title="Cancel" (click)="cancelEdit()">
+                    <fa-icon class="cancel-icon fa-xl" [icon]="faXmark"></fa-icon>
+                  </button>
+                </div>
+              </ng-template>
+
+              <div class="deck-info d-flex justify-content-between mb-4">
+                <div class="deck-stat-container">
+                  <div class="stat-label">Cards Left</div>
+                  <div class="badge-style">{{ deckCardsLeft }}</div>
+                </div>
+                <div class="deck-stat-container">
+                  <div class="stat-label">Deck Size</div>
+                  <div class="badge-style">{{ deckSize }}</div>
+                </div>
+              </div>
+
 
               <div class="progress-chart-container">
                 <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>

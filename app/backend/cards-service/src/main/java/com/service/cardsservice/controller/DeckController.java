@@ -254,7 +254,7 @@ public class DeckController {
             @Parameter(description = "Deck ID to be shared", required = true) @PathVariable Long deckId,
             @Parameter(description = "MailDTO, with the email", required = true,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MailDTO.class))) @Valid @RequestBody MailDTO mailDTO) {
-    if (dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
+        if (dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
             return ResponseEntity.notFound().build();
 
         return ResponseEntity.status(dbQueryService.sendShareDeckEmail(mailDTO.email(), deckId)).build();
