@@ -11,12 +11,20 @@ import {FormsModule} from "@angular/forms";
 import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {LearningSessionService} from "../services/learn-session-service/learn-session.service";
+import {faPencil, faSave, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 
 @Component({
   selector: 'app-deck-view',
   standalone: true,
-  imports: [CommonModule, BasePageComponent, DonutChartComponent, RouterLink, FormsModule],
+  imports: [
+    CommonModule,
+    BasePageComponent,
+    DonutChartComponent,
+    RouterLink,
+    FormsModule,
+    FaIconComponent],
   templateUrl: './deck-view.component.html',
   styleUrl: './deck-view.component.css'
 })
@@ -29,12 +37,13 @@ export class DeckViewComponent implements OnInit {
   public chartData: number[] = [];
   public chartNames: string[] = [];
   public emailBorder: string = "grey";
-
   public deckId: string = "";
   public email: string = "";
   private modalRef: NgbModalRef | undefined;
   public emailWarn: boolean = false;
   public buttonIsPressed: boolean = false;
+  public editMode: boolean = false;
+  public editableTitle: string = "";
 
   constructor(private modalService: NgbModal,
               private router: Router,
@@ -85,7 +94,6 @@ export class DeckViewComponent implements OnInit {
       })
     }
   }
-
 
   exportButtonPressed() {
     this.cardService.getExportFile(Number(this.deckId)).subscribe({
@@ -209,4 +217,50 @@ export class DeckViewComponent implements OnInit {
   startLearningSession() {
     this.learningSessionService.setLearningSession(true);
   }
+
+  enableEditMode() {
+    this.editableTitle = this.deckTitle;
+    this.editMode = true;
+  }
+
+  cancelEdit() {
+    this.editMode = false;
+  }
+
+  saveEdit() {
+    console.log(this.editableTitle)
+    this.cardService.updateDeckDetails(Number(this.deckId), this.editableTitle).subscribe({
+      next: (res) => {
+        if (res.status == HttpStatusCode.NoContent) {
+          this.deckTitle = this.editableTitle;
+          this.toastService.showSuccessToast("Success", "Deck title updated successfully");
+        }
+      },
+      error: (err) => {
+        const statusCode = err.status;
+        switch (statusCode) {
+          case HttpStatusCode.InternalServerError:
+            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            break;
+          case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
+            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.authService.logout();
+            break;
+          case HttpStatusCode.NotFound:
+            this.toastService.showErrorToast("Error", "Deck was not Found");
+            this.router.navigate([""]);
+            break;
+          default:
+            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            break;
+        }
+      }
+    });
+
+    this.editMode = false;
+  }
+
+  protected readonly faXmark = faXmark;
+  protected readonly faSave = faSave;
+  protected readonly faPencil = faPencil;
 }
