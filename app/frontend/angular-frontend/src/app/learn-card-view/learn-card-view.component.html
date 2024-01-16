@@ -213,7 +213,6 @@
 <ng-template #content let-modal>
   <div class="modal-header custom-progress">
     <h4 class="modal-title" id="modal-basic-title">Your session Results</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
   </div>
   <div class="modal-body">
     <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColors"></app-donut-chart>
