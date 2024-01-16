@@ -1,0 +1,195 @@
+<app-base-page>
+  <div class="card-container container-fluid d-flex justify-content-center align-items-center">
+    <div class="row">
+      <div class="col-12 col-xl-12 mx-auto">
+        <div class="card-wrapper">
+          <div class="card" [class.flipped]="flipped">
+
+            <!-- Basic card -->
+            <ng-container *ngIf="card?.cardDTO?.cardType === 'BASIC'">
+
+              <!-- Basic card front -->
+              <div class="front card p-5">
+                <div class="row gx-5">
+                  <!-- Image Area -->
+                  <div class="col-12">
+                    <div class="regular-img-area img-body d-flex align-items-center justify-content-center">
+                      <img *ngIf="imageInformationTextAnswerCard?.questionImage"
+                           [src]="imageInformationTextAnswerCard?.questionImage"
+                           class="regular-img img-fluid rounded"
+                           alt="regImg"
+                           (click)="openImageModal(imageInformationTextAnswerCard?.questionImage)">
+                    </div>
+                  </div>
+
+                  <!-- Text Area -->
+                  <div class="col-12">
+                    <div class="text-area mt-4 d-flex justify-content-center">
+                      <p class="text text-center mb-1">{{ card?.cardDTO?.question }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Flip Button -->
+                <button class="rotate-button-turn-to-back btn mt-2 position-absolute" (click)="flipCard()">
+                  <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+                </button>
+              </div>
+
+              <!-- Basic card back -->
+              <div class="back card p-5" *ngIf="flipped">
+                <div class="row gx-5">
+
+                  <!-- Image Area -->
+                  <div class="col-12">
+                    <div class="regular-img-area img-body d-flex align-items-center justify-content-center">
+                      <img *ngIf="imageInformationTextAnswerCard?.answerImage"
+                           [src]="imageInformationTextAnswerCard?.answerImage"
+                           class="regular-img img-fluid rounded"
+                           alt="regImg"
+                           (click)="openImageModal(imageInformationTextAnswerCard?.answerImage)">
+                    </div>
+                  </div>
+
+                  <!-- Text Area -->
+                  <div class="col-12">
+                    <div class="text-area mt-4 d-flex justify-content-center">
+                      <p class="text text-center mb-1">{{ textAnswerCard?.textAnswer }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Flip Button -->
+                <button class="rotate-button-turn-to-front btn mt-2 position-absolute" (click)="flipCard()">
+                  <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+                </button>
+              </div>
+            </ng-container>
+
+            <!-- Multiple Choice card -->
+            <ng-container *ngIf="currentCard?.cardDTO?.cardType === 'MULTIPLE_CHOICE'">
+
+              <!-- Multiple Choice card front -->
+              <div class="front card p-5">
+                <div class="row gx-5">
+
+                  <!-- Image Area -->
+                  <div class="col-12">
+                    <div class="regular-img-area d-flex align-items-center justify-content-center">
+                      <img *ngIf="this.imageInformationMultipleChoiceCard?.questionImage"
+                           [src]="imageInformationMultipleChoiceCard?.questionImage"
+                           class="regular-img img-fluid rounded"
+                           alt="regImg"
+                           (click)="openImageModal(imageInformationMultipleChoiceCard?.questionImage)">
+                    </div>
+                  </div>
+
+                  <!-- Question and Choices Area -->
+                  <div class="col-12 d-flex flex-column justify-content-center pr-5">
+                    <div class="text-area mt-4">
+                      <p class="text text-center mb-1">{{ card?.cardDTO?.question }}</p>
+                    </div>
+
+                    <!-- Choices Area -->
+                    <div class="choices-area d-flex flex-column justify-content-center mt-4">
+                      <div class="row justify-content-center align-items-center">
+                        <ng-container *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index">
+                          <div class="col-sm-6 mb-2">
+                            <div class="d-flex flex-column align-items-center justify-content-center">
+                              <div class="choice-img-area mb-2" (click)="openImageModal(getAnswerImageUrl(i))">
+                                <img
+                                  *ngIf="getAnswerImageUrl(i)"
+                                  [src]="getAnswerImageUrl(i)"
+                                  class="choice-img img-fluid rounded"
+                                  alt="mcImg">
+                              </div>
+                              <div class="select-area d-flex align-items-center">
+                                <input type="checkbox" [id]="'choice-' + i" (change)="updateSelectedChoices($event, choice.answer)" class="me-2">
+                                <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                              </div>
+                            </div>
+                          </div>
+                          <div *ngIf="(i + 1) % 2 === 0" class="w-100"></div>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Flip Button -->
+                <button class="rotate-button-turn-to-back btn position-absolute" (click)="flipCard()">
+                  <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+                </button>
+              </div>
+
+
+              <!-- Multiple Choice card back -->
+              <div class="back card p-5" *ngIf="flipped">
+
+                <!-- Choices and Choices Area -->
+                <div class="choices-area d-flex flex-column justify-content-center mt-4">
+                  <div class="row justify-content-start align-items-center">
+                    <ng-container *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index">
+                      <div class="col-sm-6 mb-2">
+                        <div class="d-flex flex-column align-items-center justify-content-center">
+                          <div class="choice-img-area mb-1" (click)="openImageModal(getAnswerImageUrl(i))">
+                            <img
+                              *ngIf="getAnswerImageUrl(i)"
+                              [src]="getAnswerImageUrl(i)"
+                              class="choice-img img-fluid rounded"
+                              alt="mcImg">
+                          </div>
+                          <div class="select-area d-flex align-items-center">
+                            <input type="checkbox" [id]="'choice-' + i" [checked]="isCorrectChoice(choice.answer)" [disabled]="true" class="me-2">
+                            <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="(i + 1) % 2 === 0" class="w-100"></div>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <!-- Flip-Buttons -->
+                <button class="rotate-button-turn-to-front btn position-absolute" (click)="flipCard()">
+                  <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress progress-container mt-4">
+    <div class="progress-bar custom-progress" role="progressbar" [style.width.%]="calculateProgress()"
+         [attr.aria-valuenow]="calculateProgress()" aria-valuemin="0" aria-valuemax="100">
+      {{ calculateProgress() }}%
+    </div>
+  </div>
+
+  <!-- Next Button -->
+  <div class="next-button-container d-flex justify-content-center align-items-center flex-wrap mt-4">
+    <button class="btn next-button" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_5)">
+      <span *ngIf="!buttonIsPressed">Next</span>
+      <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+    </button>
+  </div>
+</app-base-page>
+
+<!-- Modal for image enlargement -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Image</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <img id="modalImage" src="" class="img-fluid" alt="imgBig" />
+      </div>
+    </div>
+  </div>
+</div>
