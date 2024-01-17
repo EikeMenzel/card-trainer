@@ -64,7 +64,7 @@ public class DbQueryService {
     }
     public Optional<Boolean> doesUserHaveAchievement(Long userId, Long achievementId) {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/user-achievements/users/" + userId + "/achievements/" + achievementId + "/exists", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(dbPath + "/user-achievements" + usersPath + userId + "/achievements/" + achievementId + "/exists", String.class);
             return (responseEntity.getStatusCode() == HttpStatus.OK)
                     ? Optional.of(Boolean.parseBoolean(responseEntity.getBody()))
                     : Optional.empty();

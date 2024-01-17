@@ -17,5 +17,5 @@ public interface LearnSessionRepository extends JpaRepository<LearnSession, Long
     @Query("SELECT CASE WHEN COUNT(ls) > 0 THEN TRUE ELSE FALSE END FROM LearnSession ls WHERE ls.user.id = :userId AND ls.status.type = 'FINISHED' AND DATE(ls.finishedAt) = CURRENT_DATE")
     Boolean isLearnSessionCompletedToday(Long userId);
 
-    @Query("SELECT ls FROM LearnSession ls WHERE ls.user.id = :userId AND ls.status.type = 'FINISHED' AND DATE(ls.finishedAt) = CURRENT_DATE")
-    List<LearnSession> findLearnSessionsFinishedTodayByUserId(@Param("userId") Long userId);}
+    @Query("SELECT ls FROM LearnSession ls WHERE ls.user.id = :userId AND DATE(ls.createdAt) = CURRENT_DATE")
+    List<LearnSession> findLearnSessionsTodayByUserId(@Param("userId") Long userId);}
