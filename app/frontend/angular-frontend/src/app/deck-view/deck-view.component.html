@@ -43,7 +43,8 @@
 
 
               <div class="progress-chart-container">
-                <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
+                <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames"
+                                 [chartValues]="chartData"></app-donut-chart>
               </div>
             </div>
 
@@ -53,12 +54,14 @@
           <div class="deck-actions mb-4 text-center d-flex flex-column align-items-center">
             <button class="btn custom-action-button mb-2"
                     routerLink="./learn"
-                    (click)="startLearningSession()"
                     [disabled]="deckCardsLeft===0"
                     [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">
               Start to Learn
             </button>
-            <button class="btn custom-action-button mb-2" routerLink="./peek" [disabled]="deckSize === 0" [ngClass]="{'disabled-function-color': deckSize === 0}">Quick Peek</button>
+            <button class="btn custom-action-button mb-2" routerLink="./peek"
+                    [disabled]="deckSize === 0"
+                    [ngClass]="{'disabled-function-color': deckSize === 0}">Quick Peek
+            </button>
           </div>
 
           <!-- Share and Export -->
@@ -75,24 +78,24 @@
     </div>
   </div>
 </app-base-page>
-  <ng-template #content let-modal>
-    <div class="modal-header primary-background-color">
-      <h4 class="modal-title" id="modal-basic-title">Share your Deck</h4>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+<ng-template #content let-modal>
+  <div class="modal-header primary-background-color">
+    <h4 class="modal-title" id="modal-basic-title">Share your Deck</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <form (submit)="onSubmit()">
+    <div class="modal-body">
+      <label for="email-holder">Enter the E-Mail Address of the recipient:</label>
+      <input type="email" class="form-control" id="email-holder" [style.border-color]="emailBorder" [(ngModel)]="email"
+             name="email"
+             placeholder="example@example.com">
+      <p *ngIf="emailWarn" class="text-center text-danger fw-bold">Please enter a valid e-mail</p>
     </div>
-    <form (submit)="onSubmit()">
-      <div class="modal-body">
-        <label for="email-holder">Enter the E-Mail Address of the recipient:</label>
-        <input type="email" class="form-control" id="email-holder" [style.border-color]="emailBorder" [(ngModel)]="email"
-               name="email"
-               placeholder="example@example.com">
-        <p *ngIf="emailWarn" class="text-center text-danger fw-bold">Please enter a valid e-mail</p>
-      </div>
-      <div class="modal-footer">
-        <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
-          <span *ngIf="!buttonIsPressed">Share</span>
-          <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
-        </button>
-      </div>
-    </form>
-  </ng-template>
+    <div class="modal-footer">
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
+        <span *ngIf="!buttonIsPressed">Share</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+  </form>
+</ng-template>

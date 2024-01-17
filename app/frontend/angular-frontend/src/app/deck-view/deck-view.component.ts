@@ -10,7 +10,6 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {FormsModule} from "@angular/forms";
 import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {LearningSessionService} from "../services/learn-session-service/learn-session.service";
 import {faPencil, faSave, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
@@ -50,8 +49,7 @@ export class DeckViewComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private cardService: CardService,
               private authService: AuthService,
-              private toastService: ToastService,
-              private learningSessionService: LearningSessionService) {
+              private toastService: ToastService) {
   }
 
 
@@ -212,10 +210,6 @@ export class DeckViewComponent implements OnInit {
     this.emailBorder = "grey";
     this.emailWarn = false;
     this.modalRef = this.modalService.open(content);
-  }
-
-  startLearningSession() {
-    this.learningSessionService.setLearningSession(true);
   }
 
   enableEditMode() {

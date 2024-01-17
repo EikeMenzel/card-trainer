@@ -20,7 +20,6 @@ import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
 import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {LearningSessionService} from "../services/learn-session-service/learn-session.service";
 
 @Component({
   standalone: true,
@@ -57,6 +56,7 @@ export class LearnCardViewComponent implements OnInit {
   imageInformationMultipleChoiceCard: MultipleChoiceCardImage | undefined;
 
   buttonIsPressed: boolean = false;
+  unauthorizedFound: boolean = false;
 
   @ViewChild('content') private donutModal: ElementRef | undefined;
 
@@ -76,7 +76,6 @@ export class LearnCardViewComponent implements OnInit {
     private router: Router,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
-    private learnSessionService: LearningSessionService,
   ) {
   }
 
@@ -88,8 +87,12 @@ export class LearnCardViewComponent implements OnInit {
     this.nextCard();
   }
 
+  canDestroy():boolean {
+    return this.unauthorizedFound || this.isSessionFinished || (confirm("Are you sure you want to leave this learn session") && !this.isSessionFinished && !this.unauthorizedFound);
+  }
+
   ngOnDestroy(){
-    if (!this.isSessionFinished) {
+    if (!this.isSessionFinished && !this.unauthorizedFound) {
       this.cardService.cancelLearnSessionStatus(this.learnSessionId).subscribe();
     }
   }
@@ -126,6 +129,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -144,7 +148,6 @@ export class LearnCardViewComponent implements OnInit {
     this.buttonIsPressed = true;
     this.cardService.finishedLearnSessionStatus(this.learnSessionId).subscribe({
       next: (res) => {
-        this.learnSessionService.setLearningSession(false);
         this.fetchLearnSessionResults();
       },
       error: (err) => {
@@ -156,6 +159,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -320,6 +324,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -351,6 +356,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -379,6 +385,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -415,6 +422,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -441,6 +449,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
