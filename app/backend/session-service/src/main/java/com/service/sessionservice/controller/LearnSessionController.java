@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +48,7 @@ public class LearnSessionController {
                 : ResponseEntity.status(httpStatusCodeLongPair.getLeft()).build();
     }
 
-    @GetMapping("/decks/{deckId}/next-card") // Get next Card for learn-session
+    @GetMapping("/decks/{deckId}/learn-sessions/{learnSessionId}/next-card") // Get next Card for learn-session
     @Operation(summary = "Get Next Card for Learning",
             description = "Retrieves the next card for the ongoing learning session in a specified deck.<br><br>" +
                     "<strong>Note:</strong> User ID and deck ID must be valid." +
@@ -56,15 +58,19 @@ public class LearnSessionController {
                     @ApiResponse(responseCode = "204", description = "No next card to be retrieved"),
                     @ApiResponse(responseCode = "400", description = "Bad request"),
                     @ApiResponse(responseCode = "404", description = "User or deck not found"),
+                    @ApiResponse(responseCode = "409", description = "CardsToLearn reached"),
                     @ApiResponse(responseCode = "500", description = "Some service could not be reached")
             })
     public ResponseEntity<Object> getNextCard(
             @Parameter(description = "User ID of the learner", required = true) @RequestHeader Long userId,
-            @Parameter(description = "Deck ID for retrieving the next card", required = true) @PathVariable Long deckId) {
-        Pair<HttpStatusCode, Object> httpStatusCodeObjectPair = dbQueryService.getLongestUnseenCard(userId, deckId);
-        return httpStatusCodeObjectPair.getLeft() == HttpStatus.OK
-                ? ResponseEntity.ok(httpStatusCodeObjectPair.getRight())
-                : ResponseEntity.status(httpStatusCodeObjectPair.getLeft()).build();
+            @Parameter(description = "Deck ID for retrieving the next card", required = true) @PathVariable Long deckId,
+            @Parameter(description = "LearnSession ID for checking current amount of cards learned", required = true) @PathVariable Long learnSessionId) {
+        Pair<HttpStatusCode, Object> httpStatusCodeObjectPair = dbQueryService.getLongestUnseenCard(userId, deckId, learnSessionId);
+        if(httpStatusCodeObjectPair.getLeft() == HttpStatus.OK || httpStatusCodeObjectPair.getLeft() == HttpStatus.CONFLICT) {
+            return ResponseEntity.status(httpStatusCodeObjectPair.getLeft()).body(httpStatusCodeObjectPair.getRight());
+        }
+
+        return ResponseEntity.status(httpStatusCodeObjectPair.getLeft()).build();
     }
 
     @PutMapping("/learn-sessions/{learnSessionId}/rating")

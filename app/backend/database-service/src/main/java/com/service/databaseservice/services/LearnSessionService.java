@@ -161,4 +161,11 @@ public class LearnSessionService {
                 .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
                 .sum();
     }
+
+    public Integer getCardsLearnedInThisSession(Long learnSessionId) {
+        return learnSessionRepository.findById(learnSessionId)
+                .stream()
+                .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
+                .sum();
+    }
 }

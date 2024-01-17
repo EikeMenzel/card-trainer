@@ -1,8 +1,6 @@
 package com.service.mailservice.services;
 
 import com.service.mailservice.payload.inc.UserDailyReminderDTO;
-import com.service.mailservice.services.DbQueryService;
-import com.service.mailservice.services.MailService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -15,7 +13,6 @@ import java.util.Optional;
 
 @SpringBootTest
 class DailyLearnReminderServiceTest {
-
     @Mock
     private DbQueryService dbQueryService;
 
