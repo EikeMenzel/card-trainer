@@ -1,124 +1,225 @@
-<div class="user-profile container">
-  <div class="row">
-    <div class="col-12 col-md-4">
-      <div class="profile-header text-center custom-margin-top-65">
-        <img src="assets/fox2.png" alt="User Profile" class="rounded-circle mb-3">
+<app-base-page>
+  <div class="user-profile-container container">
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6">
+        <div class="profile-header text-center mt-2">
+          <img src="assets/fox2.png" alt="user-profile">
+        </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-8 position-relative">
-
-      <!-- Home Button -->
-      <div class="position-absolute top-0 end-0 mt-0 me-3">
-        <button routerLink="/" class="btn home-button">
-          <fa-icon class="nav-icon fa-xl" [icon]="faHouse"></fa-icon>
-        </button>
+    <!-- Achievements Section -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 achievements-section">
+        <ng-container *ngIf="isSmallScreen; else achievementsSection">
+          <div class="text-center">
+            <button class="btn show-achievements-button" (click)="openAchievementsModal()">
+              Show Achievements
+            </button>
+          </div>
+        </ng-container>
+        <ng-template #achievementsSection>
+          <div class="achievements-container">
+            <div *ngFor="let achievement of achievements" class="achievement"
+                 [attr.data-name]="achievement.achievementName" [attr.data-description]="achievement.description">
+              <img *ngIf="achievementImages.get(achievement.achievementId)" class="achievement-image"
+                   [src]="achievementImages.get(achievement.achievementId)" alt="{{achievement.achievementName}}">
+              <div class="speech-bubble">
+                <strong>{{ achievement.achievementName }}</strong>
+                <p>{{ achievement.description }}</p>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
+    </div>
 
-      <div class="profile-body custom-margin-top-60">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10">
+          <div class="profile-body mt-3">
 
-        <form (ngSubmit)="saveProfile()">
+            <form (ngSubmit)="saveProfile()">
 
-          <!-- Name input -->
-          <div class="form-group mb-2">
-            <label for="nameInput">Name</label>
-            <input type="text" class="form-control" id="nameInput" placeholder="" [(ngModel)]="userProfile.username"
-                   name="name">
-          </div>
+              <!-- Name input -->
+              <div class="form-group mb-2">
+                <label for="nameInput">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="nameInput"
+                       placeholder=""
+                       name="name"
+                       [(ngModel)]="userProfile.username"
+                       (ngModelChange)="validateNameAndEmail()">
+                <div class="error text-danger mt-2" *ngIf="nameError">
+                  {{nameError}}
+                </div>
+              </div>
 
-          <!-- Email input -->
-          <div class="form-group mb-4">
-            <label for="emailInput">E-Mail address</label>
-            <input type="email" class="form-control" id="emailInput" placeholder="" [(ngModel)]="userProfile.email"
-                   name="email">
-          </div>
+              <!-- Email input -->
+              <div class="form-group mb-4">
+                <label for="emailInput">E-Mail address</label>
+                <input type="email"
+                       class="form-control"
+                       id="emailInput"
+                       placeholder=""
+                       name="email"
+                       [(ngModel)]="userProfile.email"
+                       (ngModelChange)="validateNameAndEmail()">
+                <div class="error text-danger mt-2" *ngIf="emailError">
+                  {{emailError}}
+                </div>
+              </div>
 
-          <!-- Update Password button -->
-          <div class="form-group row mb-2">
-            <div class="col-sm-4">
-              <button type="button" class="btn update-pw-button w-100" (click)="openModal(content)">Update password
-              </button>
-            </div>
-          </div>
+              <!-- Update Password button -->
+              <div class="form-group row mb-2">
+                <div class="col-sm-4">
+                  <button type="button" class="btn update-pw-button w-100" (click)="openModal(content)">Update Password
+                  </button>
+                </div>
+              </div>
 
-          <!-- Update Password Modal -->
-          <ng-template #content let-modal>
-            <div class="modal-header update-pw-header">
-              <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel">Update your password</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                      (click)="modal.close();emptyPasswordModalFields()"></button>
-            </div>
-            <form (submit)="changePassword()">
-              <div class="modal-body">
-                <div>
-                  <!-- New password input -->
-                  <div class="form-group mb-2">
-                    <label for="newPassword">New password</label>
-                    <input type="password" class="form-control" id="newPassword" [(ngModel)]="newPassword"
-                           name="newPassword" required>
+              <!-- Update Password Modal -->
+              <ng-template #content let-modal>
+                <div class="modal-header update-pw-header">
+                  <h5 class="modal-title mt-2 mb-0" id="updatePasswordModalLabel">Update your password</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                          (click)="modal.close();emptyPasswordModalFields()"></button>
+                </div>
+                <form (submit)="changePassword()">
+                  <div class="modal-body">
+                    <div>
+                      <!-- New password input -->
+                      <div class="mb-3">
+                        <label for="newPassword" class="form-label">New password</label>
+                        <span class="password-policy" title=
+                          "A password must be:
+                          • between 8 - 72 characters long
+                          • contain at least one number
+                          • at least special character: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
+                          </span>
+                        <div class="input-group">
+                          <input [type]="showPassword ? 'text' : 'password'"
+                                 class="form-control"
+                                 id="newPassword"
+                                 placeholder="Enter your password"
+                                 name="newPassword"
+                                 [(ngModel)]="newPassword"
+                                 (ngModelChange)="validatePasswordFields()">
+                          <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
+                            <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+                          </button>
+                        </div>
+                        <div class="error text-danger mt-2" *ngIf="passwordError">
+                          {{passwordError}}
+                        </div>
+                      </div>
+
+                      <!-- Re-enter new password input -->
+                      <div class="mb-3">
+                        <label for="reenterNewPassword" class="form-label">Re-enter Password</label>
+                        <div class="input-group">
+                          <input [type]="showPasswordRepeat ? 'text' : 'password'"
+                                 class="form-control"
+                                 id="reenterNewPassword"
+                                 placeholder="Re-enter your password"
+                                 name="reenterNewPassword"
+                                 [(ngModel)]="reenterNewPassword"
+                                 (ngModelChange)="validatePasswordFields()">
+                          <button type="button" class="btn toggle-password" (click)="showPasswordRepeat = !showPasswordRepeat">
+                            <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
+                          </button>
+                        </div>
+                        <div class="error text-danger mt-2" *ngIf="passwordRepeatError">
+                          {{passwordRepeatError}}
+                        </div>
+                      </div>
+                      <div class="modal-footer update-pw-footer mb-2">
+                        <button [disabled]="buttonModalIsPressed" type="submit" class="btn change-pw-button">
+                          <span *ngIf="!buttonModalIsPressed">Change password</span>
+                          <span *ngIf="buttonModalIsPressed" class="spinner-border spinner-border-sm"></span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <!-- Re-enter new password input -->
-                  <div class="form-group mb-4">
-                    <label for="reenterNewPassword">Re-enter new password</label>
-                    <input type="password" class="form-control" id="reenterNewPassword"
-                           [(ngModel)]="reenterNewPassword" name="reenterNewPassword" required>
-                  </div>
-                  <div class="modal-footer update-pw-footer mb-2">
-                    <button [disabled]="buttonModalIsPressed" type="submit" class="btn change-pw-button w-100">
-                      <span *ngIf="!buttonModalIsPressed">Change password</span>
-                      <span *ngIf="buttonModalIsPressed" class="spinner-border spinner-border-sm"></span>
-                    </button>
-                  </div>
+                </form>
+              </ng-template>
+
+              <hr>
+
+              <!-- Number of cards input -->
+              <div class="form-group row mb-2">
+                <label for="numberOfCards" class="col-sm-8 col-form-label">Number of cards to be learned per session</label>
+                <div class="col-sm-6 col-md-4">
+                  <input
+                    type="number"
+                    class="form-control w-100"
+                    id="numberOfCards"
+                    name="numberOfCards"
+                    min="1"
+                    [(ngModel)]="userProfile.cardsToLearn">
+                </div>
+              </div>
+
+              <!-- Inline form group for language selection -->
+              <div class="form-group row mb-4">
+                <label for="languageSelect" class="col-sm-8 col-form-label">Language</label>
+                <div class="col-sm-6 col-md-4">
+                  <select class="form-control w-100" id="languageSelect" name="language" [(ngModel)]="userProfile.langCode">
+                    <option value="DE">German</option>
+                    <option value="EN">English</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Switch for Receive notifications -->
+              <div class="form-check form-switch mb-4">
+                <input class="form-check-input switch-button-input" type="checkbox" id="receiveNotifications"
+                       name="receiveNotifications" [(ngModel)]="userProfile.receiveLearnNotification">
+                <label class="form-check-label switch-button-label" for="receiveNotifications">Receive a learning
+                  notification</label>
+              </div>
+
+              <div class="form-group row d-flex justify-content-end">
+                <!-- Logout button -->
+                <div class="col-sm-4 col-md-3 mb-2 mb-md-0 mb-2">
+                  <button type="button" class="btn logout-button w-100" (click)="logoutWarningPopup()">Logout</button>
+                </div>
+
+                <!-- Save button -->
+                <div class="col-sm-4 col-md-3">
+                  <button type="submit" class="btn save-button w-100">Save</button>
                 </div>
               </div>
             </form>
-          </ng-template>
-
-          <hr>
-
-          <!-- Number of cards input -->
-          <div class="form-group row mb-2">
-            <label for="numberOfCards" class="col-sm-8 col-form-label">Number of cards to be learned per session</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" id="numberOfCards" name="numberOfCards" min="1"
-                     [(ngModel)]="userProfile.cardsToLearn">
-            </div>
-          </div>
-
-          <!-- Inline form group for language selection -->
-          <div class="form-group row mb-4">
-            <label for="languageSelect" class="col-sm-8 col-form-label">Language</label>
-            <div class="col-sm-4">
-              <select class="form-control" id="languageSelect" name="language" [(ngModel)]="userProfile.langCode">
-                <option value="DE">German</option>
-                <option value="EN">English</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Switch for Receive notifications -->
-          <div class="form-check form-switch mb-4">
-            <input class="form-check-input switch-button-input" type="checkbox" id="receiveNotifications"
-                   name="receiveNotifications" [(ngModel)]="userProfile.receiveLearnNotification">
-            <label class="form-check-label switch-button-label" for="receiveNotifications">Receive a learning
-              notification</label>
-          </div>
-
-          <div class="form-group row">
-            <div class="col-sm-8"></div>
-
-            <!-- Logout button -->
-            <div class="col-sm-2">
-              <button type="button" class="btn logout-button w-100" (click)="this.logoutWarningPopup()">Logout</button>
-            </div>
-
-            <!-- Save button -->
-            <div class="col-sm-2">
-              <button type="submit" class="btn save-button w-100">Save</button>
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
+ </app-base-page>
+
+<!-- Achievement Modal -->
+<ng-template #achievementsModal let-modal>
+  <div class="modal-header custom-modal-header">
+    <h5 class="modal-title text-center no-border custom-modal-title">Your Achievements</h5>
+  </div>
+  <div class="modal-body custom-modal-body no-border">
+    <div class="achievements-container">
+      <div *ngFor="let achievement of achievements" class="achievement"
+           [attr.data-name]="achievement.achievementName" [attr.data-description]="achievement.description">
+        <img *ngIf="achievementImages.get(achievement.achievementId)" class="achievement-image"
+             [src]="achievementImages.get(achievement.achievementId)" alt="{{achievement.achievementName}}">
+        <div class="speech-bubble">
+          <strong>{{ achievement.achievementName }}</strong>
+          <p>{{ achievement.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom-modal-footer no-border">
+    <button type="button" class="btn continue-button" (click)="modal.dismiss()">Continue</button>
+  </div>
+</ng-template>
+
+
+

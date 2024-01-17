@@ -1,13 +1,12 @@
-.user-profile {
-  background-color: #F2FEDC;
+.user-profile-container {
+  background-color: var(--bg-main-color);
   max-width: 90%;
   height: auto;
-  margin: 100px auto;
   border: 1px solid #e1e1e1;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 40px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: auto;
 }
 
 .toast-container {
@@ -35,45 +34,31 @@
   padding-top: 20px;
 }
 
-.custom-margin-top-65 {
-  margin-top: 65px;
-}
-
 .custom-margin-top-60 {
   margin-top: 60px;
 }
 
-.icon-home {
-  color: var(--primary-color);
-}
-
-.home-button {
-  color: var(--primary-color);
-  background-color: transparent;
-  border: 2px solid var(--primary-color);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s, color 0.3s;
-}
-
 .change-pw-button,
+.update-pw-button,
 .save-button,
-.update-pw-button {
-  color: var(--primary-color);
-  background-color: transparent;
+.show-achievements-button {
+  color: white;
+  background-color: var(--primary-color);
   border: 2px solid var(--primary-color);
   transition: background-color 0.3s, color 0.3s;
 }
 
 .logout-button {
   color: white;
-  background-color: rgb(225, 102, 102);
-  border: 2px solid rgb(225, 102, 102);
+  background-color: var(--primary-error-color);
+  border: 2px solid var(--primary-error-color);
   transition: background-color 0.3s, color 0.3s;
+}
+
+.logout-button:hover,
+.logout-button:active {
+  background-color: var(--primary-error-color);
+  color: white;
 }
 
 .change-pw-button:hover,
@@ -82,20 +67,20 @@
 .save-button:active,
 .update-pw-button:hover,
 .update-pw-button:active,
-.home-button:hover,
-.home-button:active {
-  background-color: var(--bg-main-color);
+.show-achievements-button:hover,
+.show-achievements-button:active {
+  background-color: var(--primary-color);
   color: white;
 }
 
 .switch-button-input:checked {
-  background-color: var(--bg-main-color);
-  border-color: var(--bg-main-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .switch-button-input:checked + .switch-button-label:before {
-  background-color: var(--bg-main-color);
-  border-color: var(--bg-main-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .update-pw-header,
@@ -103,26 +88,131 @@
   border: none;
 }
 
-@media (min-width: 576px) {
-  .user-profile {
-    max-width: 540px;
+.achievement-image {
+  box-sizing: border-box;
+  max-width: 60px;
+  max-height: 60px;
+  margin: 2px;
+}
+
+.achievements-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.achievement {
+  position: relative;
+  flex: 0 0 calc(1% - 4px);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+  cursor: help;
+}
+
+.speech-bubble {
+  position: absolute;
+  bottom: 100%; /* Positioning the speech bubble over the image */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid white;
+  color: var(--primary-color);
+  border-radius: 8px;
+  padding: 10px;
+  display: none;
+  width: max-content;
+  max-width: 150px;
+  word-wrap: break-word;
+  z-index: 10;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border-width: 10px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+  transform: translateX(-50%);
+}
+
+.achievement:hover .speech-bubble {
+  display: block; /* Display on hover */
+}
+
+.toggle-password {
+  width: 50px;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: none;
+}
+
+.toggle-password:hover,
+.toggle-password:active {
+  color: var(--primary-color);
+}
+
+.custom-modal-header,
+.custom-modal-body,
+.custom-modal-footer {
+  background-color: var(--bg-main-color);
+  border: none;
+}
+
+.custom-modal-footer .continue-button {
+  color: white;
+  background-color: var(--primary-color);
+}
+.custom-modal-footer .continue-button:hover,
+.custom-modal-footer .continue-button:active {
+  background-color: var(--primary-color);
+}
+.custom-modal-title {
+  margin: 0 auto;
+  display: table;
+}
+
+.password-policy {
+  color: var(--primary-color);
+  display: inline-block;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  cursor: help;
+  padding: 0;
+  border: 1px solid var(--primary-color);
+  border-radius: 50%;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: smaller;
+  vertical-align: middle;
+}
+
+
+
+/* For large screens */
+@media (max-width: 1271px) {
+  .achievement {
+    flex: 0 0 calc(25% - 5px); /* 4 images in a row */
+    z-index: 1;
   }
 }
 
-@media (min-width: 768px) {
-  .user-profile {
-    max-width: 720px;
+/* For small screens */
+@media (max-width: 395px) {
+  .achievement {
+    flex: 0 0 calc(50% - 4px); /* 2 image in a row, full width */
+    z-index: 1;
   }
 }
-
-@media (min-width: 992px) {
-  .user-profile {
-    max-width: 960px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .user-profile {
-    max-width: 1140px;
+/* For extra small screens */
+@media (max-width: 275px) {
+  .achievement {
+    flex: 0 0 calc(100% - 4px); /* 1 image in a row, full width */
+    z-index: 1;
   }
 }
