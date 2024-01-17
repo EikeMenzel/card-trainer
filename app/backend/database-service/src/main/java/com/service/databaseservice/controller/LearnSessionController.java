@@ -4,15 +4,16 @@ import com.service.databaseservice.payload.inc.learnsession.RatingCardHandlerDTO
 import com.service.databaseservice.payload.inc.learnsession.StatusTypeDTO;
 import com.service.databaseservice.payload.out.HistoryDTO;
 import com.service.databaseservice.payload.out.HistoryDetailDTO;
-import com.service.databaseservice.services.CardService;
-import com.service.databaseservice.services.DeckService;
-import com.service.databaseservice.services.LearnSessionService;
-import com.service.databaseservice.services.RepetitionService;
+import com.service.databaseservice.payload.out.MessageResponseDTO;
+import com.service.databaseservice.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +27,13 @@ public class LearnSessionController {
     private final DeckService deckService;
     private final CardService cardService;
     private final RepetitionService repetitionService;
-
-    public LearnSessionController(LearnSessionService learnSessionService, DeckService deckService, CardService cardService, RepetitionService repetitionService) {
+    private final UserService userService;
+    public LearnSessionController(LearnSessionService learnSessionService, DeckService deckService, CardService cardService, RepetitionService repetitionService, UserService userService) {
         this.learnSessionService = learnSessionService;
         this.deckService = deckService;
         this.cardService = cardService;
         this.repetitionService = repetitionService;
+        this.userService = userService;
     }
 
     @GetMapping("/users/{userId}/learn-sessions/{deckId}/timestamp")
@@ -147,7 +149,6 @@ public class LearnSessionController {
                                                           @Parameter(description = "Learn session ID to update status for", required = true) @PathVariable Long learnSessionId,
                                                           @Parameter(description = "Contains the status-type that should be updated", required = true,
                                                                   content = @Content(mediaType = "application/json", schema = @Schema(implementation = StatusTypeDTO.class))) @RequestBody StatusTypeDTO statusTypeDTO) {
-
         if (!learnSessionService.doesLearnSessionFromUserExist(userId, learnSessionId))
             return ResponseEntity.notFound().build();
 
@@ -156,7 +157,7 @@ public class LearnSessionController {
                 : ResponseEntity.internalServerError().build();
     }
 
-    @GetMapping("/users/{userId}/decks/{deckId}/cards/longest-unseen")
+    @GetMapping("/users/{userId}/decks/{deckId}/learn-sessions/{learnSessionId}/cards/longest-unseen")
     @Operation(summary = "Get Longest Unseen Card",
             description = "Retrieves the card that has been unseen for the longest time in a specific deck for a user.<br><br>" +
                     "<strong>Note:</strong> Requires valid user ID and deck ID." +
@@ -164,14 +165,23 @@ public class LearnSessionController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Longest unseen card successfully retrieved", content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "204", description = "No cards found"),
+                    @ApiResponse(responseCode = "409", description = "CardsToLearn reached"),
                     @ApiResponse(responseCode = "404", description = "Deck not found"),
                     @ApiResponse(responseCode = "500", description = "Service could not be reached")
             })
     public ResponseEntity<Object> getLongestUnseenCard(
             @Parameter(description = "User ID of the learner", required = true) @PathVariable Long userId,
-            @Parameter(description = "Deck ID to retrieve the longest unseen card from", required = true) @PathVariable Long deckId) {
+            @Parameter(description = "Deck ID to retrieve the longest unseen card from", required = true) @PathVariable Long deckId,
+            @Parameter(description = "LearnSession ID necessary to check if cardsToLearn is reached", required = true) @PathVariable Long learnSessionId) {
+
         if (!deckService.existsByDeckIdAndUserId(deckId, userId))
             return ResponseEntity.notFound().build();
+
+        if(!learnSessionService.doesLearnSessionFromUserExist(userId, learnSessionId))
+            return ResponseEntity.notFound().build();
+
+        if(learnSessionService.getCardsLearnedInThisSession(learnSessionId) >= userService.getCardsToLearn(userId))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO("Reach maximum cards learned"));
 
         return cardService.getOldestCardToLearn(deckId)
                 .map(ResponseEntity::ok).orElse(ResponseEntity.noContent().build());
