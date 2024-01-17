@@ -172,7 +172,7 @@
 
   <!-- Next Button -->
   <div class="next-button-container d-flex justify-content-center align-items-center flex-wrap mt-4">
-    <button class="btn next-button" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_5)">
+    <button class="btn next-button" [disabled]="buttonIsPressed" (click)="savePeekSessionCardLearned()">
       <span *ngIf="!buttonIsPressed">Next</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>

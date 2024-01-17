@@ -9,7 +9,6 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {AuthService} from "../services/auth-service/auth-service";
 import {TextAnswerCardDTO} from "../models/learn-session/TextAnswerCardDTO";
 import {MultipleChoiceCardDTO} from "../models/learn-session/MultipleChoiceCardDTO";
-import {RatingDTO} from "../models/learn-session/RatingDTO";
 import {ActivatedRoute, Router} from "@angular/router";
 import {faArrowsRotate} from "@fortawesome/free-solid-svg-icons";
 import {catchError, map, Observable, of} from "rxjs";
@@ -51,6 +50,7 @@ export class PeekCardViewComponent implements OnInit {
 
   buttonIsPressed: boolean = false;
   isSessionFinished: boolean = false;
+  unauthorizedFound: boolean = false;
 
   constructor(
     private cardService: CardService,
@@ -83,6 +83,7 @@ export class PeekCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -111,11 +112,11 @@ export class PeekCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
             this.toastService.showErrorToast("Error", "No Cards found. Please create Cards");
-            console.log(err)
             break;
           default:
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
@@ -167,6 +168,7 @@ export class PeekCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -176,15 +178,14 @@ export class PeekCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
 
   finishPeekSession(deckId: number) {
     this.cardService.finishStatusOfCardPeek(this.peekSessionId).subscribe({
-      next: (res) => {
-        this.toastService.showSuccessToast("Successful", "Finished Peek-session");
-      },
+      next: (res) => {},
       error: (err) => {
         const statusCode = err.status;
         switch (statusCode) {
@@ -194,6 +195,7 @@ export class PeekCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -258,9 +260,13 @@ export class PeekCardViewComponent implements OnInit {
     }
   }
 
+  canDestroy():boolean {
+      return this.unauthorizedFound || this.isSessionFinished || (confirm("Are you sure you want to leave this peek session") && !this.isSessionFinished && !this.unauthorizedFound);
+  }
+
   ngOnDestroy(): void {
-    if (!this.isSessionFinished) {
-      this.cardService.setCancelledPeekStatus(this.peekSessionId).subscribe()
+    if (!this.isSessionFinished && !this.unauthorizedFound) {
+        this.cardService.setCancelledPeekStatus(this.peekSessionId).subscribe()
     }
   }
 
@@ -346,6 +352,7 @@ export class PeekCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -360,11 +367,10 @@ export class PeekCardViewComponent implements OnInit {
     );
   }
 
-  saveLearnSessionRating(ratingDTO: RatingDTO) {
+  savePeekSessionCardLearned() {
     this.buttonIsPressed = true;
     this.cardService.savePeekSessionCard(this.peekSessionId, <number>this.card?.cardDTO.id).subscribe({
       next: (res) => {
-        //Do nothing, would be too much feedback ...
         this.nextCard();
         this.cardsLearned++;
       },
@@ -377,6 +383,7 @@ export class PeekCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -386,11 +393,11 @@ export class PeekCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
 
-  protected readonly RatingDTO = RatingDTO;
   protected readonly faArrowsRotate = faArrowsRotate;
 
   openImageModal(imageUrl: SafeUrl | undefined) {
