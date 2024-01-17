@@ -74,4 +74,5 @@ export class UserService {
   registerUser(registerRequest: RegisterRequestDTO) {
     return this.http.post<RegisterRequestDTO>('/api/v1/register', registerRequest, {observe: 'response'})
   }
+
 }
