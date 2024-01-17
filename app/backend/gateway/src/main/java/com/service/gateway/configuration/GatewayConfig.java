@@ -82,8 +82,8 @@ public class GatewayConfig {
 
                 .route("session-service",
                         r -> r.path(
+                                "/api/v1/decks/{deckId}/learn-sessions/{learnSessionId}/next-card",
                                 "/api/v1/decks/{deckId}/learn-sessions",
-                                "/api/v1/decks/{deckId}/next-card",
                                 "/api/v1/learn-sessions/{learnSessionId}/rating",
                                 "/api/v1/learn-sessions/{learnSessionId}/status",
                                 "/api/v1/decks/{deckId}/peek-sessions",

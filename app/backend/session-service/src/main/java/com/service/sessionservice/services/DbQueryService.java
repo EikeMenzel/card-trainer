@@ -89,15 +89,19 @@ public class DbQueryService {
         }
     }
 
-    public Pair<HttpStatusCode, Object> getLongestUnseenCard(Long userId, Long deckId) {
+    public Pair<HttpStatusCode, Object> getLongestUnseenCard(Long userId, Long deckId, Long learnSessionId) {
         try {
-            String url = usersDbApiPath + "/" + userId + decksPath + deckId + "/cards/longest-unseen";
+            String url = usersDbApiPath + "/" + userId + decksPath + deckId + learnSessionPath + "/" + learnSessionId + "/cards/longest-unseen";
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
-            return (responseEntity.getStatusCode() == HttpStatus.OK)
+
+            return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Pair.of(HttpStatus.OK, Optional.ofNullable(responseEntity.getBody()))
                     : Pair.of(responseEntity.getStatusCode(), Optional.empty());
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             logger.debug(e.getMessage());
+            if(e.getStatusCode() == HttpStatus.CONFLICT)
+                return Pair.of(HttpStatus.CONFLICT, Optional.of(e.getResponseBodyAsString()));
+
             return Pair.of(e.getStatusCode(), Optional.empty());
         }
     }
