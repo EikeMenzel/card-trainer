@@ -229,9 +229,8 @@ public class DeckController {
     public ResponseEntity<Void> importDeck(
             @Parameter(description = "User ID of the importer", required = true) @RequestHeader Long userId,
             @Parameter(description = "Zip file containing the deck", required = true) @RequestParam("file") MultipartFile multipartFile) {
-        if (!Objects.equals(multipartFile.getContentType(), "application/x-zip-compressed"))
+        if (!Objects.equals(multipartFile.getContentType(), "application/x-zip-compressed") && !(Objects.equals(multipartFile.getContentType(), "application/zip")))
             return ResponseEntity.unprocessableEntity().build();
-
 
         var statusCode = importService.processZipFile(multipartFile, userId);
         return statusCode == HttpStatus.INTERNAL_SERVER_ERROR
