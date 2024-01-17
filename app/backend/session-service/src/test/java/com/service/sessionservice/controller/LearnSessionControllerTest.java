@@ -75,9 +75,9 @@ class LearnSessionControllerTest {
     @Test
     void whenGetNextCard_thenReturnOk() throws Exception {
         Pair<HttpStatusCode, Object> mockResponse = Pair.of(HttpStatus.OK, "Card Data");
-        when(dbQueryService.getLongestUnseenCard(anyLong(), anyLong())).thenReturn(mockResponse);
+        when(dbQueryService.getLongestUnseenCard(anyLong(), anyLong(), anyLong())).thenReturn(mockResponse);
 
-        mockMvc.perform(get("/api/v1/decks/1/next-card")
+        mockMvc.perform(get("/api/v1/decks/1/learn-sessions/1/next-card")
                         .header("userId", 1L))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Card Data"));
@@ -129,9 +129,9 @@ class LearnSessionControllerTest {
 
     @Test
     void whenGetNextCard_ReturnsOk() throws Exception {
-        when(dbQueryService.getLongestUnseenCard(anyLong(), anyLong())).thenReturn(Pair.of(HttpStatus.OK, "Card Data"));
+        when(dbQueryService.getLongestUnseenCard(anyLong(), anyLong(), anyLong())).thenReturn(Pair.of(HttpStatus.OK, "Card Data"));
 
-        mockMvc.perform(get("/api/v1/decks/1/next-card")
+        mockMvc.perform(get("/api/v1/decks/1/learn-sessions/1/next-card")
                         .header("userId", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -141,9 +141,9 @@ class LearnSessionControllerTest {
 
     @Test
     void whenGetNextCard_ReturnsNoContent() throws Exception {
-        when(dbQueryService.getLongestUnseenCard(anyLong(), anyLong())).thenReturn(Pair.of(HttpStatus.NO_CONTENT, null));
+        when(dbQueryService.getLongestUnseenCard(anyLong(), anyLong(), anyLong())).thenReturn(Pair.of(HttpStatus.NO_CONTENT, null));
 
-        mockMvc.perform(get("/api/v1/decks/1/next-card")
+        mockMvc.perform(get("/api/v1/decks/1/learn-sessions/1/next-card")
                         .header("userId", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

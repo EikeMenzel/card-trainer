@@ -2,6 +2,7 @@ package com.service.databaseservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.databaseservice.model.cards.Card;
 import com.service.databaseservice.payload.inc.learnsession.RatingCardHandlerDTO;
 import com.service.databaseservice.payload.inc.learnsession.RatingLevelDTO;
 import com.service.databaseservice.payload.inc.learnsession.StatusTypeDTO;
@@ -59,6 +60,9 @@ class LearnSessionControllerTest {
 
     @MockBean
     private CardService cardService;
+
+    @MockBean
+    private UserService userService;
 
     @MockBean
     private RepetitionService repetitionService;
@@ -184,14 +188,63 @@ class LearnSessionControllerTest {
     }
 
     @Test
-    void whenGetLongestUnseenCard_NoCardsFound_thenReturnsNoContent() throws Exception {
+    void whenDeckNotFound_thenReturnsNotFound() throws Exception {
+        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(false);
+
+        mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-sessions/1/cards/longest-unseen")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenLearnSessionNotFound_thenReturnsNotFound() throws Exception {
         when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.doesLearnSessionFromUserExist(anyLong(), anyLong())).thenReturn(false);
+
+        mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-sessions/1/cards/longest-unseen")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenMaxCardsLearned_thenReturnsConflict() throws Exception {
+        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.doesLearnSessionFromUserExist(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.getCardsLearnedInThisSession(anyLong())).thenReturn(10);
+        when(userService.getCardsToLearn(anyLong())).thenReturn(10);
+
+        mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-sessions/1/cards/longest-unseen")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void whenCardFound_thenReturnsOk() throws Exception {
+        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.doesLearnSessionFromUserExist(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.getCardsLearnedInThisSession(anyLong())).thenReturn(5);
+        when(userService.getCardsToLearn(anyLong())).thenReturn(10);
+        when(cardService.getOldestCardToLearn(anyLong())).thenReturn(Optional.of(new Card()));
+
+        mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-sessions/1/cards/longest-unseen")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    void whenNoCardsFound_thenReturnsNoContent() throws Exception {
+        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.doesLearnSessionFromUserExist(anyLong(), anyLong())).thenReturn(true);
+        when(learnSessionService.getCardsLearnedInThisSession(anyLong())).thenReturn(5);
+        when(userService.getCardsToLearn(anyLong())).thenReturn(10);
         when(cardService.getOldestCardToLearn(anyLong())).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/v1/db/users/1/decks/2/cards/longest-unseen")
+        mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-sessions/1/cards/longest-unseen")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
 
     @Test
     void whenGetLearnSessionCount_WithValidUserId_thenReturnsOk() throws Exception {

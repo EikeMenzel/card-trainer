@@ -10,10 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
@@ -78,26 +75,17 @@ class DbQueryServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, result);
     }
 
+
     @Test
     void whenGetLongestUnseenCard_Success() {
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Card Data", HttpStatus.OK);
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
 
-        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 1L);
+        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 2L, 3L);
 
         assertEquals(HttpStatus.OK, result.getLeft());
         assertNotNull(result.getRight());
-    }
-
-    @Test
-    void whenGetLongestUnseenCard_HandlesException() {
-        when(restTemplate.getForEntity(anyString(), eq(String.class)))
-                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
-
-        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 1L);
-
-        assertEquals(HttpStatus.NOT_FOUND, result.getLeft());
-        assertNotNull(result.getRight());
+        assertNotEquals(Optional.empty(), result.getRight());
     }
 
     @Test
@@ -206,17 +194,52 @@ class DbQueryServiceTest {
         assertEquals(result.getRight(), Optional.empty());
     }
 
+
     @Test
-    void whenGetLongestUnseenCard_NonOkStatus() {
-        HttpStatus nonOkStatus = HttpStatus.NO_CONTENT;
-        ResponseEntity<String> responseEntity = new ResponseEntity<>(nonOkStatus);
+    void whenGetLongestUnseenCard_thenReturnsNoContent() {
+        ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
 
-        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 1L);
+        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 2L, 3L);
 
-        assertEquals(nonOkStatus, result.getLeft());
+        assertEquals(HttpStatus.NO_CONTENT, result.getLeft());
+        assertNotNull(result.getRight());
+    }
+
+    @Test
+    void whenGetLongestUnseenCard_thenReturnsSameStatus() {
+        HttpClientErrorException exception = HttpClientErrorException.create(HttpStatus.NOT_FOUND, "Not Found", new HttpHeaders(), null, null);
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenThrow(exception);
+
+        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 2L, 3L);
+
+        assertEquals(HttpStatus.NOT_FOUND, result.getLeft());
+        assertEquals(Optional.empty(), result.getRight());
+    }
+
+    @Test
+    void whenGetLongestUnseenCard_thenReturnsConflict() {
+        HttpClientErrorException exception = HttpClientErrorException.create(HttpStatus.CONFLICT, "Conflict", new HttpHeaders(), "Error Message".getBytes(), null);
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenThrow(exception);
+
+        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 2L, 3L);
+
+        assertEquals(HttpStatus.CONFLICT, result.getLeft());
+        assertNotNull(result.getRight());
+        assertNotEquals(Optional.empty(), result.getRight());
+    }
+
+    @Test
+    void whenGetLongestUnseenCard_thenReturnsSameStatus_Internal() {
+        HttpServerErrorException exception = HttpServerErrorException.create(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", new HttpHeaders(), null, null);
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenThrow(exception);
+
+        Pair<HttpStatusCode, Object> result = dbQueryService.getLongestUnseenCard(1L, 2L, 3L);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getLeft());
         assertEquals(result.getRight(), Optional.empty());
     }
+
 
     @Test
     void whenGetRandomPeekSessionCard_NonOkStatus() {

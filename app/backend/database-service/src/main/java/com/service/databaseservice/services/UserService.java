@@ -154,4 +154,11 @@ public class UserService {
     public LocalDate convertToLocalDateViaSqlDate(Date dateToConvert) {
         return new java.sql.Date(dateToConvert.getTime()).toLocalDate();
     }
+
+    public Integer getCardsToLearn(Long userId) {
+        Optional<User> userOptional = userRepository.getUserById(userId);
+        if(userOptional.isEmpty())
+            return 0;
+        return userOptional.get().getCardsPerSession();
+    }
 }
