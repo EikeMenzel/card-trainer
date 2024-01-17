@@ -45,7 +45,10 @@
               <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
 
-            <button type="submit" class="btn btn-block submit-button">Get Started</button>
+            <button [disabled]="isButtonPressed" type="submit" class="btn btn-block submit-button">
+              <span *ngIf="!isButtonPressed">Get Started</span>
+              <span *ngIf="isButtonPressed" class="spinner-border spinner-border-sm"></span>
+            </button>
           </form>
         </div>
 
