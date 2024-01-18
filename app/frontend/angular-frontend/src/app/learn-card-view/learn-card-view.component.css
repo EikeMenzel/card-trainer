@@ -44,6 +44,12 @@
 .fa-rotate-arrows {
   font-size: 1rem; /* Initial size of the icon */
 }
+.rotate-button-turn-to-back:hover,
+.rotate-button-turn-to-front:hover,
+.rotate-button-turn-to-back:active,
+.rotate-button-turn-to-front:active {
+  color: var(--primary-color);
+}
 
 .regular-img-area {
   display: flex;
@@ -103,7 +109,7 @@
   background-color: var(--primary-color);
 }
 
-.next-button {
+.feedback-button {
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
