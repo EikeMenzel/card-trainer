@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -288,10 +287,14 @@ public class DeckController {
                     @ApiResponse(responseCode = "309", description = "Permanent redirect to the application"),
                     @ApiResponse(responseCode = "500", description = "Service was not reachable")
             })
-    public ResponseEntity<Void> copySharedDeck(@PathVariable @Size(min = 36, max = 50) String token) {
+    public ResponseEntity<Void> copySharedDeck(@PathVariable String token) {
+        if (token.length() < 36 || token.length() > 50)
+            return ResponseEntity.badRequest().build();
+
         var httpStatusCode = dbQueryService.shareDeck(token);
-        if (httpStatusCode == HttpStatus.CREATED)
+        if (httpStatusCode == HttpStatus.CREATED) {
             return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(gatewayPath + "/")).build();
+        }
 
         return ResponseEntity.status(httpStatusCode).build();
     }
