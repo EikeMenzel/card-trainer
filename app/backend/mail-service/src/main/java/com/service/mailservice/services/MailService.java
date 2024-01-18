@@ -55,47 +55,55 @@ public class MailService {
             logger.error("user-email from id not found");
             return;
         }
-
-        String token = TokenService.generateToken();
-        String content = mailContentBuilder.getContent(MailType.VERIFICATION, token);
-
-        var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.VERIFICATION.toString(), userId));
-        if (httpStatusCode == HttpStatus.CREATED) {
-            sendHtmlMail(userEmail.get(), "Verification-Mail", content);
-        } else {
-            logger.error("can't create user-token in database");
-        }
-    }
-
-    public void sendPasswordResetMail(Long userId) {
-        Optional<String> userEmailOptional = dbQueryService.getUserEmailFromId(userId);
-        userEmailOptional.ifPresent(userEmail -> {
+        Optional<UserAccountInformationDTO> userAccountInformationDTOOptional = dbQueryService.getAccountInformation(userId);
+        userAccountInformationDTOOptional.ifPresent(userAccountInformationDTO -> {
             String token = TokenService.generateToken();
-            String content = mailContentBuilder.getContent(MailType.PASSWORD_RESET, token, userEmail);
+            String content = mailContentBuilder.getContent(MailType.VERIFICATION, userAccountInformationDTO.langCode(), token, userAccountInformationDTO.username());
 
-            var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.PASSWORD_RESET.toString(), userId));
+            var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.VERIFICATION.toString(), userId));
             if (httpStatusCode == HttpStatus.CREATED) {
-                sendHtmlMail(userEmail, "Password-Reset-Mail", content);
+                sendHtmlMail(userEmail.get(), "Verification-Mail", content);
+            } else {
+                logger.error("can't create user-token in database");
             }
         });
     }
-    public void sendShareDeckMail(Long userId, Long deckId) {
+
+    public void sendPasswordResetMail(Long userId) {
         Optional<UserAccountInformationDTO> userAccountInformationDTOOptional = dbQueryService.getAccountInformation(userId);
+        userAccountInformationDTOOptional.ifPresent(userAccountInformation -> {
+            String token = TokenService.generateToken();
+            String content = mailContentBuilder.getContent(MailType.PASSWORD_RESET, userAccountInformation.langCode(), token, userAccountInformation.email(), userAccountInformation.username());
+
+            var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofHours(24))), MailType.PASSWORD_RESET.toString(), userId));
+            if (httpStatusCode == HttpStatus.CREATED) {
+                sendHtmlMail(userAccountInformation.email(), "Password-Reset-Mail", content);
+            }
+        });
+    }
+    public void sendShareDeckMail(Long receiverId, Long senderId, Long deckId) {
+        Optional<String> senderUsername = dbQueryService.getAccountInformation(senderId)
+                .map(UserAccountInformationDTO::username);
+
+        if(senderUsername.isEmpty())
+            return;
+
+        Optional<UserAccountInformationDTO> userAccountInformationDTOOptional = dbQueryService.getAccountInformation(receiverId);
         userAccountInformationDTOOptional.ifPresent(userAccountInformationDTO -> {
             Optional<String> optionalDeckDTO = dbQueryService.getDeckNameByDeckId(deckId);
             optionalDeckDTO.ifPresent(deckName -> {
                 String token = TokenService.generateShareDeckToken(deckId);
-                String content = mailContentBuilder.getContent(MailType.SHARE_DECK, token, deckName, userAccountInformationDTO.username());
+                String content = mailContentBuilder.getContent(MailType.SHARE_DECK, userAccountInformationDTO.langCode(), token, deckName, senderUsername.get(), userAccountInformationDTO.username());
 
-                var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofDays(7))), MailType.SHARE_DECK.toString(), userId));
+                var httpStatusCode = dbQueryService.saveUserToken(new UserTokenDTO(token, Timestamp.from(Instant.now().plus(Duration.ofDays(7))), MailType.SHARE_DECK.toString(), receiverId));
                 if (httpStatusCode == HttpStatus.CREATED) {
                     sendHtmlMail(userAccountInformationDTO.email(), "Share-Deck-Mail", content);
                 }
             });
         });
     }
-    public void sendDailyLearnReminderMail(String username, String email) {
-        String content = mailContentBuilder.getContent(MailType.DAILY_REMINDER, username);
+    public void sendDailyLearnReminderMail(String username, String language, String email) {
+        String content = mailContentBuilder.getContent(MailType.DAILY_REMINDER, language, username);
         sendHtmlMail(email, "DailyLearnReminder", content);
     }
 }

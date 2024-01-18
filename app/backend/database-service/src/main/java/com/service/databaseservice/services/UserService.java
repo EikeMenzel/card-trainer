@@ -55,7 +55,7 @@ public class UserService {
     public List<UserDailyReminderDTO> getEmailsOfUsersWithDailyLearnReminder() {
         return userRepository.findAllByIsVerifiedTrueAndGetsNotifiedTrue()
                 .stream()
-                .map(user -> new UserDailyReminderDTO(user.getUsername(), user.getEmail()))
+                .map(user -> new UserDailyReminderDTO(user.getUsername(), user.getEmail(), user.getLangCode()))
                 .collect(Collectors.toList());
     }
 

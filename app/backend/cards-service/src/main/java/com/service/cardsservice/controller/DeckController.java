@@ -259,7 +259,7 @@ public class DeckController {
         if (dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
             return ResponseEntity.notFound().build();
 
-        return ResponseEntity.status(dbQueryService.sendShareDeckEmail(mailDTO.email(), deckId)).build();
+        return ResponseEntity.status(dbQueryService.sendShareDeckEmail(userId, mailDTO.email(), deckId)).build();
     }
 
     @GetMapping("/{deckId}/cards-to-learn")
