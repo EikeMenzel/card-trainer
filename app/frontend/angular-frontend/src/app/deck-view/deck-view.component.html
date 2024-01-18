@@ -1,5 +1,5 @@
 <app-base-page>
-  <div class="container-fluid deck-view-container">
+  <div class="container-fluid deck-view-container mt-3">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-6 col-xl-10">
         <div class="card deck-view-card">
@@ -30,7 +30,7 @@
                 </div>
               </ng-template>
 
-              <div class="deck-info d-flex justify-content-between mb-4">
+              <div class="deck-info d-flex justify-content-between">
                 <div class="deck-stat-container">
                   <div class="stat-label">Cards Left</div>
                   <div class="badge-style">{{ deckCardsLeft }}</div>
@@ -40,12 +40,11 @@
                   <div class="badge-style">{{ deckSize }}</div>
                 </div>
               </div>
+            </div>
 
-
-              <div class="progress-chart-container">
-                <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames"
-                                 [chartValues]="chartData"></app-donut-chart>
-              </div>
+            <div class="progress-chart-container">
+              <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames"
+                               [chartValues]="chartData"></app-donut-chart>
             </div>
 
           </div>
