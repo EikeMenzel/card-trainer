@@ -125,6 +125,9 @@ public class DeckController {
             @Parameter(description = "Deck ID to be updated", required = true) @PathVariable Long deckId,
             @Parameter(description = "Name of the deck which should be created", required = true,
                     content = @Content(schema = @Schema(implementation = DeckNameDTO.class))) @Valid @RequestBody DeckNameDTO deckNameDTO) {
+        if(deckNameDTO.deckName().isEmpty() || deckNameDTO.deckName().length() > 128)
+            return ResponseEntity.badRequest().build();
+        
         return ResponseEntity.status(dbQueryService.updateDeckInformation(userId, deckId, deckNameDTO)).build();
     }
 
