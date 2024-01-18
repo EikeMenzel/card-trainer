@@ -65,8 +65,8 @@ export class CardService {
     return this.http.post<number>(`api/v1/decks/${deckId}/learn-sessions`, {observe: 'response'});
   }
 
-  getDetailCardInformation(deckId: number) {
-    return this.http.get(`api/v1/decks/${deckId}/next-card`, {observe: 'response'});
+  getDetailCardInformation(deckId: number,learnSessionId: number) {
+    return this.http.get(`api/v1/decks/${deckId}/learn-sessions/${learnSessionId}/next-card`, {observe: 'response'});
   }
 
   saveLearnSessionRating(learnSessionId: number, ratingDTO: RatingDTO, cardId: number) {
