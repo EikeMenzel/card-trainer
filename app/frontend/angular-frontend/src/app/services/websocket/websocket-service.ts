@@ -25,9 +25,7 @@ export class WebsocketService implements OnDestroy {
   subscribeTopics() {
     this.topicSubscription = this.rxStompService
       .watch("/user/topic/achievement-notification")
-      .subscribe((message: Message) => {
-        console.log(message.body);
-      });
+      .subscribe((message: Message) => {});
   }
 
   ngOnDestroy() {
