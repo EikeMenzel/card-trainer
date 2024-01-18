@@ -222,7 +222,16 @@ export class DeckViewComponent implements OnInit {
   }
 
   saveEdit() {
-    console.log(this.editableTitle)
+    if (this.editableTitle.trim().length === 0 || this.editableTitle.trim().length > 128) {
+      this.toastService.showWarningToast("Warning", "Deck can't be empty");
+      return;
+    }
+
+    if (this.editableTitle.trim().length > 128) {
+      this.toastService.showWarningToast("Warning", "Deck can't be more then 128 chars long");
+      return;
+    }
+
     this.cardService.updateDeckDetails(Number(this.deckId), this.editableTitle).subscribe({
       next: (res) => {
         if (res.status == HttpStatusCode.NoContent) {
@@ -250,9 +259,9 @@ export class DeckViewComponent implements OnInit {
         }
       }
     });
-
     this.editMode = false;
   }
+
 
   protected readonly faXmark = faXmark;
   protected readonly faSave = faSave;
