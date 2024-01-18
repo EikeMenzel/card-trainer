@@ -15,23 +15,50 @@ import java.nio.file.Files;
 public class MailContentBuilder {
     private final Logger logger =  LoggerFactory.getLogger(MailContentBuilder.class);
     private final String GATEWAY_PATH;
+    private final String userNamePlaceholder = "${username}";
 
     public MailContentBuilder(@Value("${gateway.api.path}") String gatewayPath) {
         this.GATEWAY_PATH = gatewayPath;
     }
-    public String getContent(MailType mailType, String... data) {
+    public String getContent(MailType mailType, String language, String... data) {
         return switch (mailType) {
-            case VERIFICATION -> /*getContentFromFile("static/mail_verification.html")*/ MailContentProvider.MAIL_VERIFICATION
-                    .replace("${verificationUrl}", buildVerificationUrl(data[0]));
-            case DAILY_REMINDER -> /*getContentFromFile("static/daily_learn_reminder.html")*/ MailContentProvider.DAILY_LEARN_REMINDER
-                    .replace("${username}", data[1])
-                    .replace("${dailyLearnUrl}", GATEWAY_PATH);
-            case PASSWORD_RESET -> /*getContentFromFile("static/mail_password_reset.html")*/ MailContentProvider.MAIL_PASSWORD_RESET
-                    .replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]));
-            case SHARE_DECK -> /*getContentFromFile("static/share_deck.html")*/ MailContentProvider.SHARE_DECK
-                    .replace("${shareDeckUrl}", buildShareDeckUrl(data[0]))
-                    .replace("${deckName}", data[1])
-                    .replace("${senderName}", data[2]);
+            case VERIFICATION ->  MailContentProvider.MAIL_VERIFICATION
+                    .replace("${verificationUrl}", buildVerificationUrl(data[0]))
+                    .replace(userNamePlaceholder,  data[1]);
+
+            case DAILY_REMINDER -> switch (language.toUpperCase()) {
+                case "DE" -> MailContentProvider.DAILY_LEARN_REMINDER_DE
+                        .replace(userNamePlaceholder, data[0])
+                        .replace("${dailyLearnUrl}", GATEWAY_PATH);
+                case "EN" -> MailContentProvider.DAILY_LEARN_REMINDER_EN
+                        .replace(userNamePlaceholder, data[0])
+                        .replace("${dailyLearnUrl}", GATEWAY_PATH);
+                default -> "";
+            };
+            case PASSWORD_RESET -> switch (language.toUpperCase()) {
+                case "DE" -> MailContentProvider.MAIL_PASSWORD_RESET_DE
+                        .replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]))
+                        .replace(userNamePlaceholder, data[2]);
+                case "EN" -> MailContentProvider.MAIL_PASSWORD_RESET_EN
+                        .replace("${resetUrl}", buildPasswordResetUrl(data[0], data[1]))
+                        .replace(userNamePlaceholder, data[2]);
+                default -> "";
+            };
+            case SHARE_DECK -> switch (language.toUpperCase()) {
+                case "DE" -> MailContentProvider.SHARE_DECK_DE
+                        .replace("${shareDeckUrl}", buildShareDeckUrl(data[0]))
+                        .replace("${deckName}", data[1])
+                        .replace("${senderName}", data[2])
+                        .replace("${username}", data[3]);
+
+                case "EN" -> MailContentProvider.SHARE_DECK_EN
+                        .replace("${shareDeckUrl}", buildShareDeckUrl(data[0]))
+                        .replace("${deckName}", data[1])
+                        .replace("${senderName}", data[2])
+                        .replace("${username}", data[3]);
+
+                default -> "";
+            };
         };
     }
 

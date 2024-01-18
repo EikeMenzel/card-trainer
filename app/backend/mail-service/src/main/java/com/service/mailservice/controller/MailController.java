@@ -31,6 +31,7 @@ public class MailController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
     public ResponseEntity<Void> sendEmail(
+            @RequestHeader(required = false) Long userId,
             @Parameter(description = "Type of the email to send", required = true) @PathVariable String mailType,
             @Parameter(description = "Email request details", required = true, schema = @Schema(implementation = EmailRequestDTO.class))
             @RequestBody EmailRequestDTO emailRequestDTO) {
@@ -48,7 +49,7 @@ public class MailController {
                 mailService.sendPasswordResetMail(emailRequestDTO.userId());
             }
             case SHARE_DECK -> {
-                mailService.sendShareDeckMail(emailRequestDTO.userId(), emailRequestDTO.deckId());
+                mailService.sendShareDeckMail(emailRequestDTO.userId(), userId, emailRequestDTO.deckId());
             }
             default -> {
                 return ResponseEntity.internalServerError().build();

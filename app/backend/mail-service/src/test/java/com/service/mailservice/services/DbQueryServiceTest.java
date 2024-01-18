@@ -128,8 +128,8 @@ class DbQueryServiceTest {
     @Test
     void testGetAllEmailsForDailyLearn() throws JsonProcessingException {
         List<UserDailyReminderDTO> userReminderList = Arrays.asList(
-                new UserDailyReminderDTO("user1", "user1@example.com"),
-                new UserDailyReminderDTO("user2", "user2@example.com")
+                new UserDailyReminderDTO("user1", "user1@example.com", "en"),
+                new UserDailyReminderDTO("user2", "user2@example.com", "de")
         );
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(new ResponseEntity<>(userReminderList.toString(), HttpStatus.OK));
         when(objectMapper.readValue(anyString(), any(TypeReference.class))).thenReturn(userReminderList);

@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {UserController.class, ObjectMapper.class})
 @TestPropertySource(locations = "classpath:application.properties")
 @WebAppConfiguration
-class UserControllerTest2 {
+class UserControllersTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -160,7 +160,7 @@ class UserControllerTest2 {
 
     @Test
     void whenGetEmailsOfUsersWithDailyLearnReminder_ThenReturnsOk() throws Exception {
-        List<UserDailyReminderDTO> reminders = Arrays.asList(new UserDailyReminderDTO("X", "user1@example.com"), new UserDailyReminderDTO("Y", "user2@example.com"));
+        List<UserDailyReminderDTO> reminders = Arrays.asList(new UserDailyReminderDTO("X", "user1@example.com", "en"), new UserDailyReminderDTO("Y", "user2@example.com", "de"));
         when(userService.getEmailsOfUsersWithDailyLearnReminder()).thenReturn(reminders);
 
         mockMvc.perform(get("/api/v1/db/users/emails")

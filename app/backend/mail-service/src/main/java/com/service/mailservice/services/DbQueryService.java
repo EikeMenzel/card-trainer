@@ -56,7 +56,7 @@ public class DbQueryService {
 
     public Optional<List<UserDailyReminderDTO>> getAllEmailsForDailyLearn() {
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/email", String.class);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(userDbApiPath + "/emails", String.class);
             return responseEntity.getStatusCode() == HttpStatus.OK
                     ? Optional.of(objectMapper.readValue(responseEntity.getBody(), new TypeReference<>() {}))
                     : Optional.empty();
