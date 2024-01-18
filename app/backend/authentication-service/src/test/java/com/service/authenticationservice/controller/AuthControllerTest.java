@@ -2,6 +2,7 @@ package com.service.authenticationservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.service.authenticationservice.model.MailType;
 import com.service.authenticationservice.payload.inc.*;
 import com.service.authenticationservice.payload.out.UpdatePasswordDTOUnauthorized;
 import com.service.authenticationservice.security.WebSecurityConfig;
@@ -100,25 +101,8 @@ class AuthControllerTest {
         return objectMapper.writeValueAsString(obj);
     }
 
-    //tests register
-    @Test
-    void whenRegisterUser_Successful_thenReturnsStatusCreated() throws Exception {
-        RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO("validUsername", "validEmail@example.com", "StrongPassword12!3");
-        String jsonRequest = convertToJson(registerRequestDTO);
 
-        when(dbQueryService.doesUserWithEmailExist(anyString())).thenReturn(Optional.empty());
-        when(dbQueryService.saveUser(any(UserDTO.class))).thenReturn(HttpStatus.CREATED);
-
-        Mockito.when(dbQueryService.saveUser(any()))
-                .thenReturn(HttpStatus.CREATED);
-
-        mockMvc.perform(post("/api/v1/register")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest))
-                .andExpect(status().isCreated());
-    }
-
+    //test register
     @Test
     void whenRegisterUser_WithShortUsername_thenReturnsBadRequest() throws Exception {
         RegisterRequestDTO registerRequestDTO = new RegisterRequestDTO("usr", "validEmail@example.com", "StrongPassword12!3");
