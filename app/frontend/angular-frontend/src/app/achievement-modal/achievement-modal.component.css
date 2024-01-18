@@ -1,0 +1,46 @@
+.modal-image {
+  max-width: 150px;
+  max-height: 250px;
+  height: auto;
+  transition: transform 0.5s ease;
+}
+.modal-image:hover {
+  transform: scale(1.1);
+}
+.custom-modal-header,
+.custom-modal-body,
+.custom-modal-footer {
+  color: white;
+  border: none;
+  background-color: #2D966F;
+}
+.custom-modal-footer .continue-button {
+  color: white;
+  background-color: #206959;
+  border-color: #206959;
+}
+.custom-modal-footer .continue-button:hover,
+.custom-modal-footer .continue-button:active {
+  background-color: #206959;
+  border-color: #206959;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.modal-image {
+  max-width: 150px;
+  max-height: 250px;
+  height: auto;
+  transition: transform 0.5s ease;
+  animation: floating 2s infinite;
+}

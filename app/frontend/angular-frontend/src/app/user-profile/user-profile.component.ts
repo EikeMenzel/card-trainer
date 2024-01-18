@@ -70,6 +70,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userService.getUpdatedUserInfo();
     this.getUserInfo();
     this.getAchievements();
     this.checkScreenWidth();
