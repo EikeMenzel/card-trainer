@@ -286,18 +286,20 @@ export class EditCardViewComponent implements OnInit {
   }
 
   saveCardToBackend() {
-    if (this.choiceAnswers[0].answer.trim() == "") {
-      this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.")
-      return
+    for (const choiceAnswer of this.choiceAnswers) {
+      if (choiceAnswer.answer.trim().length === 0) {
+        this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
+        return;
+      }
     }
 
-    if (this.questionCardDTO.question.trim() == "") {
+    if (this.questionCardDTO.question.trim().length === 0) {
       this.toast.showErrorToast("Save Card", "Please make sure you have entered a question.")
-      return
+      return;
     }
 
     if (this.saveInProgress) {
-      return
+      return;
     }
 
     this.saveInProgress = true;
