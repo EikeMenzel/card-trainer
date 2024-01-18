@@ -305,13 +305,18 @@ public class DbQueryService {
     }
 
     public HttpStatusCode shareDeck(String token) {
-        var headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                dbApiBasePath + decksPath + "/share/" + token,
-                new HttpEntity<>(headers),
-                String.class);
-        return responseEntity.getStatusCode();
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                    dbApiBasePath + decksPath + "/share/" + token,
+                    new HttpEntity<>(headers),
+                    String.class);
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException | HttpServerErrorException exception) {
+            logger.debug(exception.getMessage());
+            return exception.getStatusCode();
+        }
     }
 
     public Optional<Object> getCardDetails(Long userId, Long deckId, Long cardID) {
