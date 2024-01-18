@@ -215,6 +215,7 @@
     <h4 class="modal-title" id="modal-basic-title">Your session Results</h4>
   </div>
   <div class="modal-body">
+    <b>{{reasonToEndSession}}</b>
     <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColors"></app-donut-chart>
     <b>Cards Learned: {{cardsLearned}}</b>
   </div>

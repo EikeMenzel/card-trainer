@@ -58,6 +58,8 @@ export class LearnCardViewComponent implements OnInit {
   buttonIsPressed: boolean = false;
   unauthorizedFound: boolean = false;
 
+  reasonToEndSession: string = "";
+
   @ViewChild('content') private donutModal: ElementRef | undefined;
 
   private modalRef: NgbModalRef | undefined;
@@ -84,7 +86,6 @@ export class LearnCardViewComponent implements OnInit {
     this.deckId = this.activatedRoute.snapshot.paramMap.get('deck-id') ?? "";
     this.fetchCardsToLearn()
     this.startLearnSession();
-    this.nextCard();
   }
 
   canDestroy():boolean {
@@ -98,7 +99,7 @@ export class LearnCardViewComponent implements OnInit {
   }
 
   fetchNextCard() {
-    this.cardService.getDetailCardInformation(Number(this.deckId)).subscribe({
+    this.cardService.getDetailCardInformation(Number(this.deckId),this.learnSessionId).subscribe({
       next: (res) => {
         switch (res.status) {
           case HttpStatusCode.Ok:
@@ -113,6 +114,7 @@ export class LearnCardViewComponent implements OnInit {
             break;
           case HttpStatusCode.NoContent: //No cards left -> set Status to finished
             this.finishLearnSession(Number(this.deckId));
+            this.reasonToEndSession = "Finished the Learn Session"
             this.isSessionFinished = true;
             break;
           default:
@@ -134,6 +136,11 @@ export class LearnCardViewComponent implements OnInit {
             break;
           case HttpStatusCode.NotFound:
             this.toastService.showErrorToast("Error", "User or Deck not found");
+            break;
+          case HttpStatusCode.Conflict: //Limit of learning Cards reached -> set Status to finished
+            this.finishLearnSession(Number(this.deckId));
+            this.reasonToEndSession = "Reached limit of Cards to learn in a Session"
+            this.isSessionFinished = true;
             break;
           default:
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
@@ -440,6 +447,7 @@ export class LearnCardViewComponent implements OnInit {
     this.cardService.createLearnSession(Number(this.deckId)).subscribe({
       next: (res) => {
         this.learnSessionId = res;
+        this.nextCard();
       },
       error: (err) => {
         switch (err.status) {
