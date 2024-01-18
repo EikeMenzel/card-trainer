@@ -286,10 +286,17 @@ export class EditCardViewComponent implements OnInit {
   }
 
   saveCardToBackend() {
-    for (const choiceAnswer of this.choiceAnswers) {
-      if (choiceAnswer.answer.trim().length === 0) {
+    if(this.isBasicCard) {
+      if(this.choiceAnswers[0].answer.trim().length === 0) {
         this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
         return;
+      }
+    } else {
+      for (const choiceAnswer of this.choiceAnswers) {
+        if (choiceAnswer.answer.trim().length === 0) {
+          this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
+          return;
+        }
       }
     }
 
