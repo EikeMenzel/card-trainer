@@ -22,8 +22,8 @@ class DailyLearnReminderServiceTest {
     @Test
     void testDailyLearnEmail() {
         List<UserDailyReminderDTO> userReminderList = Arrays.asList(
-                new UserDailyReminderDTO("user1", "user1@example.com"),
-                new UserDailyReminderDTO("user2", "user2@example.com")
+                new UserDailyReminderDTO("user1", "user1@example.com", "en"),
+                new UserDailyReminderDTO("user2", "user2@example.com", "de")
         );
 
         Mockito.when(dbQueryService.getAllEmailsForDailyLearn()).thenReturn(Optional.of(userReminderList));
@@ -34,6 +34,6 @@ class DailyLearnReminderServiceTest {
 
         reminderService.dailyLearnEmail();
 
-        Mockito.verify(mailService, Mockito.times(2)).sendDailyLearnReminderMail(Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(mailService, Mockito.times(2)).sendDailyLearnReminderMail(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
     }
 }

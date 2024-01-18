@@ -268,13 +268,15 @@ public class DbQueryService {
         }
     }
 
-    public HttpStatusCode sendShareDeckEmail(String email, Long deckId) {
+    public HttpStatusCode sendShareDeckEmail(Long senderId, String email, Long deckId) {
         Optional<Long> userId = getUserIdByEmail(email);
         if (userId.isEmpty())
             return ResponseEntity.notFound().build().getStatusCode();
 
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("userId", String.valueOf(senderId));
+
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 emailApiPath + "/SHARE_DECK",
                 new HttpEntity<>(new EmailRequestDTO(userId.get(), deckId), headers),
