@@ -56,6 +56,9 @@ export class UserProfileComponent implements OnInit {
   protected readonly faEye = faEye;
   protected readonly faEyeSlash = faEyeSlash;
 
+  @ViewChild('content') private modalReference: ElementRef | undefined;
+  @ViewChild('achievementsModal') achievementsModal: ElementRef | undefined;
+
   emailError: string = "";
   nameError: string = "";
   passwordError: string = "";
@@ -80,6 +83,11 @@ export class UserProfileComponent implements OnInit {
     window.addEventListener('resize', () => {
       this.checkScreenWidth();
     });
+  }
+
+  ngOnDestroy() {
+    this.modalRef?.close()
+    this.achievementModalRef?.close()
   }
 
   changePassword(): void {
@@ -200,7 +208,16 @@ export class UserProfileComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.modalRef = this.modalService.open(content);
+    this.modalRef = this.modalService.open(content, {
+      ariaLabelledBy: 'modal-basic-title',
+      beforeDismiss: () => {
+        this.newPassword = "";
+        this.reenterNewPassword = "";
+        this.passwordError = ""
+        this.passwordRepeatError = ""
+        return true;
+      }
+    });
   }
 
   emptyPasswordModalFields() {
@@ -261,12 +278,12 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  @ViewChild('achievementsModal') achievementsModal!: ElementRef;
   isSmallScreen: boolean = false;
+  private achievementModalRef: NgbModalRef | undefined
   checkScreenWidth(): void {
     this.isSmallScreen = window.innerWidth <= 767;
   }
   openAchievementsModal(): void {
-    this.modalService.open(this.achievementsModal, { centered: true });
+    this.achievementModalRef = this.modalService.open(this.achievementsModal, { centered: true });
   }
 }

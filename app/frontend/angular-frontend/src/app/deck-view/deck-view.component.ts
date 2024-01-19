@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {BasePageComponent} from "../base-page/base-page.component";
@@ -32,6 +32,8 @@ import {TutorialComponent} from "../tutorial/tutorial.component";
 })
 export class DeckViewComponent implements OnInit {
 
+  @ViewChild('content') private modalReference: ElementRef | undefined;
+
   public awaitChange: boolean = false;
   public deckTitle: string = "";
   public deckSize: number = 0;
@@ -55,6 +57,9 @@ export class DeckViewComponent implements OnInit {
               private toastService: ToastService) {
   }
 
+  ngOnDestroy(){
+    this.modalRef?.close(this.modalReference)
+  }
 
   ngOnInit() {
     this.deckId = this.activatedRoute.snapshot.paramMap.get('deck-id') ?? "";
