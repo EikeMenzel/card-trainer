@@ -33,7 +33,7 @@ export class AuthService {
       await new Promise(f => setTimeout(f, 100));
       this.cookieService.delete(this.cookieName);
     }
-    await this.router.navigate(["/login"])
+    this.router.navigate(["/login"]).then(value => {console.log("" + value)})
   }
 
   get isLoggedIn(): boolean {

@@ -76,6 +76,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
+            "de": {
+              "browserTarget": "i18n-angular-lokalise:build:development,de"
+            },
             "production": {
               "buildTarget": "angular-frontend:build:production",
               "proxyConfig": "proxy.conf.json"

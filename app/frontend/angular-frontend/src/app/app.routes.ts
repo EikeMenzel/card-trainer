@@ -17,7 +17,7 @@ import {PeekCardViewComponent} from "./peek-learn-card-view/peek-learn-card-view
 
 
 export const routes: Routes = [
-  {path: '**/login', component: LoginComponent},
+  {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'register-successful', component: RegisterSuccessfulComponent},
   {path: 'deck/:deck-id', component: DeckViewComponent},
