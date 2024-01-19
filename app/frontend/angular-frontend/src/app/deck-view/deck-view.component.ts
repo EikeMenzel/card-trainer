@@ -217,7 +217,12 @@ export class DeckViewComponent implements OnInit {
   openModal(content: any) {
     this.emailBorder = "grey";
     this.emailWarn = false;
-    this.modalRef = this.modalService.open(content);
+    this.modalRef = this.modalService.open(content, {
+      beforeDismiss: () => {
+        this.email = "";
+        return true;
+      }
+    });
   }
 
   enableEditMode() {
