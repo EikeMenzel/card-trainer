@@ -245,34 +245,6 @@ textarea {
   color: white;
 }
 
-/* Experimental */
-.custom-modal-width {
-  max-width: 400px;
-}
-
-.custom-modal-dialog-centered {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.welcome-modal-body {
-  text-align: center;
-}
-
-.welcome-modal-header {
-  background-color: #F8FFF8;
-}
-
-.img-fox {
-  max-width: 50%;
-  height: auto;
-}
-
-.welcome-modal-body p {
-  margin-top: 20px;
-}
-
 .return-button {
   color: white;
   background-color: var(--primary-color);

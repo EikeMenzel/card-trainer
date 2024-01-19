@@ -55,7 +55,7 @@ public class UserService {
     public List<UserDailyReminderDTO> getEmailsOfUsersWithDailyLearnReminder() {
         return userRepository.findAllByIsVerifiedTrueAndGetsNotifiedTrue()
                 .stream()
-                .map(user -> new UserDailyReminderDTO(user.getUsername(), user.getEmail()))
+                .map(user -> new UserDailyReminderDTO(user.getUsername(), user.getEmail(), user.getLangCode()))
                 .collect(Collectors.toList());
     }
 
@@ -153,5 +153,12 @@ public class UserService {
 
     public LocalDate convertToLocalDateViaSqlDate(Date dateToConvert) {
         return new java.sql.Date(dateToConvert.getTime()).toLocalDate();
+    }
+
+    public Integer getCardsToLearn(Long userId) {
+        Optional<User> userOptional = userRepository.getUserById(userId);
+        if(userOptional.isEmpty())
+            return 0;
+        return userOptional.get().getCardsPerSession();
     }
 }

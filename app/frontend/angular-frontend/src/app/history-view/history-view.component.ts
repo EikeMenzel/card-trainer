@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -25,12 +25,15 @@ import {Timestamp} from "rxjs";
 export class HistoryViewComponent {
   private modalRef: NgbModalRef | undefined;
 
+  @ViewChild('content') private modalReference: ElementRef | undefined;
+
   deckDetails: LearnSessionDetailDTO | undefined;
   histories: HistoryDTO[] = [];
   deckId: string = "";
   learnedCards: number = 0;
 
-  chartNames: string[] = ['Easy', 'OK', 'Kinda Difficult', 'Difficult', 'I guessed', 'No Clue'];
+  chartNames: string[] = ['Easy', 'Ok', 'Kinda difficult', 'Difficult', 'I guessed', 'No clue'];
+  chartColor: string[] =  ["#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"];
   chartData: number[] = []
   awaitChange: boolean = false;
 
@@ -44,6 +47,10 @@ export class HistoryViewComponent {
               private datePipe: DatePipe) {
   }
 
+
+  ngOnDestroy() {
+    this.modalRef?.close(this.modalReference)
+  }
 
   ngOnInit() {
     this.deckId = this.activatedRoute.snapshot.paramMap.get('deck-id') ?? "";
@@ -94,8 +101,9 @@ export class HistoryViewComponent {
       next: res => {
         if (res.body) {
           this.deckDetails = res.body;
-          const chart: number[] = [this.deckDetails.difficulty_1, this.deckDetails.difficulty_2, this.deckDetails.difficulty_3, this.deckDetails.difficulty_4, this.deckDetails.difficulty_5, this.deckDetails.difficulty_6]
+          const chart: number[] = [this.deckDetails.difficulty_6, this.deckDetails.difficulty_5, this.deckDetails.difficulty_4, this.deckDetails.difficulty_3, this.deckDetails.difficulty_2, this.deckDetails.difficulty_1]
           this.chartData = this.getPercentValue(chart, this.deckDetails.cardsLearned)
+
           this.learnedCards = this.deckDetails.cardsLearned
           this.awaitChange = true;
         }
@@ -132,7 +140,7 @@ export class HistoryViewComponent {
 
   changeDateFormat(createdAt: Timestamp<any>): string | null | undefined {
     let date = new Date(createdAt.toString())
-      return this.datePipe?.transform(date, 'dd.MM.yyyy HH:mm')
+    return this.datePipe?.transform(date, 'dd.MM.yyyy HH:mm')
   }
 
 }

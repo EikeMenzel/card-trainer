@@ -167,7 +167,7 @@ public class DbQueryService {
                     Void.class
             );
             return responseEntity.getStatusCode();
-        } catch (HttpClientErrorException e) { // Necessary if status-code 409 or 400 is returned.
+        } catch (HttpClientErrorException | HttpServerErrorException e) { // Necessary if status-code 409 or 400 is returned.
             logger.debug(e.getMessage());
             return e.getStatusCode();
         }
@@ -268,13 +268,15 @@ public class DbQueryService {
         }
     }
 
-    public HttpStatusCode sendShareDeckEmail(String email, Long deckId) {
+    public HttpStatusCode sendShareDeckEmail(Long senderId, String email, Long deckId) {
         Optional<Long> userId = getUserIdByEmail(email);
         if (userId.isEmpty())
             return ResponseEntity.notFound().build().getStatusCode();
 
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("userId", String.valueOf(senderId));
+
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 emailApiPath + "/SHARE_DECK",
                 new HttpEntity<>(new EmailRequestDTO(userId.get(), deckId), headers),
@@ -305,13 +307,18 @@ public class DbQueryService {
     }
 
     public HttpStatusCode shareDeck(String token) {
-        var headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-                dbApiBasePath + decksPath + "/share/" + token,
-                new HttpEntity<>(headers),
-                String.class);
-        return responseEntity.getStatusCode();
+        try {
+            var headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                    dbApiBasePath + decksPath + "/share/" + token,
+                    new HttpEntity<>(headers),
+                    String.class);
+            return responseEntity.getStatusCode();
+        } catch (HttpClientErrorException | HttpServerErrorException exception) {
+            logger.debug(exception.getMessage());
+            return exception.getStatusCode();
+        }
     }
 
     public Optional<Object> getCardDetails(Long userId, Long deckId, Long cardID) {

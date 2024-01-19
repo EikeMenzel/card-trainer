@@ -43,7 +43,8 @@
   </div>
   <div class="modal-body">
     <div *ngIf="learnedCards > 0">
-    <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
+      <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColor"></app-donut-chart>
+      <b>Cards Learned: {{learnedCards}}</b>
     </div>
     <div *ngIf="learnedCards == 0" i18n>No Cards were learned during this Session</div>
   </div>

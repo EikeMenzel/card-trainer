@@ -156,7 +156,14 @@ public class LearnSessionService {
     }
 
     public Integer getCardsLearnedToday(Long userId) {
-        return learnSessionRepository.findLearnSessionsFinishedTodayByUserId(userId)
+        return learnSessionRepository.findLearnSessionsTodayByUserId(userId)
+                .stream()
+                .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
+                .sum();
+    }
+
+    public Integer getCardsLearnedInThisSession(Long learnSessionId) {
+        return learnSessionRepository.findById(learnSessionId)
                 .stream()
                 .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
                 .sum();

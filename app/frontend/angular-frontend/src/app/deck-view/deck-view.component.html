@@ -1,5 +1,6 @@
+<app-tutorial pageName="deck-view"></app-tutorial>
 <app-base-page>
-  <div class="container-fluid deck-view-container">
+  <div class="container-fluid deck-view-container mt-3">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-6 col-xl-10">
         <div class="card deck-view-card">
@@ -7,21 +8,44 @@
 
             <!-- Deck Information -->
             <div class="text-center">
-              <h2 class="my-3"> {{ deckTitle }} </h2>
-              <div class="deck-info d-flex justify-content-between">
-                <div class="deck-stat-container">
-                  <div class="badge-style">{{ deckCardsLeft }}</div>
-                  <div class="stat-label" i18n>Cards left</div>
-                </div>
-                <div class="deck-stat-container">
-                  <div class="badge-style">{{ deckSize }}</div>
-                  <div class="stat-label" i18n>Deck size</div>
+              <!-- Editierbarer Titel -->
+              <div *ngIf="!editMode; else editTemplate">
+                <div class="title-container d-flex justify-content-center align-items-center my-3">
+                  <h2 class="title-text">{{ deckTitle }}</h2>
+                  <button class="edit-button" title="Edit" (click)="enableEditMode()">
+                    <fa-icon class="edit-icon fa-xl" [icon]="faPencil"></fa-icon>
+                  </button>
                 </div>
               </div>
 
-              <div class="progress-chart-container">
-                <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
+              <!-- Template for editmode-->
+              <ng-template #editTemplate>
+                <div class="title-container d-flex justify-content-center align-items-center my-3">
+                  <input type="text" class="form-control title-input" [(ngModel)]="editableTitle" (keyup.enter)="saveEdit()"/>
+                  <button class="save-button" title="Save" (click)="saveEdit()">
+                    <fa-icon class="save-icon fa-xl" [icon]="faSave"></fa-icon>
+                  </button>
+                  <button class="cancel-button" title="Cancel" (click)="cancelEdit()">
+                    <fa-icon class="cancel-icon fa-xl" [icon]="faXmark"></fa-icon>
+                  </button>
+                </div>
+              </ng-template>
+
+              <div class="deck-info d-flex justify-content-between">
+                <div class="deck-stat-container">
+                  <div class="stat-label" i18n>Cards Left</div>
+                  <div class="badge-style">{{ deckCardsLeft }}</div>
+                </div>
+                <div class="deck-stat-container">
+                  <div class="stat-label" i18n>Deck Size</div>
+                  <div class="badge-style">{{ deckSize }}</div>
+                </div>
               </div>
+            </div>
+
+            <div class="progress-chart-container">
+              <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames"
+                               [chartValues]="chartData"></app-donut-chart>
             </div>
 
           </div>
@@ -30,12 +54,14 @@
           <div class="deck-actions mb-4 text-center d-flex flex-column align-items-center">
             <button class="btn custom-action-button mb-2"
                     routerLink="./learn"
-                    (click)="startLearningSession()"
                     [disabled]="deckCardsLeft===0"
                     [ngClass]="{'disabled-function-color': deckCardsLeft === 0}" i18n>
               Start to Learn
             </button>
-            <button class="btn custom-action-button mb-2" disabled i18n>Quick Peek</button>
+            <button class="btn custom-action-button mb-2" routerLink="./peek"
+                    [disabled]="deckSize === 0"
+                    [ngClass]="{'disabled-function-color': deckSize === 0}" i18n>Quick Peek
+            </button>
           </div>
 
           <!-- Share and Export -->
@@ -52,25 +78,24 @@
     </div>
   </div>
 </app-base-page>
-  <ng-template #content let-modal>
-    <div class="modal-header primary-background-color">
-      <h4 class="modal-title" id="modal-basic-title">Share your Deck</h4>
-      <button type="button" class="btn-close" i18n-aria-label aria-label="Close" (click)="modal.close()"></button>
+<ng-template #content let-modal>
+  <div class="modal-header primary-background-color">
+    <h4 class="modal-title" id="modal-basic-title" i18n>Share your Deck</h4>
+    <button type="button" class="btn-close" aria-label="Close" i18n-aria-label (click)="modal.close()"></button>
+  </div>
+  <form (submit)="onSubmit()">
+    <div class="modal-body">
+      <label for="email-holder" i18n>Enter the E-Mail Address of the recipient:</label>
+      <input type="email" class="form-control" id="email-holder" [style.border-color]="emailBorder" [(ngModel)]="email"
+             name="email"
+             placeholder="example@example.com">
+      <p *ngIf="emailWarn" class="text-center text-danger fw-bold" i18n>Please enter a valid e-mail</p>
     </div>
-    <form (submit)="onSubmit()">
-      <div class="modal-body">
-        <label for="email-holder" i18n>Enter the E-Mail Address of the recipient:</label>
-        <input type="email" class="form-control" id="email-holder" [style.border-color]="emailBorder" [(ngModel)]="email"
-               name="email"
-               i18n-placeholder
-               placeholder="example@example.com">
-        <p *ngIf="emailWarn" class="text-center text-danger fw-bold" i18n>Please enter a valid e-mail</p>
-      </div>
-      <div class="modal-footer">
-        <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" i18n-value value="Send E-Mail">
-          <span *ngIf="!buttonIsPressed" i18n>Share</span>
-          <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
-        </button>
-      </div>
-    </form>
-  </ng-template>
+    <div class="modal-footer">
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail" i18n-value>
+        <span *ngIf="!buttonIsPressed" i18n>Share</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+  </form>
+</ng-template>

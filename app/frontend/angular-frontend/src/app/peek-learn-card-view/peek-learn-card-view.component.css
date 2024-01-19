@@ -1,0 +1,185 @@
+.card-container {
+  perspective: 1000px;
+  margin-top: 40px;
+}
+.card {
+  width: 75vw;
+  height: 65vh;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  /* Center the card for smaller viewports */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  backface-visibility: hidden;
+  background: var(--bg-main-color);
+  border: 1px solid var(--bg-main-color);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.back {
+  transform: rotateY(180deg); /* Flips the back card */
+}
+.card.flipped {
+  transform: rotateY(180deg); /* Rotate the whole card */
+}
+
+.rotate-button-turn-to-back,
+.rotate-button-turn-to-front {
+  top: 0;
+  left: 0;
+  background: transparent;
+  color: var(--primary-color);
+  border: none;
+  font-size: 1rem; /* Icon size for small devices */
+  padding: 0.5rem; /* Padding for small devices */
+}
+.fa-rotate-arrows {
+  font-size: 1rem; /* Initial size of the icon */
+}
+
+.regular-img-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.regular-img {
+  width: 600px;
+  border-radius: 15px;
+}
+.choice-img-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  overflow: hidden;
+}
+
+.choice-img {
+  max-height: 100%;
+  width: auto;
+}
+.choice-img-area {
+  position: relative;
+  cursor: zoom-in; /* Shows a zoom cursor when hovering over */
+  transition: transform 0.3s ease; /* Smooth transition for enlargement */
+}
+.choice-img-area:hover {
+  transform: scale(1.1);
+}
+
+/* Scrollbar size */
+::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+}
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  background: transparent; /* Background color of the track */
+  border-radius: 15px;
+}
+/* Scrollbar Track (Thumb) */
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+/* Scrollbar Track (Thumb)  */
+::-webkit-scrollbar-thumb:hover {
+  background: #6E9765;
+}
+
+.progress-container {
+  width: 75vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+.custom-progress {
+  background-color: var(--primary-color);
+}
+
+.next-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0 5px; /* Added horizontal space between the buttons */
+  background-repeat: no-repeat;
+  background-position: center left;
+  background-color: var(--primary-color);
+}
+
+/* For small screens */
+@media (max-width: 824px) {
+  .next-button-container {
+    width: 75vw;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .next-button {
+    width: calc(50% - 4px); /* 50% of the container width minus a little space for the edge */
+    margin: 2px; /* Small distance between the buttons */
+    padding: 10px 0; /* Customizable vertical upholstery */
+    flex: 0 0 auto; /* Prevents the buttons from being stretched */
+  }
+}
+
+/* For medium-sized screens */
+@media (min-width: 825px) {
+  .card {
+    font-size: 1.125rem;
+  }
+}
+
+/* For large screens */
+@media (min-width: 992px) {
+  .rotate-button-turn-to-back,
+  .rotate-button-turn-to-front {
+    font-size: 1.25rem;
+    padding: 0.75rem;
+  }
+  .fa-rotate-arrows {
+    font-size: 1.25rem;
+  }
+}
+
+/* For extra large screens */
+@media (min-width: 1200px) {
+  .rotate-button-turn-to-back,
+  .rotate-button-turn-to-front {
+    font-size: 1.5rem;
+    padding: 0.875rem;
+  }
+  .fa-rotate-arrows {
+    font-size: 1.5rem;
+  }
+}
+
+/* For extra extra large screens, e.g. 2560x1444 */
+@media (min-width: 1920px) {
+  .next-button {
+    font-size: 1.25rem;
+    padding: 15px 30px;
+    margin: 0 10px;
+    border-radius: 30px;
+    background-repeat: no-repeat;
+    background-position: center left;
+  }
+  .rotate-button-turn-to-back,
+  .rotate-button-turn-to-front {
+    font-size: 2rem;
+    padding: 1.25rem;
+  }
+  .fa-rotate-arrows {
+    font-size: 2rem;
+  }
+}

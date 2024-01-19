@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -125,6 +124,9 @@ public class DeckController {
             @Parameter(description = "Deck ID to be updated", required = true) @PathVariable Long deckId,
             @Parameter(description = "Name of the deck which should be created", required = true,
                     content = @Content(schema = @Schema(implementation = DeckNameDTO.class))) @Valid @RequestBody DeckNameDTO deckNameDTO) {
+        if(deckNameDTO.deckName().isEmpty() || deckNameDTO.deckName().length() > 128)
+            return ResponseEntity.badRequest().build();
+        
         return ResponseEntity.status(dbQueryService.updateDeckInformation(userId, deckId, deckNameDTO)).build();
     }
 
@@ -229,9 +231,8 @@ public class DeckController {
     public ResponseEntity<Void> importDeck(
             @Parameter(description = "User ID of the importer", required = true) @RequestHeader Long userId,
             @Parameter(description = "Zip file containing the deck", required = true) @RequestParam("file") MultipartFile multipartFile) {
-        if (!Objects.equals(multipartFile.getContentType(), "application/x-zip-compressed"))
+        if (!Objects.equals(multipartFile.getContentType(), "application/x-zip-compressed") && !(Objects.equals(multipartFile.getContentType(), "application/zip")))
             return ResponseEntity.unprocessableEntity().build();
-
 
         var statusCode = importService.processZipFile(multipartFile, userId);
         return statusCode == HttpStatus.INTERNAL_SERVER_ERROR
@@ -254,10 +255,10 @@ public class DeckController {
             @Parameter(description = "Deck ID to be shared", required = true) @PathVariable Long deckId,
             @Parameter(description = "MailDTO, with the email", required = true,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = MailDTO.class))) @Valid @RequestBody MailDTO mailDTO) {
-    if (dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
+        if (dbQueryService.existsDeckByUserIdAndDeckId(userId, deckId) == HttpStatus.NOT_FOUND)
             return ResponseEntity.notFound().build();
 
-        return ResponseEntity.status(dbQueryService.sendShareDeckEmail(mailDTO.email(), deckId)).build();
+        return ResponseEntity.status(dbQueryService.sendShareDeckEmail(userId, mailDTO.email(), deckId)).build();
     }
 
     @GetMapping("/{deckId}/cards-to-learn")
@@ -286,10 +287,14 @@ public class DeckController {
                     @ApiResponse(responseCode = "309", description = "Permanent redirect to the application"),
                     @ApiResponse(responseCode = "500", description = "Service was not reachable")
             })
-    public ResponseEntity<Void> copySharedDeck(@PathVariable @Size(min = 36, max = 50) String token) {
+    public ResponseEntity<Void> copySharedDeck(@PathVariable String token) {
+        if (token.length() < 36 || token.length() > 50)
+            return ResponseEntity.badRequest().build();
+
         var httpStatusCode = dbQueryService.shareDeck(token);
-        if (httpStatusCode == HttpStatus.CREATED)
+        if (httpStatusCode == HttpStatus.CREATED) {
             return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create(gatewayPath + "/")).build();
+        }
 
         return ResponseEntity.status(httpStatusCode).build();
     }

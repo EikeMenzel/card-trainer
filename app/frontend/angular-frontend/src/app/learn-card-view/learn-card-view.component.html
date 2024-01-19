@@ -1,3 +1,4 @@
+<app-tutorial pageName="learn-card-view"></app-tutorial>
 <app-base-page>
   <div class="card-container container-fluid d-flex justify-content-center align-items-center">
     <div class="row">
@@ -173,7 +174,7 @@
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-ok" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_4)">
-      <span *ngIf="!buttonIsPressed">OK</span>
+      <span *ngIf="!buttonIsPressed">Ok</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-kinda-difficult" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_3)">
@@ -213,10 +214,11 @@
 <ng-template #content let-modal>
   <div class="modal-header custom-progress">
     <h4 class="modal-title" id="modal-basic-title">Your session Results</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
   </div>
   <div class="modal-body">
-      <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData"></app-donut-chart>
+    <b>{{reasonToEndSession}}</b>
+    <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColors"></app-donut-chart>
+    <b>Cards Learned: {{cardsLearned}}</b>
   </div>
   <div></div>
   <div class="modal-footer">

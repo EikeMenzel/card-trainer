@@ -1,16 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {HttpStatusCode} from "@angular/common/http";
 import {CommonModule, NgClass} from "@angular/common";
-import * as bootstrap from 'bootstrap';
 import {UserInfoDTO} from "../models/UserInfoDTO";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faHouse} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {UserService} from "../services/user-service/user.service";
 import {ToastService} from "../services/toast-service/toast.service";
 import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import {BasePageComponent} from "../base-page/base-page.component";
+import {AchievementDetailsDTO} from "../models/AchievementDetailsDTO";
+import {AchievementService} from "../services/achievement-service/achievement-service";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
@@ -18,7 +21,13 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
   imports: [
-    FormsModule, CommonModule, NgClass, FaIconComponent, RouterLink
+    FormsModule,
+    CommonModule,
+    NgClass,
+    FaIconComponent,
+    RouterLink,
+    BasePageComponent,
+    TutorialComponent
   ]
 })
 
@@ -37,58 +46,61 @@ export class UserProfileComponent implements OnInit {
   reenterNewPassword: string = '';
   private modalRef: NgbModalRef | undefined;
   buttonModalIsPressed: boolean = false;
+  achievements: AchievementDetailsDTO[] = [];
+  achievementImages: Map<number, string> = new Map();
+  EMAIL_REGEX = "^[a-zA-Z0-9.%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$";
 
-  protected readonly faHouse = faHouse;
+
+  showPassword: boolean = false;
+  showPasswordRepeat: boolean = false;
+  protected readonly faEye = faEye;
+  protected readonly faEyeSlash = faEyeSlash;
+
+  @ViewChild('content') private modalReference: ElementRef | undefined;
+  @ViewChild('achievementsModal') achievementsModal: ElementRef | undefined;
+
+  emailError: string = "";
+  nameError: string = "";
+  passwordError: string = "";
+  passwordRepeatError: string = "";
 
   constructor(
     private router: Router,
     private userService: UserService,
     private toast: ToastService,
     public authService: AuthService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private achievementService: AchievementService
   ) {
   }
 
   ngOnInit(): void {
+    this.userService.getUpdatedUserInfo();
     this.getUserInfo();
     this.getAchievements();
+    this.checkScreenWidth();
+
+    window.addEventListener('resize', () => {
+      this.checkScreenWidth();
+    });
   }
 
-  validatePassword(): boolean {
-    return this.newPassword.trim().length >= 8 && this.newPassword.trim().length < 72
-  }
-
-  openModal(content: any) {
-    this.modalRef = this.modalService.open(content);
+  ngOnDestroy() {
+    this.modalRef?.close()
+    this.achievementModalRef?.close()
   }
 
   changePassword(): void {
     this.buttonModalIsPressed = true;
-    if (!
-      this.newPassword.trim() || !this.reenterNewPassword.trim()
-    ) {
-      this.toast.showErrorToast("Update Password", "Field cannot be empty")
+    this.validatePasswordFields();
+    if (this.passwordError || this.passwordRepeatError) {
       this.buttonModalIsPressed = false;
       return;
     }
-    if (this.newPassword !== this.reenterNewPassword) {
-      this.toast.showErrorToast("Update Password", "Passwords do not match")
-      this.buttonModalIsPressed = false;
-      this.emptyPasswordModalFields()
-      return;
-    }
-    if (!this.validatePassword()) {
-      this.toast.showErrorToast("Update Password", "You Password must be between 8 and 72 characters")
-      this.buttonModalIsPressed = false;
-      this.emptyPasswordModalFields()
-      return;
-    }
-
     this.userService.changePassword(this.newPassword).subscribe({
       next: () => {
         this.toast.showSuccessToast("Password update", 'Password updated successfully');
         if (this.modalRef) {
-          this.buttonModalIsPressed = false;
           this.modalRef.close();
         }
       },
@@ -97,9 +109,6 @@ export class UserProfileComponent implements OnInit {
           case HttpStatusCode.Unauthorized:
             this.toast.showErrorToast("Error", "You are not login. You will be send to the login screen")
             this.router.navigate(['/login']);
-            break;
-          case HttpStatusCode.BadRequest:
-            this.toast.showErrorToast("Password update", 'Your password is too easy to guess. Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/');
             break;
           default:
             console.error(err)
@@ -112,35 +121,108 @@ export class UserProfileComponent implements OnInit {
     this.emptyPasswordModalFields()
   }
 
-  getUserInfo(): void {
-    this.userProfile = this.userService.getUserInfoDTO()
+  validatePasswordFields(): void {
+    this.passwordError = '';
+    this.passwordRepeatError = '';
+
+    if (!this.newPassword || this.newPassword.trim().length === 0) {
+      this.passwordError = 'Field cannot be empty';
+    } else if (this.newPassword.length < 8 || this.newPassword.length > 72) {
+      this.passwordError = 'Your password must be between 8 and 72 characters';
+    }
+
+    if (!this.reenterNewPassword || this.reenterNewPassword.trim().length === 0) {
+      this.passwordRepeatError = 'Field cannot be empty';
+    } else if (this.newPassword !== this.reenterNewPassword) {
+      this.passwordRepeatError = 'Passwords do not match';
+    }
   }
 
   saveProfile(): void {
-    if (!this.userProfile.username.trim() || !this.userProfile.email.trim()) {
-      this.toast.showErrorToast("Update Userinfo", "Please make sure that your Username and Email is not empty")
+    this.passwordError = "";
+    this.passwordRepeatError = "";
+
+    if (!this.validateNameAndEmail()) {
+      return;
     }
-    this.userProfile.receiveLearnNotification = (document.getElementById("receiveNotifications") as HTMLInputElement).checked
+
+    const numberOfCards = this.userProfile.cardsToLearn;
+
+    if (numberOfCards < 1) {
+      this.toast.showInfoToast("Info", "Please select at least one card to learn.");
+      return;
+    }
+
+    this.userProfile.receiveLearnNotification = (document.getElementById("receiveNotifications") as HTMLInputElement).checked;
+
     this.userService.updateUserInfo(this.userProfile).subscribe({
       next: (data) => {
         this.userProfile = data;
-        this.toast.showSuccessToast("Profile Update", "Your profile has been updated successful")
+        this.toast.showSuccessToast("Profile Update", "Your profile has been updated successfully");
       },
+
       error: (err) => {
         switch (err.status) {
-          case HttpStatusCode.BadRequest:
-            this.toast.showErrorToast("Error", "Invalid data format or information.")
-            break;
           case HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "You are not login. You will be send to the login screen")
+            this.toast.showErrorToast("Error", "You are not logged in. You will be sent to the login screen");
             this.router.navigate(['/login']);
             break;
           default:
-            this.toast.showErrorToast("Error", "An error occurred while trying to save profile data")
+            console.error(err);
+            this.toast.showErrorToast("Profile Update", "An error occurred");
             break;
         }
       }
     });
+  }
+
+
+  validateNameAndEmail(): boolean {
+    this.nameError = '';
+    this.emailError = '';
+    let isValid = true;
+    if (!this.userProfile.username || this.userProfile.username.trim().length === 0) {
+      this.nameError = 'Field cannot be empty';
+      isValid = false;
+    } else if (this.userProfile.username.length < 4) {
+      this.nameError = 'Username too short';
+      isValid = false;
+    } else if (this.userProfile.username.length > 30) {
+      this.nameError = 'Username too long';
+      isValid = false;
+    }
+    if (!this.userProfile.email || this.userProfile.email.trim().length === 0) {
+      this.emailError = 'Field cannot be empty';
+      isValid = false;
+    } else if (!this.validateEmail(this.userProfile.email)) {
+      this.emailError = 'Invalid email address';
+      isValid = false;
+    }
+    return isValid;
+  }
+  validateEmail(email: string): boolean {
+    return new RegExp(this.EMAIL_REGEX).test(email);
+  }
+  getUserInfo(): void {
+    this.userProfile = this.userService.getUserInfoDTO()
+  }
+
+  openModal(content: any) {
+    this.modalRef = this.modalService.open(content, {
+      ariaLabelledBy: 'modal-basic-title',
+      beforeDismiss: () => {
+        this.newPassword = "";
+        this.reenterNewPassword = "";
+        this.passwordError = ""
+        this.passwordRepeatError = ""
+        return true;
+      }
+    });
+  }
+
+  emptyPasswordModalFields() {
+    this.reenterNewPassword = "";
+    this.newPassword = "";
   }
 
   logoutWarningPopup(): void {
@@ -149,13 +231,59 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  emptyPasswordModalFields() {
-    this.reenterNewPassword = "";
-    this.newPassword = "";
+  getAchievements(): void {
+
+    // First check whether the user has Achievement IDs
+    if (this.userProfile.achievementIds && this.userProfile.achievementIds.length > 0) {
+      this.userProfile.achievementIds.forEach(achievementId => {
+
+        // Retrieve achievements based on the user's IDs
+        this.achievementService.getAchievementById(achievementId).subscribe({
+          next: (achievement) => {
+
+            // Check if the achievement is not a daily one before pushing
+            if (!achievement.daily) {
+              this.achievements.push(achievement);
+
+              // It then retrieves the corresponding image
+              this.achievementService.getAchievementImage(achievement.imageId)
+                .subscribe({
+                  next: (imageBlob) => {
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    this.achievementImages.set(achievement.achievementId, imageUrl);
+                  }
+                });
+            }
+          },
+          error: (err) => {
+            console.error('Error fetching achievement:', err);
+            switch (err.status) {
+              case HttpStatusCode.BadRequest:
+                this.toast.showErrorToast("Error", "Invalid request for achievement data");
+                break;
+              case HttpStatusCode.Unauthorized:
+                this.toast.showErrorToast("Error", "You are not logged in. Redirecting to login screen");
+                this.router.navigate(['/login']);
+                break;
+              case HttpStatusCode.NotFound:
+                this.toast.showErrorToast("Error", "Achievement not found");
+                break;
+              default:
+                this.toast.showErrorToast("Error", "An error occurred while fetching achievements");
+                break;
+            }
+          }
+        });
+      });
+    }
   }
 
-
-//TODO: Achievement handling
-  getAchievements(): void {
+  isSmallScreen: boolean = false;
+  private achievementModalRef: NgbModalRef | undefined
+  checkScreenWidth(): void {
+    this.isSmallScreen = window.innerWidth <= 767;
+  }
+  openAchievementsModal(): void {
+    this.achievementModalRef = this.modalService.open(this.achievementsModal, { centered: true });
   }
 }

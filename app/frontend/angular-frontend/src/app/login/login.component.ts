@@ -13,7 +13,7 @@ import {UserService} from "../services/user-service/user.service";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {WebsocketService} from "../services/websocket/websocket-service";
-import {NgOptimizedImage} from "@angular/common";
+import {NgIf, NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-login',
@@ -28,7 +28,8 @@ import {NgOptimizedImage} from "@angular/common";
     ToasterComponent,
     RouterLinkActive,
     FontAwesomeModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgIf
   ]
 })
 export class LoginComponent {
@@ -40,6 +41,7 @@ export class LoginComponent {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
 
+  isButtonPressed: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -49,6 +51,13 @@ export class LoginComponent {
     private userService: UserService,
     private websocketService: WebsocketService
   ) {
+  }
+
+  ngOnInit() {
+    if (this.authService.isLoggedIn) {
+      this.router.navigate(["/"])
+      this.toastService.showInfoToast("Warning","You are logged in")
+    }
   }
 
   private errorPassword() {
@@ -66,10 +75,12 @@ export class LoginComponent {
   }
 
   onSubmit(loginForm: NgForm) {
+    this.isButtonPressed = true;
     if (!loginForm.valid) {
       this.toastService.showErrorToast("Error", "Please Enter a valid E-Mail and Password")
       this.errorEmail()
       this.errorPassword()
+      this.isButtonPressed = false;
       return;
     }
 
@@ -85,10 +96,10 @@ export class LoginComponent {
           this.authService.resetCookieToSessionCookie();
           this.authService.startSessionTimer();
         }
-
         this.userService.getUpdatedUserInfo()
         this.websocketService.rxStompService.activate();
         this.router.navigate(["/"])
+        this.isButtonPressed = false;
       },
       error: err => {
         this.errorEmail()
@@ -99,6 +110,7 @@ export class LoginComponent {
         if (err.status == HttpStatusCode.InternalServerError) {
           this.toastService.showErrorToast("Login Failed", "The Login Service is currently unavailable")
         }
+        this.isButtonPressed = false;
       }
     });
   }

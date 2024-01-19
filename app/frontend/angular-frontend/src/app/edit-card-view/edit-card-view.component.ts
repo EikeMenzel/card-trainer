@@ -19,6 +19,7 @@ import {EditCardAnswer} from "../models/edit-card/EditCardAnswer";
 import {UpdateCardBasicDTO} from "../models/edit-card/UpdateCardBasicDTO";
 import {UpdateCardDTO} from "../models/edit-card/UpdateCardDTO";
 import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
@@ -31,6 +32,7 @@ import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
     FaIconComponent,
     RouterLink,
     NgOptimizedImage,
+    TutorialComponent,
   ],
   styleUrls: ['./edit-card-view.component.css']
 })
@@ -59,6 +61,8 @@ export class EditCardViewComponent implements OnInit {
   public deckId: string = this.route.snapshot.paramMap.get("deck-id") ?? "";
   public cardType: string = "basic";
 
+  private modalReference: bootstrap.Modal | undefined
+
   constructor(
     private toast: ToastService,
     private cookieService: CookieService,
@@ -66,6 +70,10 @@ export class EditCardViewComponent implements OnInit {
     private cardService: CardService,
     private router: Router
   ) {
+  }
+
+  ngOnDestroy(){
+    this.modalReference?.dispose()
   }
 
   ngOnInit() {
@@ -150,8 +158,8 @@ export class EditCardViewComponent implements OnInit {
     this.currentImageModal = frontendImageIndex;
     const modalElement = document.getElementById('uploadModal');
     if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
+      this.modalReference = new bootstrap.Modal(modalElement)
+      this.modalReference.show();
     }
   }
 
@@ -286,18 +294,27 @@ export class EditCardViewComponent implements OnInit {
   }
 
   saveCardToBackend() {
-    if (this.choiceAnswers[0].answer.trim() == "") {
-      this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.")
-      return
+    if(this.isBasicCard) {
+      if(this.choiceAnswers[0].answer.trim().length === 0) {
+        this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
+        return;
+      }
+    } else {
+      for (const choiceAnswer of this.choiceAnswers) {
+        if (choiceAnswer.answer.trim().length === 0) {
+          this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
+          return;
+        }
+      }
     }
 
-    if (this.questionCardDTO.question.trim() == "") {
+    if (this.questionCardDTO.question.trim().length === 0) {
       this.toast.showErrorToast("Save Card", "Please make sure you have entered a question.")
-      return
+      return;
     }
 
     if (this.saveInProgress) {
-      return
+      return;
     }
 
     this.saveInProgress = true;

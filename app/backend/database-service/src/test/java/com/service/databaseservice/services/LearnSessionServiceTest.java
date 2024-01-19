@@ -299,7 +299,7 @@ class LearnSessionServiceTest {
         LearnSession sessionToday = new LearnSession();
         sessionToday.setRating1(2); // Assume 2 cards learned today at Rating 1
 
-        when(learnSessionRepository.findLearnSessionsFinishedTodayByUserId(userId)).thenReturn(List.of(sessionToday));
+        when(learnSessionRepository.findLearnSessionsTodayByUserId(userId)).thenReturn(List.of(sessionToday));
 
         int cardsLearnedToday = learnSessionService.getCardsLearnedToday(userId);
 

@@ -11,6 +11,7 @@ import java.util.Optional;
 public class DailyLearnReminderService {
     private final DbQueryService dbQueryService;
     private final MailService mailService;
+
     public DailyLearnReminderService(DbQueryService dbQueryService, MailService mailService) {
         this.dbQueryService = dbQueryService;
         this.mailService = mailService;
@@ -21,7 +22,7 @@ public class DailyLearnReminderService {
         Optional<List<UserDailyReminderDTO>> userDailyReminderDTOList = dbQueryService.getAllEmailsForDailyLearn();
         userDailyReminderDTOList.ifPresent(
                 list -> list.forEach(
-                        entry -> mailService.sendDailyLearnReminderMail(entry.username(), entry.email()
+                        entry -> mailService.sendDailyLearnReminderMail(entry.username(), entry.language(), entry.email()
                         )
                 )
         );

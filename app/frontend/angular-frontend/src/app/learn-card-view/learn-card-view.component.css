@@ -44,6 +44,12 @@
 .fa-rotate-arrows {
   font-size: 1rem; /* Initial size of the icon */
 }
+.rotate-button-turn-to-back:hover,
+.rotate-button-turn-to-front:hover,
+.rotate-button-turn-to-back:active,
+.rotate-button-turn-to-front:active {
+  color: var(--primary-color);
+}
 
 .regular-img-area {
   display: flex;

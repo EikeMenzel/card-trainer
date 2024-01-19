@@ -1,5 +1,5 @@
+<app-tutorial pageName="edit-card"></app-tutorial>
 <app-base-page>
-
   <div class="edit-card container mt-5">
     <div class="edit-card-form mt-2">
       <div>
@@ -210,22 +210,3 @@
     </div>
   </div>
 </app-base-page>
-
-<!-- Welcome modal (experimental) -->
-<div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
-  <div class="modal-dialog customized-modal-width modal-dialog-centered customized-modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header welcome-modal-header">
-        <h5 class="modal-title" id="welcomeModalLabel" i18n>Hey, Simon here!</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" i18n-aria-label aria-label="Close"
-                (click)="dontShowSimonAgainOnPageLoad()"></button>
-      </div>
-      <div class="modal-body welcome-modal-body">
-        <img ngSrc="assets/fox1.png" i18n-alt alt="Simon the fox"
-             class="img-fox mb-2" height="490" width="490">
-        <p i18n>Here you can edit or create cards, upload images and start your learning journey. Much love and fun,
-          Simon 🦊</p>
-      </div>
-    </div>
-  </div>
-</div>

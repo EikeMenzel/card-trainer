@@ -42,6 +42,10 @@ export class CardService {
     return this.http.get<DeckDetailInformationDTO>(`api/v1/decks/${id}`, {observe: 'response'})
   }
 
+  updateDeckDetails(deckId: number, newDeckname: string): Observable<HttpResponse<any>> {
+    return this.http.put<HttpResponse<any>>(`api/v1/decks/${deckId}`, {"deckName": newDeckname}, { observe: 'response' });
+  }
+
   getExportFile(deckId: number): Observable<HttpResponse<ArrayBuffer>> {
     return this.http.get(`api/v1/decks/${deckId}/export`, {observe: 'response', responseType: 'arraybuffer'});
   }
@@ -61,8 +65,8 @@ export class CardService {
     return this.http.post<number>(`api/v1/decks/${deckId}/learn-sessions`, {observe: 'response'});
   }
 
-  getDetailCardInformation(deckId: number) {
-    return this.http.get(`api/v1/decks/${deckId}/next-card`, {observe: 'response'});
+  getDetailCardInformation(deckId: number,learnSessionId: number) {
+    return this.http.get(`api/v1/decks/${deckId}/learn-sessions/${learnSessionId}/next-card`, {observe: 'response'});
   }
 
   saveLearnSessionRating(learnSessionId: number, ratingDTO: RatingDTO, cardId: number) {
@@ -78,6 +82,17 @@ export class CardService {
       .append('Content-Type', 'application/json')
 
     return this.http.put(`api/v1/learn-sessions/${learnSessionId}/status`, JSON.stringify("FINISHED"), {
+      observe: 'response',
+      headers
+    })
+  }
+
+  cancelLearnSessionStatus(learnSessionId: number) {
+
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/learn-sessions/${learnSessionId}/status`, JSON.stringify("CANCELED"), {
       observe: 'response',
       headers
     })
@@ -118,5 +133,35 @@ export class CardService {
 
   updateCard(cardDTO: UpdateCardBasicDTO | UpdateCardMCDTO, deckId: string, cardId: string) {
     return this.http.put(`/api/v1/decks/${deckId}/cards/${cardId}`, cardDTO, {observe: "response"})
+  }
+
+  startPeekSession(deckId:number) {
+   return this.http.post<number>(`api/v1/decks/${deckId}/peek-sessions`,{obeserve:"response"})
+  }
+
+  getNextPeekCard(peekSessionId: number){
+    return this.http.get(`api/v1/peek-sessions/${peekSessionId}/next-card`,{observe:"response"})
+  }
+
+  finishStatusOfCardPeek(peekSessionId: number) {
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/peek-sessions/${peekSessionId}/status`,JSON.stringify("FINISHED"),{observe:"response", headers})
+  }
+
+  savePeekSessionCard(peekSessionId: number,cardId:number){
+    return this.http.post(`api/v1/peek-sessions/${peekSessionId}/cards/${cardId}`,{observe:'response'})
+  }
+
+  getNumberofCardsInDeck(deckId: number) {
+    return this.http.get<number>(`api/v1/decks/${deckId}/size`,{observe:'response'});
+  }
+
+  setCancelledPeekStatus(peekSessionId: number) {
+    const headers = new HttpHeaders()
+      .append('Content-Type', 'application/json')
+
+    return this.http.put(`api/v1/peek-sessions/${peekSessionId}/status`,JSON.stringify("CANCELED"),{observe:"response", headers})
   }
 }

@@ -20,20 +20,21 @@ import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
 import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
-import {LearningSessionService} from "../services/learn-session-service/learn-session.service";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
   selector: 'app-learn-card-view',
   templateUrl: './learn-card-view.component.html',
-  imports: [
-    NgIf,
-    NgForOf,
-    FontAwesomeModule,
-    BasePageComponent,
-    NgOptimizedImage,
-    DonutChartComponent
-  ],
+    imports: [
+        NgIf,
+        NgForOf,
+        FontAwesomeModule,
+        BasePageComponent,
+        NgOptimizedImage,
+        DonutChartComponent,
+        TutorialComponent
+    ],
   styleUrls: ['./learn-card-view.component.css']
 })
 
@@ -57,13 +58,18 @@ export class LearnCardViewComponent implements OnInit {
   imageInformationMultipleChoiceCard: MultipleChoiceCardImage | undefined;
 
   buttonIsPressed: boolean = false;
+  unauthorizedFound: boolean = false;
+
+  reasonToEndSession: string = "";
 
   @ViewChild('content') private donutModal: ElementRef | undefined;
 
   private modalRef: NgbModalRef | undefined;
-  chartNames: string[] = ['Easy', 'OK', 'Kinda Difficult', 'Difficult', 'I guessed', 'No Clue'];
+  chartNames: string[] = ['Easy', 'Ok', 'Kinda difficult', 'Difficult', 'I guessed', 'No clue'];
+  chartColors: string[] = ["#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"];
   chartData: number[] = []
   awaitChange: boolean = false;
+  isSessionFinished: boolean = false;
 
   constructor(
     private cardService: CardService,
@@ -74,7 +80,6 @@ export class LearnCardViewComponent implements OnInit {
     private router: Router,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
-    private learnSessionService: LearningSessionService,
   ) {
   }
 
@@ -83,12 +88,22 @@ export class LearnCardViewComponent implements OnInit {
     this.deckId = this.activatedRoute.snapshot.paramMap.get('deck-id') ?? "";
     this.fetchCardsToLearn()
     this.startLearnSession();
-    this.nextCard();
   }
 
+  canDestroy():boolean {
+    return this.unauthorizedFound || this.isSessionFinished || (confirm("Are you sure you want to leave this learn session") && !this.isSessionFinished && !this.unauthorizedFound);
+  }
+
+  ngOnDestroy(){
+    if (!this.isSessionFinished && !this.unauthorizedFound) {
+      this.cardService.cancelLearnSessionStatus(this.learnSessionId).subscribe();
+    }
+    this.modalRef?.close(this.donutModal)
+    this.imgModalRef?.dispose();
+  }
 
   fetchNextCard() {
-    this.cardService.getDetailCardInformation(Number(this.deckId)).subscribe({
+    this.cardService.getDetailCardInformation(Number(this.deckId),this.learnSessionId).subscribe({
       next: (res) => {
         switch (res.status) {
           case HttpStatusCode.Ok:
@@ -103,6 +118,8 @@ export class LearnCardViewComponent implements OnInit {
             break;
           case HttpStatusCode.NoContent: //No cards left -> set Status to finished
             this.finishLearnSession(Number(this.deckId));
+            this.reasonToEndSession = "Finished the Learn Session"
+            this.isSessionFinished = true;
             break;
           default:
             this.toastService.showInfoToast("Notice", "Received unhandled status code");
@@ -118,24 +135,30 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
             this.toastService.showErrorToast("Error", "User or Deck not found");
             break;
+          case HttpStatusCode.Conflict: //Limit of learning Cards reached -> set Status to finished
+            this.finishLearnSession(Number(this.deckId));
+            this.reasonToEndSession = "Reached limit of Cards to learn in a Session"
+            this.isSessionFinished = true;
+            break;
           default:
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
 
   finishLearnSession(deckId: number) {
+    this.buttonIsPressed = true;
     this.cardService.finishedLearnSessionStatus(this.learnSessionId).subscribe({
       next: (res) => {
-        this.learnSessionService.setLearningSession(false);
-        this.toastService.showSuccessToast("Successful", "Finished Learn-session");
         this.fetchLearnSessionResults();
       },
       error: (err) => {
@@ -147,6 +170,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -156,6 +180,7 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
@@ -272,8 +297,6 @@ export class LearnCardViewComponent implements OnInit {
   }
 
   calculateProgress() {
-    console.log(this.cardsLearned); //TODO Delete
-    console.log(this.cardLength); // TODO Delete
     return Math.round((this.cardsLearned / this.cardLength) * 100);
   }
 
@@ -312,6 +335,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -343,6 +367,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -352,6 +377,7 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     });
   }
@@ -370,6 +396,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -379,19 +406,21 @@ export class LearnCardViewComponent implements OnInit {
             this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
             break;
         }
+        this.buttonIsPressed = false;
       }
     })
   }
 
 
-  fetchLearnSessionResults() { // TODO should open a modal after session is done
+  fetchLearnSessionResults() {
+    this.buttonIsPressed = true;
     this.historyService.getHistoryDetails(Number(this.deckId),this.learnSessionId).subscribe({
       next: (res) => {
         if (res.body)
           this.learnSessionResults = res.body;
         this.openModal()
         if (this.learnSessionResults) {
-          const chart: number[] = [this.learnSessionResults.difficulty_1, this.learnSessionResults.difficulty_2, this.learnSessionResults.difficulty_3, this.learnSessionResults.difficulty_4, this.learnSessionResults.difficulty_5, this.learnSessionResults.difficulty_6]
+          const chart: number[] = [this.learnSessionResults.difficulty_6, this.learnSessionResults.difficulty_5, this.learnSessionResults.difficulty_4, this.learnSessionResults.difficulty_3, this.learnSessionResults.difficulty_2, this.learnSessionResults.difficulty_1]
           this.chartData = this.getPercentValue(chart,this.learnSessionResults.cardsLearned);
           this.awaitChange = true;
         }
@@ -404,6 +433,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -421,6 +451,7 @@ export class LearnCardViewComponent implements OnInit {
     this.cardService.createLearnSession(Number(this.deckId)).subscribe({
       next: (res) => {
         this.learnSessionId = res;
+        this.nextCard();
       },
       error: (err) => {
         switch (err.status) {
@@ -430,6 +461,7 @@ export class LearnCardViewComponent implements OnInit {
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
             this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
@@ -445,6 +477,7 @@ export class LearnCardViewComponent implements OnInit {
 
   protected readonly RatingDTO = RatingDTO;
   protected readonly faArrowsRotate = faArrowsRotate;
+  private imgModalRef:  bootstrap.Modal | undefined;
 
   openImageModal(imageUrl: SafeUrl | undefined) {
     if (imageUrl) {
@@ -455,10 +488,9 @@ export class LearnCardViewComponent implements OnInit {
       // Open the bootstrap modal
       const modalElement = document.getElementById('imageModal');
       if (modalElement) {
-        const imageModal = new bootstrap.Modal(modalElement);
-        imageModal.show();
+        this.imgModalRef = new bootstrap.Modal(modalElement);
+        this.imgModalRef.show();
       }
     }
   }
-
 }

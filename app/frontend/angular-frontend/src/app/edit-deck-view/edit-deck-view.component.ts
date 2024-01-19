@@ -7,7 +7,7 @@ import {ToastService} from "../services/toast-service/toast.service";
 import {CardDTO} from "../models/CardDTO";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
-import {faReply, faSearch, faArrowUpZA} from "@fortawesome/free-solid-svg-icons";
+import {faReply, faSearch, faArrowUpZA, faPlus, faTrashCan, faListUl} from "@fortawesome/free-solid-svg-icons";
 import {$localize} from "@angular/localize/init";
 
 @Component({
@@ -123,5 +123,8 @@ export class EditDeckViewComponent implements OnInit {
   protected readonly faSearch = faSearch;
   protected readonly faReply = faReply;
   protected readonly faArrowUpZA = faArrowUpZA;
+  protected readonly faPlus = faPlus;
+  protected readonly faTrashCan = faTrashCan;
+  protected readonly faListUl = faListUl;
   protected readonly $localize = $localize;
 }
