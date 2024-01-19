@@ -15,18 +15,20 @@ import {catchError, map, Observable, of} from "rxjs";
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
   selector: 'app-peek-learn-card-view',
   templateUrl: './peek-learn-card-view.component.html',
-  imports: [
-    NgIf,
-    NgForOf,
-    FontAwesomeModule,
-    BasePageComponent,
-    NgOptimizedImage
-  ],
+    imports: [
+        NgIf,
+        NgForOf,
+        FontAwesomeModule,
+        BasePageComponent,
+        NgOptimizedImage,
+        TutorialComponent
+    ],
   styleUrls: ['./peek-learn-card-view.component.css']
 })
 
