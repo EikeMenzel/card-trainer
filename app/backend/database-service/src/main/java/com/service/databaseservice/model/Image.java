@@ -61,4 +61,8 @@ public class Image {
         setData(data);
         return this;
     }
+
+    public Image cloneImage(User newUser) {
+        return new Image(this.data, newUser);
+    }
 }

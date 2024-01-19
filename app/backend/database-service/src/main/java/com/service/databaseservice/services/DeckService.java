@@ -8,6 +8,7 @@ import com.service.databaseservice.model.cards.TextAnswerCard;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
 import com.service.databaseservice.repository.DeckRepository;
+import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.repository.cards.CardRepository;
 import com.service.databaseservice.repository.cards.MultipleChoiceCardRepository;
 import com.service.databaseservice.repository.cards.TextAnswerCardRepository;
@@ -28,15 +29,17 @@ public class DeckService {
     private final TextAnswerCardRepository textAnswerCardRepository;
     private final MultipleChoiceCardRepository multipleChoiceCardRepository;
     private final RepetitionService repetitionService;
+    private final ImageRepository imageRepository;
     private final Logger logger = LoggerFactory.getLogger(DeckService.class);
 
-    public DeckService(DeckRepository deckRepository, CardRepository cardRepository, UserService userService, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository, RepetitionService repetitionService) {
+    public DeckService(DeckRepository deckRepository, CardRepository cardRepository, UserService userService, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository, RepetitionService repetitionService, ImageRepository imageRepository) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
         this.userService = userService;
         this.textAnswerCardRepository = textAnswerCardRepository;
         this.multipleChoiceCardRepository = multipleChoiceCardRepository;
         this.repetitionService = repetitionService;
+        this.imageRepository = imageRepository;
     }
 
     public List<DeckDTO> getAllDecksByUserId(Long userId) {
@@ -123,6 +126,12 @@ public class DeckService {
     private boolean cloneCardWithDependencies(Card card, Deck newDeck) {
         try {
             var newCard = cardRepository.save(card.cloneWithDifferentDeck(newDeck));
+
+            if (newCard.getImageData() != null) { //copy image
+                var createdImage = imageRepository.save(newCard.getImageData().cloneImage(newCard.getDeck().getOwner()));
+                newCard.setImageData(createdImage);
+            }
+
             return repetitionService.initRepetition(newCard, newDeck.getOwner()) &&
                     switch (card.getCardType().getType()) {
                         case "BASIC" -> saveClonedTextAnswerCard(newCard, card);
@@ -141,6 +150,12 @@ public class DeckService {
             if (textAnswerCardOptional.isEmpty())
                 return false;
             var newTextAnswerCard = textAnswerCardOptional.get().cloneTextAnswercard(newCard.getId());
+
+            if (newTextAnswerCard.getImageData() != null) { //copy image
+                var createdImage = imageRepository.save(newTextAnswerCard.getImageData().cloneImage(newCard.getDeck().getOwner()));
+                newTextAnswerCard.setImageData(createdImage);
+            }
+
             textAnswerCardRepository.save(newTextAnswerCard);
             return true;
         } catch (Exception e) {
@@ -155,6 +170,16 @@ public class DeckService {
             if (multipleChoiceCard.isEmpty())
                 return false;
             var newMultipleChoiceCard = multipleChoiceCard.get().cloneMultipleChoiceCard(newCard.getId());
+
+            newMultipleChoiceCard.getChoiceAnswerList()
+                    .stream()
+                    .filter(choiceAnswer -> choiceAnswer.getImageData() != null)
+                    .forEachOrdered(choiceAnswer -> { //copy image of each choiceAnswer
+                        var createdImage = imageRepository.save(choiceAnswer.getImageData().cloneImage(newCard.getDeck().getOwner()));
+                        choiceAnswer.setImageData(createdImage);
+                    });
+
+
             multipleChoiceCardRepository.save(newMultipleChoiceCard);
             return true;
         } catch (Exception e) {
