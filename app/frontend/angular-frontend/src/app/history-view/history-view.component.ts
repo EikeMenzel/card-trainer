@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -25,6 +25,8 @@ import {Timestamp} from "rxjs";
 export class HistoryViewComponent {
   private modalRef: NgbModalRef | undefined;
 
+  @ViewChild('content') private modalReference: ElementRef | undefined;
+
   deckDetails: LearnSessionDetailDTO | undefined;
   histories: HistoryDTO[] = [];
   deckId: string = "";
@@ -45,6 +47,10 @@ export class HistoryViewComponent {
               private datePipe: DatePipe) {
   }
 
+
+  ngOnDestroy() {
+    this.modalRef?.close(this.modalReference)
+  }
 
   ngOnInit() {
     this.deckId = this.activatedRoute.snapshot.paramMap.get('deck-id') ?? "";

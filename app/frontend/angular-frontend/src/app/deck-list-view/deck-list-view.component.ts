@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {BasePageComponent} from "../base-page/base-page.component";
 import {CardService} from "../services/card-service/card.service";
@@ -54,6 +54,7 @@ export class DeckListViewComponent implements OnInit {
     private toastService: ToastService
   ) { }
 
+  @ViewChild('content') private modalReference: ElementRef | undefined;
 
   ngOnInit() {
     if (!this.userService.isLoggedIn) {
@@ -61,6 +62,10 @@ export class DeckListViewComponent implements OnInit {
       return;
     }
     this.updateDecks()
+  }
+
+  ngOnDestroy() {
+    this.modalRef?.close(this.modalReference)
   }
 
   updateDecks() {
