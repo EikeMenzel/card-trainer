@@ -1,0 +1,41 @@
+.custom-modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-modal-header {
+    background-color: var(--bg-main-color);
+    text-align: center;
+}
+
+.custom-modal-body {
+  background-color: var(--bg-main-color);
+  text-align: center;
+}
+
+.custom-modal-footer {
+    background-color: var(--bg-main-color);
+    text-align: center;
+}
+
+.img-fox {
+    width: 50%;
+    max-width: 50%;
+    height: auto;
+}
+
+.custom-modal-body p {
+    margin-top: 20px;
+}
+
+.button-close {
+  color: white;
+  background-color: var(--primary-color);
+}
+
+.button-close:hover,
+.button-close:active{
+  color: white;
+  background-color: var(--primary-color);
+}

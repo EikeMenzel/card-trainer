@@ -13,6 +13,7 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {BasePageComponent} from "../base-page/base-page.component";
 import {AchievementDetailsDTO} from "../models/AchievementDetailsDTO";
 import {AchievementService} from "../services/achievement-service/achievement-service";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
@@ -25,7 +26,8 @@ import {AchievementService} from "../services/achievement-service/achievement-se
     NgClass,
     FaIconComponent,
     RouterLink,
-    BasePageComponent
+    BasePageComponent,
+    TutorialComponent
   ]
 })
 
