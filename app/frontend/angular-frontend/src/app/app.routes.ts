@@ -16,7 +16,7 @@ import {HistoryViewComponent} from "./history-view/history-view.component";
 
 
 export const routes: Routes = [
-  {path: 'login', component: LoginComponent},
+  {path: '**/login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'register-successful', component: RegisterSuccessfulComponent},
   {path: 'deck/:deck-id', component: DeckViewComponent},

@@ -102,4 +102,8 @@ export class LoginComponent {
       }
     });
   }
+
+  lang() {
+    $localize.locale = "en-US";
+  }
 }

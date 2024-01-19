@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
     "build": "ng build --localize",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --localize --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
@@ -32,6 +32,7 @@
     "ngx-cookie-service": "^17.0.0",
     "path": "^0.12.7",
     "rxjs": "~7.8.0",
+    "serve": "^14.2.1",
     "swagger-ui": "^5.11.0",
     "swagger-ui-dist": "^5.10.5",
     "tslib": "^2.3.0",

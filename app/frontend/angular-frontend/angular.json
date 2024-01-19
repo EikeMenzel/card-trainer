@@ -8,7 +8,8 @@
         "sourceLocale": "en-US",
         "locales": {
           "de-DE": {
-            "translation": "src/locale/messages.de.xlf"
+            "translation": "src/locale/messages.de.xlf",
+            "baseHref": "/de"
           }
         }
       },
@@ -65,6 +66,9 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "de": {
+              "localize": ["de"]
             }
           },
           "defaultConfiguration": "production"

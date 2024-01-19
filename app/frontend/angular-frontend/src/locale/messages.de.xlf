@@ -1,41 +1,42 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+<?xml version="1.0" encoding="utf-8"?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file datatype="plaintext" original="ng2.template" source-language="en-US" target-language="DE-DE">
     <body>
-      <trans-unit id="ngb.alert.close" datatype="html">
+      <trans-unit datatype="html" id="ngb.alert.close">
         <source>Close</source>
+        <target>Schließen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/alert/alert.ts</context>
           <context context-type="linenumber">74,76</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.carousel.slide-number" datatype="html">
-        <source> Slide <x id="INTERPOLATION" equiv-text=".value;
-	}
-
-	/*"/> of <x id="INTERPOLATION_1" equiv-text="&apos;wrap&apos; the caro"/> </source>
+      <trans-unit datatype="html" id="ngb.carousel.slide-number">
+        <source> Slide <x equiv-text=".value;  }   /*" id="INTERPOLATION"/> of <x equiv-text="'wrap' the caro" id="INTERPOLATION_1"/> </source>
+        <target>Abrutschen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/carousel/carousel.ts</context>
           <context context-type="linenumber">171,180</context>
         </context-group>
-        <note priority="1" from="description">Currently selected slide number read by screen reader</note>
+        <note from="description" priority="1">Currently selected slide number read by screen reader</note>
       </trans-unit>
-      <trans-unit id="ngb.carousel.previous" datatype="html">
+      <trans-unit datatype="html" id="ngb.carousel.previous">
         <source>Previous</source>
+        <target>Zurück</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/carousel/carousel.ts</context>
           <context context-type="linenumber">199,202</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.carousel.next" datatype="html">
+      <trans-unit datatype="html" id="ngb.carousel.next">
         <source>Next</source>
+        <target>Weiter</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/carousel/carousel.ts</context>
           <context context-type="linenumber">223</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.datepicker.select-month" datatype="html">
+      <trans-unit datatype="html" id="ngb.datepicker.select-month">
         <source>Select month</source>
+        <target>Monat auswählen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/datepicker/datepicker-navigation-select.ts</context>
           <context context-type="linenumber">92</context>
@@ -45,8 +46,9 @@
           <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.datepicker.select-year" datatype="html">
+      <trans-unit datatype="html" id="ngb.datepicker.select-year">
         <source>Select year</source>
+        <target>Jahr auswählen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/datepicker/datepicker-navigation-select.ts</context>
           <context context-type="linenumber">92</context>
@@ -56,8 +58,9 @@
           <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.datepicker.previous-month" datatype="html">
+      <trans-unit datatype="html" id="ngb.datepicker.previous-month">
         <source>Previous month</source>
+        <target>Voriger Monat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/datepicker/datepicker-navigation.ts</context>
           <context context-type="linenumber">93,94</context>
@@ -67,8 +70,9 @@
           <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.datepicker.next-month" datatype="html">
+      <trans-unit datatype="html" id="ngb.datepicker.next-month">
         <source>Next month</source>
+        <target>Nächster Monat</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/datepicker/datepicker-navigation.ts</context>
           <context context-type="linenumber">103</context>
@@ -78,182 +82,204 @@
           <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.first" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.first">
         <source>««</source>
+        <target>««</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">291</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.previous" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.previous">
         <source>«</source>
+        <target>«</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">305,307</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.next" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.next">
         <source>»</source>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">322</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.last" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.last">
         <source>»»</source>
+        <target>»»</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">333,336</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.first-aria" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.first-aria">
         <source>First</source>
+        <target>Erstes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">354</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.previous-aria" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.previous-aria">
         <source>Previous</source>
+        <target>Voriges</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">373,374</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.next-aria" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.next-aria">
         <source>Next</source>
+        <target>Nächstes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">396</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.pagination.last-aria" datatype="html">
+      <trans-unit datatype="html" id="ngb.pagination.last-aria">
         <source>Last</source>
+        <target>Letztes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/pagination/pagination.ts</context>
           <context context-type="linenumber">405,406</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.progressbar.value" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="g.ariaLabel;"/></source>
+      <trans-unit datatype="html" id="ngb.progressbar.value">
+        <source><x equiv-text="g.ariaLabel;" id="INTERPOLATION"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/progressbar/progressbar.ts</context>
           <context context-type="linenumber">71,74</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.HH" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.HH">
         <source>HH</source>
+        <target>HH</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">238</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.hours" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.hours">
         <source>Hours</source>
+        <target>Stunden</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">258,259</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.MM" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.MM">
         <source>MM</source>
+        <target>MM</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">279</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.minutes" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.minutes">
         <source>Minutes</source>
+        <target>Minuten</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">295,296</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.increment-hours" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.increment-hours">
         <source>Increment hours</source>
+        <target>Stunden erhöhen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">310</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.decrement-hours" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.decrement-hours">
         <source>Decrement hours</source>
+        <target>Stunden verringern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">330,333</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.increment-minutes" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.increment-minutes">
         <source>Increment minutes</source>
+        <target>Minuten erhöhen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">354,357</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.decrement-minutes" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.decrement-minutes">
         <source>Decrement minutes</source>
+        <target>Minuten verringern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">371,375</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.SS" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.SS">
         <source>SS</source>
+        <target>SS</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">395,396</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.seconds" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.seconds">
         <source>Seconds</source>
+        <target>Sekunden</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">421</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.increment-seconds" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.increment-seconds">
         <source>Increment seconds</source>
+        <target>Sekunden erhöhen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">434,437</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.decrement-seconds" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.decrement-seconds">
         <source>Decrement seconds</source>
+        <target>Sekunden verringern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">441</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.timepicker.PM" datatype="html">
+      <trans-unit datatype="html" id="ngb.timepicker.PM">
         <source><x id="INTERPOLATION"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/timepicker/timepicker.ts</context>
           <context context-type="linenumber">441</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="ngb.toast.close-aria" datatype="html">
+      <trans-unit datatype="html" id="ngb.toast.close-aria">
         <source>Close</source>
+        <target>Schließen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">node_modules/src/toast/toast.ts</context>
           <context context-type="linenumber">144,146</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2224306313987976213" datatype="html">
+      <trans-unit datatype="html" id="2224306313987976213">
         <source>Cards left</source>
+        <target>Übrige Karten</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">14,15</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7750071971858989874" datatype="html">
+      <trans-unit datatype="html" id="7750071971858989874">
         <source>Deck size</source>
+        <target>Deckgröße</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">18,19</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1708806260765637348" datatype="html">
+      <trans-unit datatype="html" id="1708806260765637348">
         <source> Start to Learn </source>
         <target>Lernen</target>
         <context-group purpose="location">
@@ -261,15 +287,17 @@
           <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4381733737405497367" datatype="html">
+      <trans-unit datatype="html" id="4381733737405497367">
         <source>Quick Peek</source>
+        <target>Freies Lernen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">38,39</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7419704019640008953" datatype="html">
+      <trans-unit datatype="html" id="7419704019640008953">
         <source>Share</source>
+        <target>Teilen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">43,44</context>
@@ -279,22 +307,25 @@
           <context context-type="linenumber">71,72</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7462301153729425254" datatype="html">
+      <trans-unit datatype="html" id="7462301153729425254">
         <source>Export</source>
+        <target>Exportieren</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">44,45</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7585826646011739428" datatype="html">
+      <trans-unit datatype="html" id="7585826646011739428">
         <source>Edit</source>
+        <target>Bearbeiten</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">45,46</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7819314041543176992" datatype="html">
+      <trans-unit datatype="html" id="7819314041543176992">
         <source>Close</source>
+        <target>Schließen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">58</context>
@@ -332,36 +363,41 @@
           <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2315202278625587909" datatype="html">
+      <trans-unit datatype="html" id="2315202278625587909">
         <source>Enter the E-Mail Address of the recipient:</source>
+        <target>Gib die E-Mail-Adresse des Empfängers ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">62,63</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4879062861748823770" datatype="html">
+      <trans-unit datatype="html" id="4879062861748823770">
         <source>example@example.com</source>
+        <target>beispiel@beispiel.com</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">66,67</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8221726133650028999" datatype="html">
+      <trans-unit datatype="html" id="8221726133650028999">
         <source>Please enter a valid e-mail</source>
+        <target>Bitte geben sie eine gültige E-Mail-Adresse ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">67,68</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1059908080981133475" datatype="html">
+      <trans-unit datatype="html" id="1059908080981133475">
         <source>Send E-Mail</source>
+        <target>Email Senden</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/deck-view/deck-view.component.html</context>
           <context context-type="linenumber">70,71</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3872359053216701452" datatype="html">
+      <trans-unit datatype="html" id="3872359053216701452">
         <source>Return to Deck</source>
+        <target>Zurück zum Deck</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">9,10</context>
@@ -371,29 +407,33 @@
           <context context-type="linenumber">28,29</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8207145033864447468" datatype="html">
+      <trans-unit datatype="html" id="8207145033864447468">
         <source>Card type</source>
+        <target>Kartentyp</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">17,18</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8643289769990675407" datatype="html">
+      <trans-unit datatype="html" id="8643289769990675407">
         <source>Basic</source>
+        <target>Normal</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">23,24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4737017620429217247" datatype="html">
+      <trans-unit datatype="html" id="4737017620429217247">
         <source>Multiple Choice</source>
+        <target>Mehrfachantwort</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">24,25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3720261896515114199" datatype="html">
+      <trans-unit datatype="html" id="3720261896515114199">
         <source>Add your question</source>
+        <target>Füge eine Frage hinzu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">33,34</context>
@@ -403,8 +443,9 @@
           <context context-type="linenumber">82,83</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4793886736025214128" datatype="html">
+      <trans-unit datatype="html" id="4793886736025214128">
         <source>Uploaded Img</source>
+        <target>Hochgeladenes Bild</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">45,46</context>
@@ -422,78 +463,88 @@
           <context context-type="linenumber">129,130</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1734896787974507613" datatype="html">
+      <trans-unit datatype="html" id="1734896787974507613">
         <source>Add the answer</source>
+        <target>Füge eine Antwort hinzu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">56,57</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3259360678564057556" datatype="html">
-        <source>Option </source>
+      <trans-unit datatype="html" id="3259360678564057556">
+        <source>Option</source>
+        <target>Optionen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6737127594232120391" datatype="html">
+      <trans-unit datatype="html" id="6737127594232120391">
         <source>Correct answer</source>
+        <target>Richtige Antwort?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">143,144</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2501989539336327542" datatype="html">
+      <trans-unit datatype="html" id="2501989539336327542">
         <source>Upload image</source>
+        <target>Hochgeladenes Bild</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">179,180</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7913768080890114286" datatype="html">
+      <trans-unit datatype="html" id="7913768080890114286">
         <source>Drag &amp; Drop files here or</source>
+        <target>Drag &amp; Drop dein Bild hier</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">186,187</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="554727787484624331" datatype="html">
+      <trans-unit datatype="html" id="554727787484624331">
         <source>Click to browse</source>
+        <target>Drücken zum auswählen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">187,188</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1464435073936969366" datatype="html">
+      <trans-unit datatype="html" id="1464435073936969366">
         <source> Done </source>
+        <target>Fertigstellen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">204</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="209567061630436453" datatype="html">
+      <trans-unit datatype="html" id="209567061630436453">
         <source>Hey, Simon here!</source>
+        <target>Heey. Hier ist Simon!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">219,220</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1783394910029467731" datatype="html">
+      <trans-unit datatype="html" id="1783394910029467731">
         <source>Simon the fox</source>
+        <target>Simon der Fux</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">224,225</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5680592021484913803" datatype="html">
+      <trans-unit datatype="html" id="5680592021484913803">
         <source>Here you can edit or create cards, upload images and start your learning journey. Much love and fun, Simon 🦊</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/edit-card-view/edit-card-view.component.html</context>
           <context context-type="linenumber">226,227</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4371680625121499898" datatype="html">
+      <trans-unit datatype="html" id="4371680625121499898">
         <source>Reset your password</source>
+        <target>Setze dein Passwort zurück</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/forgot-password/forgot-password.component.html</context>
           <context context-type="linenumber">3,4</context>
@@ -503,93 +554,105 @@
           <context context-type="linenumber">2,3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3693700889630183849" datatype="html">
+      <trans-unit datatype="html" id="3693700889630183849">
         <source>Enter email address</source>
+        <target>Gib eine E-Mail-Adresse ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/forgot-password/forgot-password.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6673626898717784752" datatype="html">
+      <trans-unit datatype="html" id="6673626898717784752">
         <source> Please enter a valid email address </source>
+        <target>Gib eine gültige E-Mail-Adresse ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/forgot-password/forgot-password.component.html</context>
           <context context-type="linenumber">8,9</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2917314929120683887" datatype="html">
+      <trans-unit datatype="html" id="2917314929120683887">
         <source> Continue </source>
+        <target>Fortfahren</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/forgot-password/forgot-password.component.html</context>
           <context context-type="linenumber">13,14</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6905549716581987365" datatype="html">
+      <trans-unit datatype="html" id="6905549716581987365">
         <source>Learn Session</source>
+        <target>Lerneinheit</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/history-view/history-view.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1161299114153631702" datatype="html">
+      <trans-unit datatype="html" id="1161299114153631702">
         <source>Completed</source>
+        <target>Fertigstellen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/history-view/history-view.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4906219028586743163" datatype="html">
+      <trans-unit datatype="html" id="4906219028586743163">
         <source>Cards Learned</source>
+        <target>Karten gelernt</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/history-view/history-view.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="636410413026624214" datatype="html">
+      <trans-unit datatype="html" id="636410413026624214">
         <source>You have not done any Sessions yet. Start your first learn session and see the results here 😁</source>
+        <target>Ziemlich leer hier 😥. Zeit, sich an die Arbeit zu machen und zu lernen! 😁 Viel erfolg!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/history-view/history-view.component.html</context>
           <context context-type="linenumber">27,28</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1689944471883499798" datatype="html">
+      <trans-unit datatype="html" id="1689944471883499798">
         <source>History Session Result</source>
+        <target>Lerneinheit Ergebnisse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/history-view/history-view.component.html</context>
           <context context-type="linenumber">41,42</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2255334548863768409" datatype="html">
+      <trans-unit datatype="html" id="2255334548863768409">
         <source>No Cards were learned during this Session</source>
+        <target>In dieser Lerneinheit wurden keine Karten gelernt</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/history-view/history-view.component.html</context>
           <context context-type="linenumber">48,49</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3492007542396725315" datatype="html">
+      <trans-unit datatype="html" id="3492007542396725315">
         <source>Welcome</source>
+        <target>Willkommen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">10,11</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1028492791394974335" datatype="html">
-        <source> My name is Simon, I am your study buddy.<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Sign in by entering the information below.</source>
-        <target>Hey mein Name ist Simon. Ich bin dein Lernkumpane!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/>Log dich einfach ein und los geht's!</target>
+      <trans-unit datatype="html" id="1028492791394974335">
+        <source> My name is Simon, I am your study buddy.<x ctype="lb" equiv-text="&lt;br&gt;" id="LINE_BREAK"/> Sign in by entering the information below.</source>
+        <target>Hey mein Name ist Simon. Ich bin dein Lernkumpane!<x ctype="lb" equiv-text="&lt;br&gt;" id="LINE_BREAK"/>Log dich einfach ein und los geht's!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">12,13</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="203827529942340818" datatype="html">
+      <trans-unit datatype="html" id="203827529942340818">
         <source>Enter your email</source>
+        <target>Gib deine E-Mail-Adresse ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1431416938026210429" datatype="html">
+      <trans-unit datatype="html" id="1431416938026210429">
         <source>Password</source>
+        <target>Passwort</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">27,28</context>
@@ -599,15 +662,17 @@
           <context context-type="linenumber">39,40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7993400168408015259" datatype="html">
+      <trans-unit datatype="html" id="7993400168408015259">
         <source>Forgot Password?</source>
+        <target>Passwort vergessen?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2772023564304193657" datatype="html">
+      <trans-unit datatype="html" id="2772023564304193657">
         <source>Enter your password</source>
+        <target>Gib dein Passwort ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">35,36</context>
@@ -617,29 +682,33 @@
           <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2950600607347308247" datatype="html">
-        <source>Don&apos;t have an account? </source>
+      <trans-unit datatype="html" id="2950600607347308247">
+        <source>Don't have an account? </source>
+        <target>Neu hier? </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="744750008248382275" datatype="html">
+      <trans-unit datatype="html" id="744750008248382275">
         <source> Sign Up </source>
+        <target> Meld dich hier an! </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/login/login.component.html</context>
           <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4915431133669985304" datatype="html">
+      <trans-unit datatype="html" id="4915431133669985304">
         <source>Profile</source>
+        <target>Profil</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/navbar/navbar.component.html</context>
           <context context-type="linenumber">24,25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3797778920049399855" datatype="html">
+      <trans-unit datatype="html" id="3797778920049399855">
         <source>Logout</source>
+        <target>Ausloggen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/navbar/navbar.component.html</context>
           <context context-type="linenumber">26,27</context>
@@ -653,29 +722,33 @@
           <context context-type="linenumber">112,113</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8683490240613768452" datatype="html">
+      <trans-unit datatype="html" id="8683490240613768452">
         <source>Your Registration was successful!</source>
+        <target>Deine Registrierung war erfolgreich</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register-successful/register-successful.component.html</context>
           <context context-type="linenumber">2,3</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="585769935725657865" datatype="html">
-        <source>Please check your Mailbox and verify your E-Mail-Address <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span id=&quot;userEmail&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ userEmail }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit datatype="html" id="585769935725657865">
+        <source>Please check your Mailbox and verify your E-Mail-Address <x ctype="x-span" equiv-text="&lt;span id=&quot;userEmail&quot;&gt;" id="START_TAG_SPAN"/><x equiv-text="{{ userEmail }}" id="INTERPOLATION"/><x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
+        <target>Bitte bestätigen sie ihre Registrierung in ihrer Mailbox</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register-successful/register-successful.component.html</context>
           <context context-type="linenumber">3,4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1693210672146472383" datatype="html">
-        <source>Happy Learning! <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;red-heart&quot; style=&quot;color: red&quot;&gt;"/>❤<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+      <trans-unit datatype="html" id="1693210672146472383">
+        <source>Happy Learning! <x ctype="x-span" equiv-text="&lt;span class=&quot;red-heart&quot; style=&quot;color: red&quot;&gt;" id="START_TAG_SPAN"/>❤<x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></source>
+        <target>Fröhliches Lernen! <x ctype="x-span" equiv-text="&lt;span class=&quot;red-heart&quot; style=&quot;color: red&quot;&gt;" id="START_TAG_SPAN"/>❤<x ctype="x-span" equiv-text="&lt;/span&gt;" id="CLOSE_TAG_SPAN"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register-successful/register-successful.component.html</context>
           <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="77685683276518709" datatype="html">
+      <trans-unit datatype="html" id="77685683276518709">
         <source>Back to Login</source>
+        <target>Zurück zum Einloggen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register-successful/register-successful.component.html</context>
           <context context-type="linenumber">5,6</context>
@@ -685,22 +758,24 @@
           <context context-type="linenumber">22,23</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4055483007149065802" datatype="html">
+      <trans-unit datatype="html" id="4055483007149065802">
         <source>Hey!</source>
+        <target>Hey!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">11,12</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1974651942214983862" datatype="html">
-        <source> Don´t have an account yet? No worries!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Sign up by entering the information below.</source>
+      <trans-unit datatype="html" id="1974651942214983862">
+        <source> Don´t have an account yet? No worries!<x ctype="lb" equiv-text="&lt;br&gt;" id="LINE_BREAK"/> Sign up by entering the information below.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">13,14</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5248717555542428023" datatype="html">
+      <trans-unit datatype="html" id="5248717555542428023">
         <source>Username</source>
+        <target>Benutzername</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">30,31</context>
@@ -710,207 +785,239 @@
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4327001039034401261" datatype="html">
+      <trans-unit datatype="html" id="4327001039034401261">
         <source>Enter your username</source>
+        <target>Gib deinen Benutzernamen ein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8947607370694737789" datatype="html">
+      <trans-unit datatype="html" id="8947607370694737789">
         <source>A password must be:
                 • between 8 - 72 characters long
                 • contain at least one number
                 • at least special character: ~ ` ! @ # $ % ^ &amp; * ( ) _ - + = { [ } ] | : ; &lt; , &gt; . ? /</source>
+        <target>Dein Password muss:
+          • zwischen 8 - 72 zeichen lang sein
+          • mindestens eine Nummer enthalten
+          • mindestens eine der folgenden Symbole beinhalten: ~ ` ! @ # $ % ^ &amp; * ( ) _ - + = { [ } ] | : ; &lt; , &gt; . ? /</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">41,45</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3241357959735682038" datatype="html">
+      <trans-unit datatype="html" id="3241357959735682038">
         <source>Confirm Password</source>
+        <target>Passwort bestätigen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">63,64</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7941159538449463077" datatype="html">
+      <trans-unit datatype="html" id="7941159538449463077">
         <source>Re-enter your password</source>
+        <target>Passwort erneut eingeben</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">66,67</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1466012768716286509" datatype="html">
+      <trans-unit datatype="html" id="1466012768716286509">
         <source>Sign Up</source>
+        <target>Anmelden</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">81,82</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6207438724033771807" datatype="html">
+      <trans-unit datatype="html" id="6207438724033771807">
         <source>Already have an account? </source>
+        <target>Du hast schon einen Account? </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="840692109692540367" datatype="html">
+      <trans-unit datatype="html" id="840692109692540367">
         <source>Sign In</source>
+        <target>Hier clicken zum einloggen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/register/register.component.html</context>
           <context context-type="linenumber">89,90</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1804413399654345739" datatype="html">
+      <trans-unit datatype="html" id="1804413399654345739">
         <source>Enter new password</source>
+        <target>Neues Passwort vergeben</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reset-password/reset-password.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8656126574213649581" datatype="html">
+      <trans-unit datatype="html" id="8656126574213649581">
         <source>Confirm new password</source>
+        <target>Neues Passwort bestätigen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reset-password/reset-password.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4314910104023472121" datatype="html">
+      <trans-unit datatype="html" id="4314910104023472121">
         <source> Passwords do not match </source>
+        <target>Die passwörter müssen identisch sein</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reset-password/reset-password.component.html</context>
           <context context-type="linenumber">12,13</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1636934520301910285" datatype="html">
+      <trans-unit datatype="html" id="1636934520301910285">
         <source>Reset password</source>
+        <target>Passwort zurücksetzen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/reset-password/reset-password.component.html</context>
           <context context-type="linenumber">17,18</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4673719020204801551" datatype="html">
+      <trans-unit datatype="html" id="4673719020204801551">
         <source>Session Expiring</source>
+        <target>Sitzung abgelaufen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/session-renewal-modal/session-renewal-modal.component.html</context>
           <context context-type="linenumber">1,2</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6822802999052464200" datatype="html">
+      <trans-unit datatype="html" id="6822802999052464200">
         <source>Your session is about to expire. Do you want to renew it?</source>
+        <target>Deine Sitzung läuft demnächst ab. Willst du sie verlängern?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/session-renewal-modal/session-renewal-modal.component.html</context>
           <context context-type="linenumber">3,4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4447738744676189903" datatype="html">
+      <trans-unit datatype="html" id="4447738744676189903">
         <source>Renew Session</source>
+        <target>Sitzung verlängern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/session-renewal-modal/session-renewal-modal.component.html</context>
           <context context-type="linenumber">6,7</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="7744292213705278878" datatype="html">
+      <trans-unit datatype="html" id="7744292213705278878">
         <source>User Profile</source>
+        <target>Benutzerprofil</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8953033926734869941" datatype="html">
+      <trans-unit datatype="html" id="8953033926734869941">
         <source>Name</source>
+        <target>Name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">24,25</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6815507474406960450" datatype="html">
+      <trans-unit datatype="html" id="6815507474406960450">
         <source>E-Mail address</source>
+        <target>E-Mail-Addresse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">31,32</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="4768749765465246664" datatype="html">
+      <trans-unit datatype="html" id="4768749765465246664">
         <source>Email</source>
+        <target>E-Mail</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="8962351161403425460" datatype="html">
+      <trans-unit datatype="html" id="8962351161403425460">
         <source>Update password </source>
+        <target>Passwort aktualisieren</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">39,40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="9071783025483844562" datatype="html">
+      <trans-unit datatype="html" id="9071783025483844562">
         <source>Update your password</source>
+        <target>Aktualisiere dein Passwort</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">47,48</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3588415639242079458" datatype="html">
+      <trans-unit datatype="html" id="3588415639242079458">
         <source>New password</source>
+        <target>Neues Passwort</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">56,57</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1221489216354133705" datatype="html">
+      <trans-unit datatype="html" id="1221489216354133705">
         <source>Re-enter new password</source>
+        <target>Passwort erneut eingeben</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">62,63</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6309828574111583895" datatype="html">
+      <trans-unit datatype="html" id="6309828574111583895">
         <source>Change password</source>
+        <target>Passwort wechseln</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">68,69</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1047835320198169251" datatype="html">
+      <trans-unit datatype="html" id="1047835320198169251">
         <source>Number of cards to be learned per session</source>
+        <target>Maximale anzahl an Lernkarten pro Lerneinheit</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">81,82</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2826581353496868063" datatype="html">
+      <trans-unit datatype="html" id="2826581353496868063">
         <source>Language</source>
+        <target>Sprache</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">90,91</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1858110241312746425" datatype="html">
+      <trans-unit datatype="html" id="1858110241312746425">
         <source>German</source>
+        <target>Deutsch</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">93,94</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5866254605255506989" datatype="html">
+      <trans-unit datatype="html" id="5866254605255506989">
         <source>English</source>
+        <target>Englisch</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">94,95</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="6160695132170899781" datatype="html">
+      <trans-unit datatype="html" id="6160695132170899781">
         <source>Receive a learning notification</source>
+        <target>Lernerinnerung per E-Mail erhalten</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">103,104</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3768927257183755959" datatype="html">
+      <trans-unit datatype="html" id="3768927257183755959">
         <source>Save</source>
+        <target>Speichern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/user-profile/user-profile.component.html</context>
           <context context-type="linenumber">117,118</context>
