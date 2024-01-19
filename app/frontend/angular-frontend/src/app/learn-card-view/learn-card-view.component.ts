@@ -99,6 +99,7 @@ export class LearnCardViewComponent implements OnInit {
       this.cardService.cancelLearnSessionStatus(this.learnSessionId).subscribe();
     }
     this.modalRef?.close(this.donutModal)
+    this.imgModalRef?.dispose();
   }
 
   fetchNextCard() {
@@ -476,6 +477,7 @@ export class LearnCardViewComponent implements OnInit {
 
   protected readonly RatingDTO = RatingDTO;
   protected readonly faArrowsRotate = faArrowsRotate;
+  private imgModalRef:  bootstrap.Modal | undefined;
 
   openImageModal(imageUrl: SafeUrl | undefined) {
     if (imageUrl) {
@@ -486,8 +488,8 @@ export class LearnCardViewComponent implements OnInit {
       // Open the bootstrap modal
       const modalElement = document.getElementById('imageModal');
       if (modalElement) {
-        const imageModal = new bootstrap.Modal(modalElement);
-        imageModal.show();
+        this.imgModalRef = new bootstrap.Modal(modalElement);
+        this.imgModalRef.show();
       }
     }
   }
