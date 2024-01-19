@@ -70,7 +70,6 @@ export class PeekCardViewComponent implements OnInit {
     this.startPeekSession();
   }
 
-
   startPeekSession() {
     this.cardService.startPeekSession(Number(this.deckId)).subscribe({
       next: (res) => {
@@ -270,6 +269,7 @@ export class PeekCardViewComponent implements OnInit {
     if (!this.isSessionFinished && !this.unauthorizedFound) {
         this.cardService.setCancelledPeekStatus(this.peekSessionId).subscribe()
     }
+    this.imgModalRef?.dispose();
   }
 
   get currentCard() {
@@ -401,6 +401,7 @@ export class PeekCardViewComponent implements OnInit {
   }
 
   protected readonly faArrowsRotate = faArrowsRotate;
+  private imgModalRef:  bootstrap.Modal | undefined;
 
   openImageModal(imageUrl: SafeUrl | undefined) {
     if (imageUrl) {
@@ -411,8 +412,8 @@ export class PeekCardViewComponent implements OnInit {
       // Öffne das Bootstrap-Modal
       const modalElement = document.getElementById('imageModal');
       if (modalElement) {
-        const imageModal = new bootstrap.Modal(modalElement);
-        imageModal.show();
+        this.imgModalRef = new bootstrap.Modal(modalElement);
+        this.imgModalRef.show();
       }
     }
   }
