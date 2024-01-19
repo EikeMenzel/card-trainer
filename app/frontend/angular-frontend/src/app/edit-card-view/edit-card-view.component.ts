@@ -19,6 +19,7 @@ import {EditCardAnswer} from "../models/edit-card/EditCardAnswer";
 import {UpdateCardBasicDTO} from "../models/edit-card/UpdateCardBasicDTO";
 import {UpdateCardDTO} from "../models/edit-card/UpdateCardDTO";
 import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
@@ -31,6 +32,7 @@ import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
     FaIconComponent,
     RouterLink,
     NgOptimizedImage,
+    TutorialComponent,
   ],
   styleUrls: ['./edit-card-view.component.css']
 })

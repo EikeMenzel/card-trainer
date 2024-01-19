@@ -12,6 +12,7 @@ import {AuthService} from "../services/auth-service/auth-service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {faPencil, faSave, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 
 @Component({
@@ -23,7 +24,9 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
     DonutChartComponent,
     RouterLink,
     FormsModule,
-    FaIconComponent],
+    FaIconComponent,
+    TutorialComponent
+  ],
   templateUrl: './deck-view.component.html',
   styleUrl: './deck-view.component.css'
 })

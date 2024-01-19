@@ -1,0 +1,17 @@
+<div class="modal fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header custom-modal-header">
+                <h5 class="modal-title" id="tutorialModalLabel"><span>Hey, Simon here!</span></h5>
+            </div>
+            <div class="modal-body custom-modal-body">
+              <img ngSrc="assets/fox2.png" alt="Simon the fox"
+                   class="img-fox mb-2" height="400" width="400">
+              <p>{{ getTutorialContent(pageName) }}</p>
+            </div>
+            <div class="modal-footer custom-modal-footer">
+                <button type="button" class="btn button-close" data-bs-dismiss="modal" (click)="closeTutorial()"><span>Close</span></button>
+            </div>
+        </div>
+    </div>
+</div>
