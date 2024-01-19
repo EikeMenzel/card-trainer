@@ -50,6 +50,9 @@ class DeckServiceTests {
     @MockBean
     private MultipleChoiceCardRepository multipleChoiceCardRepository;
 
+    @MockBean
+    private RepetitionService repetitionService;
+
     @Autowired
     private DeckService deckService;
 
@@ -284,7 +287,6 @@ class DeckServiceTests {
         verify(userService, times(1)).getUserFromId(userId);
         verify(deckRepository, times(1)).save(any(Deck.class));
         verify(cardRepository, times(1)).getCardsByDeckId(deckId);
-        verify(textAnswerCardRepository, times(1)).getTextAnswerCardById(anyLong());
     }
 
     @Test
