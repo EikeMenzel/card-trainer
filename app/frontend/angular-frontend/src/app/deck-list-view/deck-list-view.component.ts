@@ -143,19 +143,21 @@ export class DeckListViewComponent implements OnInit {
     const newDeckName = (document.getElementById("add-new-item-field") as HTMLInputElement).value;
     if (newDeckName == "") {
       this.toast.showErrorToast("Error","Deck Name can not be Empty")
-      return
+      this.wipCreateDeck = false;
+      return;
     }
 
     if(newDeckName.length > 128){
       this.toast.showErrorToast("Error","No more then 128 Character allowed")
+      this.wipCreateDeck = false;
       return;
     }
 
     this.addItem()
     this.cardService.newDecks(newDeckName).subscribe({
       next: res => {
-        if (res.status == 201) {
-          this.updateDecks()
+        if (res.status == HttpStatusCode.Created) {
+          this.updateDecks();
         }
       },
       error: err => {
@@ -173,6 +175,7 @@ export class DeckListViewComponent implements OnInit {
             this.toast.showErrorToast("Error", "Could not create a new Deck")
             break;
         }
+        this.wipCreateDeck = false;
       },
       complete: () => {
         this.wipCreateDeck = false;
