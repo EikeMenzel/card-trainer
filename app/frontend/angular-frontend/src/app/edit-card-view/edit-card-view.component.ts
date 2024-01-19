@@ -59,6 +59,8 @@ export class EditCardViewComponent implements OnInit {
   public deckId: string = this.route.snapshot.paramMap.get("deck-id") ?? "";
   public cardType: string = "basic";
 
+  private modalReference: bootstrap.Modal | undefined
+
   constructor(
     private toast: ToastService,
     private cookieService: CookieService,
@@ -66,6 +68,10 @@ export class EditCardViewComponent implements OnInit {
     private cardService: CardService,
     private router: Router
   ) {
+  }
+
+  ngOnDestroy(){
+    this.modalReference?.dispose()
   }
 
   ngOnInit() {
@@ -150,8 +156,8 @@ export class EditCardViewComponent implements OnInit {
     this.currentImageModal = frontendImageIndex;
     const modalElement = document.getElementById('uploadModal');
     if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
+      this.modalReference = new bootstrap.Modal(modalElement)
+      this.modalReference.show();
     }
   }
 

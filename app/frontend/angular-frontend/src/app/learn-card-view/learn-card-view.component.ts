@@ -96,6 +96,7 @@ export class LearnCardViewComponent implements OnInit {
     if (!this.isSessionFinished && !this.unauthorizedFound) {
       this.cardService.cancelLearnSessionStatus(this.learnSessionId).subscribe();
     }
+    this.modalRef?.close(this.donutModal)
   }
 
   fetchNextCard() {
