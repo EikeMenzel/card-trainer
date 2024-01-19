@@ -38,6 +38,7 @@ public class TextAnswerCard {
     public Image getImageData() {
         return imageData;
     }
+
     public TextAnswerCard cloneTextAnswercard(Long cardId) {
         return new TextAnswerCard(cardId, this.answer, this.imageData);
     }
@@ -48,5 +49,9 @@ public class TextAnswerCard {
 
     public TextAnswerCard updateTextAnswerCard(String answer) {
         return new TextAnswerCard(this.id, answer, null);
+    }
+
+    public void setImageData(Image imageData) {
+        this.imageData = imageData;
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public class MultipleChoiceCard {
 
     @Id
-    @Column(name = "c_id", updatable=false)
+    @Column(name = "c_id", updatable = false)
     private Long id;
 
     @OneToMany(mappedBy = "multipleChoiceCard", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -23,6 +23,7 @@ public class MultipleChoiceCard {
     public MultipleChoiceCard(Long id) {
         this.id = id;
     }
+
     public MultipleChoiceCard() {
     }
 

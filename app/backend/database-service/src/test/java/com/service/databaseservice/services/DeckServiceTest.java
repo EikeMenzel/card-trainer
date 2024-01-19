@@ -7,6 +7,7 @@ import com.service.databaseservice.model.cards.CardType;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
 import com.service.databaseservice.repository.DeckRepository;
+import com.service.databaseservice.repository.ImageRepository;
 import com.service.databaseservice.repository.cards.CardRepository;
 import com.service.databaseservice.repository.cards.MultipleChoiceCardRepository;
 import com.service.databaseservice.repository.cards.TextAnswerCardRepository;
@@ -49,6 +50,9 @@ class DeckServiceTests {
 
     @MockBean
     private MultipleChoiceCardRepository multipleChoiceCardRepository;
+
+    @MockBean
+    private ImageRepository imageRepository;
 
     @MockBean
     private RepetitionService repetitionService;
