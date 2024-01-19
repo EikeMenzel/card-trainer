@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {MatDialog} from "@angular/material/dialog";
 import {SessionRenewalModalComponent} from "../../session-renewal-modal/session-renewal-modal.component";
+import {delay} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +28,12 @@ export class AuthService {
     this.cookieService.set(this.cookieName, this.getJwtValueFromCookie());
   }
 
-  logout() {
-    this.cookieService.delete(this.cookieName);
-    this.router.navigate(["/login"])
+  async logout() {
+    while (this.cookieService.get(this.cookieName) != "") {      //wait
+      await new Promise(f => setTimeout(f, 100));
+      this.cookieService.delete(this.cookieName);
+    }
+    await this.router.navigate(["/login"])
   }
 
   get isLoggedIn(): boolean {
