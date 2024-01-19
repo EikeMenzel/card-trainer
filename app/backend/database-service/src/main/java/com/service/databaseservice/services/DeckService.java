@@ -27,14 +27,16 @@ public class DeckService {
     private final UserService userService;
     private final TextAnswerCardRepository textAnswerCardRepository;
     private final MultipleChoiceCardRepository multipleChoiceCardRepository;
+    private final RepetitionService repetitionService;
     private final Logger logger = LoggerFactory.getLogger(DeckService.class);
 
-    public DeckService(DeckRepository deckRepository, CardRepository cardRepository, UserService userService, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository) {
+    public DeckService(DeckRepository deckRepository, CardRepository cardRepository, UserService userService, TextAnswerCardRepository textAnswerCardRepository, MultipleChoiceCardRepository multipleChoiceCardRepository, RepetitionService repetitionService) {
         this.deckRepository = deckRepository;
         this.cardRepository = cardRepository;
         this.userService = userService;
         this.textAnswerCardRepository = textAnswerCardRepository;
         this.multipleChoiceCardRepository = multipleChoiceCardRepository;
+        this.repetitionService = repetitionService;
     }
 
     public List<DeckDTO> getAllDecksByUserId(Long userId) {
@@ -56,9 +58,11 @@ public class DeckService {
     public Optional<String> getDeckNameByIdAndUserId(Long userId, Long deckId) {
         return deckRepository.getDeckByIdAndOwnerId(deckId, userId).map(Deck::getName);
     }
+
     public Optional<String> getDeckNameById(Long deckId) {
         return deckRepository.findById(deckId).map(Deck::getName);
     }
+
     public boolean existsByDeckIdAndUserId(Long deckId, Long userId) {
         return deckRepository.existsDeckByIdAndOwnerId(deckId, userId);
     }
@@ -119,11 +123,12 @@ public class DeckService {
     private boolean cloneCardWithDependencies(Card card, Deck newDeck) {
         try {
             var newCard = cardRepository.save(card.cloneWithDifferentDeck(newDeck));
-            return switch (card.getCardType().getType()) {
-                case "BASIC" -> saveClonedTextAnswerCard(newCard, card);
-                case "MULTIPLE_CHOICE" -> saveClonedMultipleChoiceCard(newCard, card);
-                default -> false;
-            };
+            return repetitionService.initRepetition(newCard, newDeck.getOwner()) &&
+                    switch (card.getCardType().getType()) {
+                        case "BASIC" -> saveClonedTextAnswerCard(newCard, card);
+                        case "MULTIPLE_CHOICE" -> saveClonedMultipleChoiceCard(newCard, card);
+                        default -> false;
+                    };
         } catch (Exception e) {
             logger.debug(e.getMessage());
             return false;
