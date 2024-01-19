@@ -20,19 +20,21 @@ import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
 import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import {TutorialComponent} from "../tutorial/tutorial.component";
 
 @Component({
   standalone: true,
   selector: 'app-learn-card-view',
   templateUrl: './learn-card-view.component.html',
-  imports: [
-    NgIf,
-    NgForOf,
-    FontAwesomeModule,
-    BasePageComponent,
-    NgOptimizedImage,
-    DonutChartComponent
-  ],
+    imports: [
+        NgIf,
+        NgForOf,
+        FontAwesomeModule,
+        BasePageComponent,
+        NgOptimizedImage,
+        DonutChartComponent,
+        TutorialComponent
+    ],
   styleUrls: ['./learn-card-view.component.css']
 })
 
