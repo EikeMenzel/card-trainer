@@ -230,7 +230,7 @@ export class DeckViewComponent implements OnInit {
   }
 
   saveEdit() {
-    if (this.editableTitle.trim().length === 0 || this.editableTitle.trim().length > 128) {
+    if (this.editableTitle.trim().length === 0) {
       this.toastService.showWarningToast("Warning", "Deck can't be empty");
       return;
     }
