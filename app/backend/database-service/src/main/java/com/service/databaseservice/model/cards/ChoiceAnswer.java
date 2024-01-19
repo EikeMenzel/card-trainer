@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "choice_answer")
 public class ChoiceAnswer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ca_id")
@@ -73,5 +72,9 @@ public class ChoiceAnswer {
 
     public ChoiceAnswer updateChoiceAnswer(String answer, boolean isCorrect) {
         return new ChoiceAnswer(this.id, answer, null, isCorrect, this.multipleChoiceCard);
+    }
+
+    public void setImageData(Image imageData) {
+        this.imageData = imageData;
     }
 }

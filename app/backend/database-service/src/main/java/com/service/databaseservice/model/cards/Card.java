@@ -79,4 +79,7 @@ public class Card {
         return new Card(this.id, question, null, this.deck, this.cardType);
     }
 
+    public void setImageData(Image imageData) {
+        this.imageData = imageData;
+    }
 }
