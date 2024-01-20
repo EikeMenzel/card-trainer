@@ -54,6 +54,7 @@ public class GatewayConfig {
                 .route("user-service",
                         r -> r.path(
                                 "/api/v1/account",
+                                "/api/v1/tutorials/{tutorialPage}",
 
                                 "/api/v1/user/v3/api-docs"
                         ).uri(userServiceUri)
