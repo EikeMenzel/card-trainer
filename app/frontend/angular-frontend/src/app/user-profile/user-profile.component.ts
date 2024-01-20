@@ -132,6 +132,12 @@ export class UserProfileComponent implements OnInit {
       this.passwordError = this.translate.instant("field_cannot_be_empty");
     } else if (this.newPassword.length < 8 || this.newPassword.length > 72) {
       this.passwordError = this.translate.instant("password_length_min_max");
+    } else if (!/\d/.test(this.newPassword)) {
+      // Check if the password contains at least one number
+      this.passwordError = this.translate.instant("password_requirements");
+    } else if (!/[~`!@#\$%\^&*\(\)_\-\+=\{\[\}\]\|:;<,>\.?\/]/.test(this.newPassword)) {
+      // Check if the password contains at least one special character
+      this.passwordError = this.translate.instant("password_requirements");
     }
 
     if (!this.reenterNewPassword || this.reenterNewPassword.trim().length === 0) {
@@ -140,6 +146,7 @@ export class UserProfileComponent implements OnInit {
       this.passwordRepeatError = this.translate.instant("passwords_not_match");
     }
   }
+
 
   saveProfile(): void {
     this.passwordError = "";
