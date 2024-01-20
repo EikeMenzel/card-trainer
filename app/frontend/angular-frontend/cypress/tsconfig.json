@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+   // "baseUrl": "http://localhost:4200",
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress"],
+    "strict": true,
+    "sourceMap": false,
+    "inlineSourceMap": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "node_modules"
+  ]
+}
+
