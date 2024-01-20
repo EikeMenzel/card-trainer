@@ -232,6 +232,30 @@ CREATE TABLE "rainbow"
 
     CONSTRAINT unique_password UNIQUE (password)
 );
+
+CREATE TABLE "tutorial_page_type"
+(
+    tpt_id SERIAL PRIMARY KEY NOT NULL,
+    type    VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE "user_tutorial_page"
+(
+    utp_id               BIGSERIAL PRIMARY KEY NOT NULL,
+    user_id              INTEGER    NOT NULL,
+    tutorial_page_type_id     BIGINT    NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users (u_id) ON DELETE CASCADE,
+    FOREIGN KEY (tutorial_page_type_id) REFERENCES tutorial_page_type (tpt_id) ON DELETE CASCADE
+);
+
+INSERT INTO "tutorial_page_type" VALUES (1, 'USER_PROFILE');
+INSERT INTO "tutorial_page_type" VALUES (2, 'EDIT_DECK');
+INSERT INTO "tutorial_page_type" VALUES (3, 'DECK_VIEW');
+INSERT INTO "tutorial_page_type" VALUES (4, 'LEARN_CARD_VIEW');
+INSERT INTO "tutorial_page_type" VALUES (5, 'PEEK_CARD_VIEW');
+
+
 -- users
 CREATE INDEX email_index ON "users" (email);
 CREATE INDEX password_index ON "users" (password);
