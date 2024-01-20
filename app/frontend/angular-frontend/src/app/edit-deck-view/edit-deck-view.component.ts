@@ -8,11 +8,12 @@ import {CardDTO} from "../models/CardDTO";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {FormsModule} from "@angular/forms";
 import {faReply, faSearch, faArrowUpZA, faPlus, faTrashCan, faListUl} from "@fortawesome/free-solid-svg-icons";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-edit-deck-view',
   standalone: true,
-  imports: [CommonModule, BasePageComponent, RouterLink, FaIconComponent, FormsModule],
+  imports: [CommonModule, BasePageComponent, RouterLink, FaIconComponent, FormsModule, TranslateModule],
   templateUrl: './edit-deck-view.component.html',
   styleUrl: './edit-deck-view.component.css'
 })
@@ -28,7 +29,8 @@ export class EditDeckViewComponent implements OnInit {
 
   constructor(private cardService: CardService,
               private route: ActivatedRoute,
-              private toast: ToastService) {
+              private toast: ToastService,
+              private translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -43,7 +45,7 @@ export class EditDeckViewComponent implements OnInit {
       },
       error: err => {
         console.log(err)
-        this.toast.showErrorToast("Error", "Could not load Questions for this deck")
+        this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("question_load_failure"))
       }
     })
   }
@@ -100,7 +102,7 @@ export class EditDeckViewComponent implements OnInit {
     this.cardService.deleteCard(this.deckId, cardId).subscribe({
       error: err => {
         console.log(err)
-        this.toast.showErrorToast("Error", "The Question could not be deleted")
+        this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("question_delete"))
       },
       complete: () => {
         this.loadCards()

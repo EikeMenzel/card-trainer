@@ -16,19 +16,21 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {TextAnswerCardImage} from "../models/learn-session/TextAnswerCardImage";
 import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCardImage";
 import {TutorialComponent} from "../tutorial/tutorial.component";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   standalone: true,
   selector: 'app-peek-learn-card-view',
   templateUrl: './peek-learn-card-view.component.html',
-    imports: [
-        NgIf,
-        NgForOf,
-        FontAwesomeModule,
-        BasePageComponent,
-        NgOptimizedImage,
-        TutorialComponent
-    ],
+  imports: [
+    NgIf,
+    NgForOf,
+    FontAwesomeModule,
+    BasePageComponent,
+    NgOptimizedImage,
+    TutorialComponent,
+    TranslateModule
+  ],
   styleUrls: ['./peek-learn-card-view.component.css']
 })
 
@@ -61,6 +63,7 @@ export class PeekCardViewComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
+    private translate: TranslateService
   ) {
   }
 
@@ -79,19 +82,19 @@ export class PeekCardViewComponent implements OnInit {
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Deck not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_deck_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }
@@ -108,19 +111,19 @@ export class PeekCardViewComponent implements OnInit {
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "No Cards found. Please create Cards");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("no_cards_create"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }
@@ -156,7 +159,7 @@ export class PeekCardViewComponent implements OnInit {
             this.router.navigate([`/deck/${this.deckId}`]);
             break;
           default:
-            this.toastService.showInfoToast("Notice", "Received unhandled status code");
+            this.toastService.showInfoToast(this.translate.instant("notice"), this.translate.instant("unpredicted_error"));
             break;
         }
       },
@@ -164,19 +167,19 @@ export class PeekCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Deck not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_deck_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         this.buttonIsPressed = false;
@@ -191,19 +194,19 @@ export class PeekCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or PeekSession not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_peek_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }
@@ -262,7 +265,7 @@ export class PeekCardViewComponent implements OnInit {
   }
 
   canDestroy():boolean {
-      return this.unauthorizedFound || this.isSessionFinished || (confirm("Are you sure you want to leave this peek session") && !this.isSessionFinished && !this.unauthorizedFound);
+      return this.unauthorizedFound || this.isSessionFinished || (confirm(this.translate.instant("peek_confirmation")) && !this.isSessionFinished && !this.unauthorizedFound);
   }
 
   ngOnDestroy(): void {
@@ -349,19 +352,19 @@ export class PeekCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "Image not found");
+            this.toastService.showErrorToast("Error", this.translate.instant("image_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         return of(undefined);
@@ -380,19 +383,19 @@ export class PeekCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast("Error", this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Deck not found");
+            this.toastService.showErrorToast("Error", this.translate.instant("user_or_deck_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         this.buttonIsPressed = false;
@@ -406,10 +409,8 @@ export class PeekCardViewComponent implements OnInit {
   openImageModal(imageUrl: SafeUrl | undefined) {
     if (imageUrl) {
       const imageElement: HTMLImageElement = document.getElementById('modalImage') as HTMLImageElement;
-      // Verwenden des Sanitizers, um die URL sicher zu machen
-      imageElement.src = this.sanitizer.sanitize(4, imageUrl) || ''; // 4 steht für Sanitization von URLs
+      imageElement.src = this.sanitizer.sanitize(4, imageUrl) || '';
 
-      // Öffne das Bootstrap-Modal
       const modalElement = document.getElementById('imageModal');
       if (modalElement) {
         this.imgModalRef = new bootstrap.Modal(modalElement);

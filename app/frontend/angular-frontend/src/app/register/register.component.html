@@ -8,18 +8,18 @@
             <!-- Simon -->
             <div class="text-center">
               <img src="assets/fox3.png" alt="Profile Image" class="simon">
-              <h2 class="my-3">Hey!</h2>
+              <h2 class="my-3">{{ 'hey' |translate }}</h2>
               <p>
-                Don´t have an account yet? No worries!<br>
-                Sign up by entering the information below.</p>
+                {{'no_account_no_worries' | translate}}<br>
+               {{'sign_up_by_entering_the_information_below' | translate}} </p>
             </div>
 
             <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
               <!-- Email -->
               <div class="form-group mb-3">
-                <label for="email">Email</label>
+                <label for="email">{{'email' | translate}}</label>
                 <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
-                       placeholder="Enter your email" name="email" (ngModelChange)="validateInput('email',emailValue.value)" required ngModel #emailValue>
+                       placeholder="{{'enter_your_email' | translate}}" name="email" (ngModelChange)="validateInput('email',emailValue.value)" required ngModel #emailValue>
                 <div class="error">
                   {{emailError}}
                 </div>
@@ -27,25 +27,22 @@
 
               <!-- Username -->
               <div class="form-group mb-3">
-                <label for="username">Username</label>
+                <label for="username">{{'username' | translate}}</label>
                 <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
-                       placeholder="Enter your username" name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
+                       placeholder="{{'enter_your_username' | translate}}" name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
                 <div class="error">
                   {{usernameError}}
                 </div>
               </div>
               <!-- Password with toggle button inside the input field -->
               <div class="form-group mb-3">
-                <label for="password">Password</label>
-                <span class="password-policy" title=
-                "A password must be:
-                • between 8 - 72 characters long
-                • contain at least one number
-                • at least special character: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /">?
+                <label for="password">{{'password' | translate}}</label>
+                <span class="password-policy" title="{{'password_requirements' | translate }}"
+                >?
               </span>
                 <div class="input-group mb-1">
                   <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'"
-                         class="form-control" placeholder="Enter your password" name="password" id="password" ngModel
+                         class="form-control" placeholder="{{'enter_your_password' | translate}}" name="password" id="password" ngModel
                          required (ngModelChange)="validateInput('password',passwordValue.value)" #passwordValue>
                   <div class="input-group-append">
                     <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
@@ -60,10 +57,10 @@
 
               <!-- Password repeat -->
               <div class="form-group mb-3">
-                <label for="password-repeat">Confirm Password</label>
+                <label for="password-repeat">{{ 'confirm_password' | translate}}</label>
                 <div class="input-group mb-1">
                   <input [style.border-color]="passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'"
-                         class="form-control" id="password-repeat" placeholder="Re-enter your password"
+                         class="form-control" id="password-repeat" placeholder="{{'re-enter_your_password' | translate}}"
                          name="password-repeat" ngModel required (ngModelChange)="validateInput('passwordRepeat',passwordRepValue.value)" #passwordRepValue>
                   <div class="input-group-append">
                     <button type="button" class="btn toggle-password"
@@ -78,7 +75,7 @@
               </div>
 
               <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">
-                <span *ngIf="!buttonIsPressed">Sign Up</span>
+                <span *ngIf="!buttonIsPressed">{{ 'sign_up' | translate }}</span>
                 <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
               </button>
             </form>
@@ -86,7 +83,7 @@
 
           <!-- Login -->
           <div class="card-footer text-center mb-4">
-            Already have an account? <a routerLink="/login" class="sign-in-link">Sign In</a>
+            {{'already_have_an_account' | translate}} <a routerLink="/login" class="sign-in-link">{{ 'sign_up' | translate }}</a>
           </div>
         </div>
       </div>

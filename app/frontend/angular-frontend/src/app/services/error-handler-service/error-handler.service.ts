@@ -1,32 +1,33 @@
 import { Injectable } from '@angular/core';
 import {MessageResponseDTO} from "../../models/MessageResponseDTO";
+import {TranslateService} from "@ngx-translate/core";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorHandlerService {
 
-  constructor() { }
+  constructor(private translate: TranslateService) { }
 
   public getErrorMessageFromResponse(messageResponseDTO: MessageResponseDTO): string {
     switch (messageResponseDTO.status) {
       case 1: {
         if (messageResponseDTO.response.includes("already exists")) {
-          return "Email already in use";
+          return this.translate.instant("email_in_use");
         }
-        return "Your Email is invalid";
+        return this.translate.instant("your_email_is_invalid");
       }
       case 2: {
-        return "Username is to long or to short";
+        return this.translate.instant("username_constraint");
       }
       case 3: {
-        return "Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/"
+        return this.translate.instant("password_constraint");
       }
       case 4: {
-        return "Authentication failed: The user is not verified"
+        return this.translate.instant("verification_constraint")
       }
       case 5: {
-        return "The reset-token is valid, expired or already used. Please request another password reset"
+        return this.translate.instant("reset_token_response")
       }
       default:
         return messageResponseDTO.response;

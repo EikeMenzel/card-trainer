@@ -20,6 +20,7 @@ import {UpdateCardBasicDTO} from "../models/edit-card/UpdateCardBasicDTO";
 import {UpdateCardDTO} from "../models/edit-card/UpdateCardDTO";
 import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
 import {TutorialComponent} from "../tutorial/tutorial.component";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   standalone: true,
@@ -33,6 +34,7 @@ import {TutorialComponent} from "../tutorial/tutorial.component";
     RouterLink,
     NgOptimizedImage,
     TutorialComponent,
+    TranslateModule,
   ],
   styleUrls: ['./edit-card-view.component.css']
 })
@@ -49,7 +51,6 @@ export class EditCardViewComponent implements OnInit {
   hasLoaded = true;
   saveInProgress = false;
   isBasicCard: boolean = true
-  //TODO need a better way to represent both card types
   questionCardDTO: EditCardDTO = new EditCardDTO("", null);
   choiceAnswers: EditCardAnswer[] = [];
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -68,7 +69,8 @@ export class EditCardViewComponent implements OnInit {
     private cookieService: CookieService,
     private route: ActivatedRoute,
     private cardService: CardService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
   }
 
@@ -89,7 +91,7 @@ export class EditCardViewComponent implements OnInit {
     this.hasLoaded = false
 
     if (isNaN(Number(this.cardId))) {
-      this.toast.showWarningToast("Edit Card", `Invalid card id ${this.cardId} you will be redirected to add 'new' card`);
+      this.toast.showWarningToast(this.translate.instant("edit_card"), this.translate.instant("invalid_card_is_part1") + this.cardId +  this.translate.instant("invalid_card_is_part2"));
       this.router.navigate([`deck/${this.deckId}/card/new/edit`])
       return;
     }
@@ -114,7 +116,7 @@ export class EditCardViewComponent implements OnInit {
     if (this.choiceAnswers.length > 2) {
       this.choiceAnswers.splice(index, 1);
     } else {
-      this.toast.showWarningToast('Warning', 'At least two answer options required.');
+      this.toast.showWarningToast(this.translate.instant("warning"), this.translate.instant("answer_constraint"));
     }
   }
 
@@ -167,7 +169,7 @@ export class EditCardViewComponent implements OnInit {
     this.cardService.createCard(cardDTO, this.deckId).subscribe({
       next: value => {
         if (value.status == HttpStatusCode.Created) {
-          this.toast.showSuccessToast("Saved", "Your card has been created")
+          this.toast.showSuccessToast(this.translate.instant("success"), this.translate.instant("card_created"))
           this.saveInProgress = false;
           this.router.navigate([`/deck/${this.deckId}/edit`])
         }
@@ -175,10 +177,10 @@ export class EditCardViewComponent implements OnInit {
       error: err => {
         console.log(err)
         if (err.status == HttpStatusCode.InternalServerError) {
-          this.toast.showErrorToast("Save Card", "The service is currently unavailable")
+          this.toast.showErrorToast(this.translate.instant("save_card"), this.translate.instant("service_unavailable"))
           return
         }
-        this.toast.showErrorToast("Save Card", "An error occurred")
+        this.toast.showErrorToast(this.translate.instant("save_card"), this.translate.instant("unpredicted_error"))
       }
     })
   }
@@ -191,7 +193,7 @@ export class EditCardViewComponent implements OnInit {
     this.cardService.saveImage(this.selectedFile).subscribe({
       next: res => {
         if (res.status == HttpStatusCode.Created) {
-          this.toast.showSuccessToast("Image Saved", "Your image has been saved. Please confirm this change by pressing the button below.")
+          this.toast.showSuccessToast(this.translate.instant("save_image"), this.translate.instant("save_image_success"))
           if (index == -1) {
             this.questionCardDTO.imageId = Number(res.body);
             return
@@ -249,13 +251,13 @@ export class EditCardViewComponent implements OnInit {
       error: err => {
         console.log(err)
         if (err.status == HttpStatusCode.NotFound) {
-          this.toast.showErrorToast("Edit Card", "The card you are trying to edit does not exist")
+          this.toast.showErrorToast(this.translate.instant("edit_card"), this.translate.instant("edit_card_not_found"))
           this.router.navigate([`deck/${this.deckId}/edit`])
           this.hasLoaded = true;
           return
         }
 
-        this.toast.showErrorToast("Edit Card", "An error occurred trying to load the card. please try again later")
+        this.toast.showErrorToast(this.translate.instant("edit_card"), this.translate.instant("unpredicted_error"))
         this.router.navigate([`deck/${this.deckId}/edit`])
         this.hasLoaded = true;
       },
@@ -279,7 +281,7 @@ export class EditCardViewComponent implements OnInit {
 
   private setToBeUploadedImage(file: File) {
     if (file.type != "image/jpeg" && file.type != "image/png") {
-      this.toast.showErrorToast("Image Error", "Please select a valid image file type. (png or jpg)")
+      this.toast.showErrorToast(this.translate.instant("image_error"), this.translate.instant("valid_file_format"))
       return
     }
     this.selectedFile = file
@@ -287,7 +289,7 @@ export class EditCardViewComponent implements OnInit {
 
 
   deleteImgBasicAnswer(number: number) {
-    if (!confirm("Do you want to delete the image?")) {
+    if (!confirm(this.translate.instant("delete_image_confirmation"))) {
       return
     }
 
@@ -301,20 +303,20 @@ export class EditCardViewComponent implements OnInit {
   saveCardToBackend() {
     if(this.isBasicCard) {
       if(this.choiceAnswers[0].answer.trim().length === 0) {
-        this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
+        this.toast.showErrorToast(this.translate.instant("save_card"), this.translate.instant("answer_constraint_mp"));
         return;
       }
     } else {
       for (const choiceAnswer of this.choiceAnswers) {
         if (choiceAnswer.answer.trim().length === 0) {
-          this.toast.showErrorToast("Save Card", "Please make sure you have entered an answer in every possibility.");
+          this.toast.showErrorToast(this.translate.instant("save_card"), this.translate.instant("answer_constraint_mp"));
           return;
         }
       }
     }
 
     if (this.questionCardDTO.question.trim().length === 0) {
-      this.toast.showErrorToast("Save Card", "Please make sure you have entered a question.")
+      this.toast.showErrorToast(this.translate.instant("save_card"), this.translate.instant("question_constraint"))
       return;
     }
 
@@ -341,13 +343,13 @@ export class EditCardViewComponent implements OnInit {
     this.cardService.updateCard(cardDTO, this.deckId, this.cardId).subscribe({
       next: res => {
         if (res.status == HttpStatusCode.NoContent) {
-          this.toast.showSuccessToast("Saved", "Your card has been updated")
+          this.toast.showSuccessToast(this.translate.instant("success"), this.translate.instant("update_card_success"))
           this.loadCardData(this.deckId, this.cardId);
         }
       },
       error: err => {
         console.log(err)
-        this.toast.showErrorToast("Error", "Could not update card")
+        this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("update_card_error"))
       },
       complete: () => {
         this.saveInProgress = false
@@ -367,14 +369,14 @@ export class EditCardViewComponent implements OnInit {
     this.cardService.updateCard(updateCardMCDTO, this.deckId, this.cardId).subscribe({
       next: res => {
         if (res.status == HttpStatusCode.NoContent) {
-          this.toast.showSuccessToast("Saved", "Your card has been updated")
+          this.toast.showSuccessToast(this.translate.instant("success"), this.translate.instant("update_card_success"))
           this.loadCardData(this.deckId, this.cardId);
         }
       },
       error: err => {
 
         console.log(err)
-        this.toast.showErrorToast("Error", "Could not update card")
+        this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("update_card_error"))
       },
       complete: () => {
         this.saveInProgress = false
@@ -383,7 +385,7 @@ export class EditCardViewComponent implements OnInit {
   }
 
   deleteImgBasicQuestion() {
-    if (!confirm("Are you sure you want to delete the image?"))
+    if (!confirm(this.translate.instant("delete_image_confirmation_2")))
       return
     this.questionCardDTO.imageId = null
   }
