@@ -15,10 +15,17 @@
 .oldImgDisplay {
   border-radius: 5px;
   margin-left: 10px;
+  transition: transform 0.3s ease-in-out; /* Fügt eine Transition hinzu, um den Zoom-Effekt zu glätten */
 }
 
 .oldImgDisplayWrapper {
   display: inline-block;
+  cursor: zoom-in; /* Shows a zoom cursor when hovering over */
+  transition: transform 0.3s ease; /* Smooth transition for enlargement */
+}
+
+.oldImgDisplayWrapper:hover {
+  transform: scale(1.1);
 }
 
 .deleteOldImg {

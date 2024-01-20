@@ -118,6 +118,22 @@ export class EditDeckViewComponent implements OnInit {
     return this.getDeckID()
   }
 
+  limitTextLength(text: string): string {
+    const screenWidth = window.innerWidth;
+
+    if (screenWidth <= 280) {
+      return text.substring(0, 5) + "...";
+    } else if (screenWidth <= 576) {
+      return text.substring(0, 20) + '...';
+    } else if (screenWidth <= 768) {
+      return text.substring(0, 40) + '...';
+    } else if (screenWidth <= 1200) {
+      return text.substring(0, 60) + '...';
+    } else {
+      return text.substring(0, 120) + '...';
+    }
+  }
+
   protected readonly faSearch = faSearch;
   protected readonly faReply = faReply;
   protected readonly faArrowUpZA = faArrowUpZA;

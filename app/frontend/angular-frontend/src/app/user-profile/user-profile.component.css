@@ -1,3 +1,7 @@
+.user-profile-wrapper {
+  min-height: 90vh;
+}
+
 .user-profile-container {
   background-color: var(--bg-main-color);
   max-width: 90%;

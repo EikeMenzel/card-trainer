@@ -52,12 +52,14 @@
       <ng-container *ngFor="let deck of filteredList;">
         <ng-container *ngIf="deck.deckId != -1; else newItem">
           <tr class="hover-highlight" routerLink="/deck/{{deck.deckId}}">
-            <td class="align-middle">{{deck.deckName}}</td>
+            <td class="align-middle">
+              <span class="d-inline-block">{{ limitTextLength(deck.deckName) }}</span>
+            </td>
             <td class="pos-delete-button align-middle">
               <a class="delete-button" *ngIf="showDelete" (click)="deleteItem($event, deck.deckId)">
                 <fa-icon class="fa text-danger" [icon]="faTrashCan"></fa-icon>
               </a>
-              <span>{{deck.cardsToLearn}}</span>
+              <span>{{ deck.cardsToLearn }}</span>
             </td>
           </tr>
         </ng-container>
