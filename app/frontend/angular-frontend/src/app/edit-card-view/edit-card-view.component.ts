@@ -142,7 +142,6 @@ export class EditCardViewComponent implements OnInit {
 
   onFileSelected(event: Event, input: HTMLInputElement) {
     event.preventDefault();
-
     if (!input.files) {
       return
     }
@@ -284,6 +283,7 @@ export class EditCardViewComponent implements OnInit {
   }
 
   private setToBeUploadedImage(file: File) {
+    console.log(file.name)
     if (file.type != "image/jpeg" && file.type != "image/png") {
       this.toast.showErrorToast(this.translate.instant("image_error"), this.translate.instant("valid_file_format"))
       return

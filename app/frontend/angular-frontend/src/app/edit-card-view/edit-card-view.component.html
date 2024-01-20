@@ -75,7 +75,7 @@
                 width="50"
                 height="50"
                 [alt]="'upload_image' | translate"
-                (click)="openImageModal('api/v1/images/' + this.choiceAnswers[0].imageId)")>
+                (click)="openImageModal('api/v1/images/' + this.choiceAnswers[0].imageId)">
                 <a class="deleteOldImg" (click)="deleteImgBasicAnswer(0)">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -146,7 +146,7 @@
                   [src]="'api/v1/images/' + answer.imageId"
                   width="50" height="50"
                   [alt]="'upload_image' | translate"
-                  (click)="openImageModal('api/v1/images/' + answer.imageId)")>
+                  (click)="openImageModal('api/v1/images/' + answer.imageId)">
                   <a class="deleteOldImg" (click)="deleteImgBasicAnswer(i)">
                     <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                   </a>
