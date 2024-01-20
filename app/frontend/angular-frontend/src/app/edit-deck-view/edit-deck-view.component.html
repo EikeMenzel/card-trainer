@@ -61,13 +61,14 @@
       <!-- Default list entries -->
       <tr *ngFor="let card of displayedCards" class="hover-highlight" routerLink="/deck/{{deckId}}/card/{{card.id}}/edit">
         <td class="align-middle">
-          <span class="d-inline-block">{{card.question}}</span>
+          <span class="d-inline-block">{{ limitTextLength(card.question) }}</span>
         </td>
-        <td class="align-middle">
+        <td class="align-center">
           <div class="row g-2 justify-content-end align-items-center">
-            <div class="col-auto">{{card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card"}}</div>
             <div class="col-auto">
-
+              <div class="text-end">{{ card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card" }}</div>
+            </div>
+            <div class="col-auto">
               <!-- Delete -->
               <ng-container *ngIf="showDelete">
                 <a class="delete-button" (click)="deleteItem($event, card.id)">
@@ -78,6 +79,7 @@
           </div>
         </td>
       </tr>
+
 
       <!-- If no cards have been created yet -->
       <ng-container *ngIf="displayedCards.length == 0">

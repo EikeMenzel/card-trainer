@@ -1,6 +1,9 @@
 <app-tutorial pageName="USER_PROFILE"></app-tutorial>
 <app-base-page>
-  <div class="user-profile-container container mt-4">
+  <div class="d-flex align-items-center justify-content-center user-profile-wrapper">
+    <div class="user-profile-container container">
+      <div class="row">
+        <div class="col-12 ">
 
     <div class="row justify-content-center">
       <div class="col-12 col-md-6">
@@ -203,6 +206,9 @@
         </div>
       </div>
     </div>
+        </div>
+      </div>
+    </div>
   </div>
 </app-base-page>
 
@@ -228,6 +234,3 @@
     <button type="button" class="btn continue-button" (click)="modal.dismiss()">{{ 'continue' | translate }}</button>
   </div>
 </ng-template>
-
-
-

@@ -9,19 +9,29 @@
   margin-top: auto;
   margin-bottom: auto;
   border-radius: 20px;
-  max-width: 100%;
-  min-height: 60vh;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: var(--bg-main-color);
+}
+
+.title-container {
+  text-align: center;
+}
+
+.title-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 80%;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.title-input {
+  max-width: 100%;
 }
 
 .deck-view-card .btn {
   font-size: 1rem;
   padding: 0.5rem 1rem;
-}
-
-.deck-view-card h2 {
-  font-size: 1.5rem;
 }
 
 .deck-info {
@@ -109,22 +119,7 @@
 }
 
 
-/* Media Queries for bigger screens */
-@media (min-width: 1920px) {
-  .deck-view-card {
-    min-width: 50%;
-  }
-
-  .deck-view-card .btn {
-    font-size: 1.25rem;
-    padding: 0.75rem 1.5rem;
-  }
-
-  .deck-view-card h2 {
-    font-size: 2rem;
-  }
-}
-
+/* Media Queries for extra bigger screens */
 @media (min-width: 2560px) {
   .deck-view-card {
     min-width: 60%;
@@ -155,6 +150,37 @@
   }
 }
 
+/* Media Queries for bigger screens */
+@media (min-width: 1920px) {
+  .deck-view-card {
+    min-width: 50%;
+  }
+
+  .deck-view-card .btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .deck-view-card h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Media queries for small screens */
+@media screen and (max-width: 768px) {
+  .title-text {
+    font-size: 1.3rem;
+  }
+}
+
+/* Media queries for extra small screens */
+@media screen and (max-width: 576px) {
+  .title-text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Media queries for extra extra small screens */
 @media (max-width: 480px) {
   .custom-button-footer {
     width: calc(50% - 10px);
@@ -164,6 +190,13 @@
   .custom-action-button {
     width: calc(100% - 40px);
     margin: 5px;
+  }
+}
+
+/* Media queries for extra extra extra small screens (Galaxy Fold)*/
+@media screen and (max-width: 280px) {
+  .title-text {
+    font-size: 0.8rem;
   }
 }
 

@@ -90,10 +90,9 @@
                     <div class="text-area mt-4">
                       <p class="text text-center mb-1">{{ card?.cardDTO?.question }}</p>
                     </div>
-
                     <!-- Choices Area -->
                     <div class="choices-area d-flex flex-column justify-content-center mt-4">
-                      <div class="row justify-content-center align-items-center">
+                      <div class="row justify-content-start align-items-center">
                         <ng-container *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index">
                           <div class="col-sm-6 mb-2">
                             <div class="d-flex flex-column align-items-center justify-content-center">
@@ -102,11 +101,12 @@
                                   *ngIf="getAnswerImageUrl(i)"
                                   [src]="getAnswerImageUrl(i)"
                                   class="choice-img img-fluid rounded"
-                                  alt="mcImg">
+                                  alt="mcImg"
+                                />
                               </div>
                               <div class="select-area d-flex align-items-center">
-                                <input type="checkbox" [id]="'choice-' + i" (change)="updateSelectedChoices($event, choice.answer)" class="me-2">
-                                <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                                <input type="checkbox" [id]="'choice-' + i" (change)="updateSelectedChoices($event, choice.answer)" class="me-2"/>
+                                <label [for]="'choice-' + i" style="word-break: break-word; white-space: normal;">{{ choice.answer }}</label>
                               </div>
                             </div>
                           </div>
@@ -116,7 +116,6 @@
                     </div>
                   </div>
                 </div>
-
                 <!-- Flip Button -->
                 <button class="rotate-button-turn-to-back btn position-absolute" (click)="flipCard()">
                   <fa-icon [icon]="faArrowsRotate" class="fa-rotate-arrows"></fa-icon>
@@ -127,7 +126,7 @@
               <!-- Multiple Choice card back -->
               <div class="back card p-5" *ngIf="flipped">
 
-                <!-- Choices and Choices Area -->
+                <!-- Choices Area -->
                 <div class="choices-area d-flex flex-column justify-content-center mt-4">
                     <div class="row justify-content-start align-items-center">
                       <ng-container *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index">
@@ -138,7 +137,7 @@
                             </div>
                             <div class="select-area d-flex align-items-center">
                               <input type="checkbox" [id]="'choice-' + i" [checked]="choice.rightAnswer" [disabled]="true" class="me-2">
-                              <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                              <label [for]="'choice-' + i" style="word-break: break-word; white-space: normal;">{{ choice.answer }}</label>
                             </div>
                           </div>
                         </div>
