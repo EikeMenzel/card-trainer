@@ -289,10 +289,10 @@ export class DeckListViewComponent implements OnInit {
   }
 
   onSubmitImportDeck(event: any) {
-    this.buttonIsPressed = true;
     if (!this.selectedFile) {
       return;
     }
+    this.buttonIsPressed = true;
 
     const formData = new FormData();
     formData.append('file', this.selectedFile, this.selectedFile.name);
