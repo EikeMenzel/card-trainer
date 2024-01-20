@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light custom-navbar p-3">
   <!-- House Icon and Title -->
   <div class="row align-items-center">
-    <div class="col-auto custom-toggle" (click)="onClickReturn('/')">
+    <div class="col-auto custom-toggle" id="home-button" (click)="onClickReturn('/')">
       <fa-icon class="nav-icon fa-2xl house-icon" [icon]="faHouse"></fa-icon>
     </div>
     <div class="col-auto d-none d-sm-block custom-text-color text-start">
@@ -16,7 +16,7 @@
       <span class="nav-link">{{ username }}</span>
     </div>
     <!-- Dropdown Menu -->
-    <div class="col-auto dropdown" ngbDropdown>
+    <div class="col-auto dropdown" ngbDropdown id="dropdown-profile-logout">
       <a class="nav-link dropdown-toggle custom-toggle" id="navbarDropdown" ngbDropdownToggle>
         <fa-icon class="user-icon fa-2xl" [icon]="faUser"></fa-icon>
       </a>
@@ -24,6 +24,7 @@
         <button class="dropdown-item" (click)="onClickReturn('/profile')">{{ 'profile' | translate}}</button>
         <div class="dropdown-divider"></div>
         <button class="dropdown-item" (click)="logoutWarningPopup()">{{ 'logout' | translate }}</button>
+        <button class="dropdown-item" id="logout-dropdown" (click)="logoutWarningPopup()">Logout</button>
       </div>
     </div>
   </div>
