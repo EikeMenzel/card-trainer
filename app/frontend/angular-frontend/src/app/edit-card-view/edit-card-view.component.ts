@@ -234,6 +234,11 @@ export class EditCardViewComponent implements OnInit {
         } else {
           this.isBasicCard = false
           const mcCard: CreateCardMCDTO = res.body as CreateCardMCDTO;
+
+          if(mcCard.cardDTO.imageId)
+            this.questionCardDTO.imageId = Number(mcCard.cardDTO.imageId);
+
+
           this.cardType = "multipleChoice"
           this.choiceAnswers = []
           for (let answer of mcCard.choiceAnswers) {
