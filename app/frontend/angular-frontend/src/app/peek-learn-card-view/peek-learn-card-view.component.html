@@ -174,7 +174,7 @@
   <!-- Next Button -->
   <div class="next-button-container d-flex justify-content-center align-items-center flex-wrap mt-4">
     <button class="btn next-button" [disabled]="buttonIsPressed" (click)="savePeekSessionCardLearned()">
-      <span *ngIf="!buttonIsPressed">Next</span>
+      <span *ngIf="!buttonIsPressed">{{ 'next' | translate }}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
   </div>
@@ -185,8 +185,8 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="imageModalLabel">Image</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="imageModalLabel">{{ 'image' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" [attr.aria-label]="'close' | translate"></button>
       </div>
       <div class="modal-body d-flex justify-content-center">
         <img id="modalImage" src="" class="img-fluid" alt="imgBig" />

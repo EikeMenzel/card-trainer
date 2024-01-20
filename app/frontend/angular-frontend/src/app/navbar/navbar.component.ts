@@ -10,6 +10,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import {Router, RouterLink} from "@angular/router";
 import {AuthService} from "../services/auth-service/auth-service";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +21,9 @@ import {AuthService} from "../services/auth-service/auth-service";
     RouterLink,
     NgbDropdown,
     NgbDropdownToggle,
-    NgbDropdownMenu],
+    NgbDropdownMenu,
+    TranslateModule
+  ],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -33,7 +36,8 @@ export class NavbarComponent {
   constructor(
     private modalService: NgbModal,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
   }
 
@@ -46,7 +50,7 @@ export class NavbarComponent {
   }
 
   logoutWarningPopup(): void {
-    if (confirm("Are you sure you want to logout?")) {
+    if (confirm(this.translate.instant("logout_confirmation"))) {
       this.authService.logout();
     }
   }

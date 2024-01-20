@@ -6,6 +6,8 @@ import {AuthService} from "../auth-service/auth-service";
 import {Router} from "@angular/router";
 import {ToastService} from "../toast-service/toast.service";
 import {RegisterRequestDTO} from "../../models/RegisterRequestDTO";
+import {TranslateService} from "@ngx-translate/core";
+import {CookieService} from "ngx-cookie-service";
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +27,9 @@ export class UserService {
     private http: HttpClient,
     private auth: AuthService,
     private router: Router,
-    private toast: ToastService
-  ) {
-  }
+    private toast: ToastService,
+    private translate: TranslateService
+  ) {}
 
   sendResetPasswordRequest(email: string) {
     return this.http.post<MessageResponseDTO>("api/v1/password/reset", {"email": email}, {observe: "response"})
@@ -59,6 +61,7 @@ export class UserService {
     request.send(null);
     if (request.status == HttpStatusCode.Ok) {
       this.userData = JSON.parse(request.responseText);
+      this.translate.use(this.userData.langCode.toLowerCase())
       return
     }
 
@@ -68,7 +71,7 @@ export class UserService {
     }
 
     if (request.status != HttpStatusCode.Unauthorized)
-      this.toast.showErrorToast("User Loading error", "Could not load user Data")
+      this.toast.showErrorToast(this.translate.instant("user_loading_error"), this.translate.instant("user_loading_error_data"))
   }
 
   registerUser(registerRequest: RegisterRequestDTO) {
