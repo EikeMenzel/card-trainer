@@ -14,6 +14,7 @@ import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {LearnSessionDetailDTO} from "../models/history/LearnSessionDetailDTO";
 import {Timestamp} from "rxjs";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {UserService} from "../services/user-service/user.service";
 
 @Component({
   selector: 'app-history-view',
@@ -53,7 +54,9 @@ export class HistoryViewComponent {
               private activatedRoute: ActivatedRoute,
               private modalService: NgbModal,
               private datePipe: DatePipe,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private userService: UserService
+  ) {
   }
 
 
@@ -149,7 +152,7 @@ export class HistoryViewComponent {
 
   changeDateFormat(createdAt: Timestamp<any>): string | null | undefined {
     let date = new Date(createdAt.toString())
-    return this.datePipe?.transform(date, 'dd.MM.yyyy HH:mm')
+    return this.datePipe?.transform(date, this.translate.instant("date_format"))
   }
 
 }
