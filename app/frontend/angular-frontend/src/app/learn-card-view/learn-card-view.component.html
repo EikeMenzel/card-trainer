@@ -170,27 +170,27 @@
   <!-- Feedback Buttons -->
   <div class="feedback-button-container d-flex justify-content-center align-items-center flex-wrap mt-4">
     <button class="btn feedback-button button-easy" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_5)">
-      <span *ngIf="!buttonIsPressed">Easy</span>
+      <span *ngIf="!buttonIsPressed">{{ 'easy' | translate }}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-ok" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_4)">
-      <span *ngIf="!buttonIsPressed">Ok</span>
+      <span *ngIf="!buttonIsPressed">{{ 'ok' | translate }}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-kinda-difficult" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_3)">
-      <span *ngIf="!buttonIsPressed">Kinda difficult</span>
+      <span *ngIf="!buttonIsPressed">{{ 'kinda_difficult' | translate}}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-difficult" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_2)">
-      <span *ngIf="!buttonIsPressed">Difficult</span>
+      <span *ngIf="!buttonIsPressed">{{ 'difficult' | translate}}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-I-guessed" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_1)">
-      <span *ngIf="!buttonIsPressed">Guessed</span>
+      <span *ngIf="!buttonIsPressed">{{ 'guessed' | translate}}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
     <button class="btn feedback-button button-no-clue" [disabled]="buttonIsPressed" (click)="saveLearnSessionRating(RatingDTO.RATING_0)">
-      <span *ngIf="!buttonIsPressed">No clue</span>
+      <span *ngIf="!buttonIsPressed">{{ 'no_clue' | translate }}</span>
       <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
     </button>
   </div>
@@ -201,11 +201,11 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="imageModalLabel">Image</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="imageModalLabel">{{ 'image' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" [attr.aria-label]="'close' | translate"></button>
       </div>
       <div class="modal-body d-flex justify-content-center">
-        <img id="modalImage" src="" class="img-fluid" alt="imgBig" />
+        <img id="modalImage" src="" class="img-fluid" alt="{{'big_image_display' | translate}}" />
       </div>
     </div>
   </div>
@@ -213,15 +213,15 @@
 
 <ng-template #content let-modal>
   <div class="modal-header custom-progress">
-    <h4 class="modal-title" id="modal-basic-title">Your session Results</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{ 'your_session_results' | translate }}</h4>
   </div>
   <div class="modal-body">
     <b>{{reasonToEndSession}}</b>
     <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColors"></app-donut-chart>
-    <b>Cards Learned: {{cardsLearned}}</b>
+    <b>{{ 'cards_learned' | translate}}: {{cardsLearned}}</b>
   </div>
   <div></div>
   <div class="modal-footer">
-    <button class="btn custom-progress" value="Close" (click)="closeModal()">Close</button>
+    <button class="btn custom-progress" value="Close" (click)="closeModal()">{{ 'close' | translate }}</button>
   </div>
 </ng-template>

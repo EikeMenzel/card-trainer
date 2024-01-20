@@ -14,6 +14,8 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {WebsocketService} from "../services/websocket/websocket-service";
 import {NgIf, NgOptimizedImage} from "@angular/common";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-login',
@@ -29,7 +31,8 @@ import {NgIf, NgOptimizedImage} from "@angular/common";
     RouterLinkActive,
     FontAwesomeModule,
     NgOptimizedImage,
-    NgIf
+    NgIf,
+    TranslateModule
   ]
 })
 export class LoginComponent {
@@ -49,14 +52,15 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private translate: TranslateService
   ) {
   }
 
   ngOnInit() {
     if (this.authService.isLoggedIn) {
       this.router.navigate(["/"])
-      this.toastService.showInfoToast("Warning","You are logged in")
+      this.toastService.showInfoToast(this.translate.instant("warning"), this.translate.instant("logged_in"))
     }
   }
 
@@ -77,7 +81,7 @@ export class LoginComponent {
   onSubmit(loginForm: NgForm) {
     this.isButtonPressed = true;
     if (!loginForm.valid) {
-      this.toastService.showErrorToast("Error", "Please Enter a valid E-Mail and Password")
+      this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("enter_valid_email_password"))
       this.errorEmail()
       this.errorPassword()
       this.isButtonPressed = false;
@@ -105,10 +109,10 @@ export class LoginComponent {
         this.errorEmail()
         this.errorPassword()
         if (err.status == HttpStatusCode.Unauthorized) {
-          this.toastService.showErrorToast("Login Failed", "Wrong Credentials or the user isn't verified")
+          this.toastService.showErrorToast(this.translate.instant("login_failed"), this.translate.instant("wrong_login"))
         }
         if (err.status == HttpStatusCode.InternalServerError) {
-          this.toastService.showErrorToast("Login Failed", "The Login Service is currently unavailable")
+          this.toastService.showErrorToast(this.translate.instant("login_failed"), this.translate.instant("login_service_unavailable"))
         }
         this.isButtonPressed = false;
       }

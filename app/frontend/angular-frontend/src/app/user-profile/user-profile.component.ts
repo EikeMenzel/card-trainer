@@ -14,6 +14,8 @@ import {BasePageComponent} from "../base-page/base-page.component";
 import {AchievementDetailsDTO} from "../models/AchievementDetailsDTO";
 import {AchievementService} from "../services/achievement-service/achievement-service";
 import {TutorialComponent} from "../tutorial/tutorial.component";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {CookieService} from "ngx-cookie-service";
 
 @Component({
   standalone: true,
@@ -27,7 +29,8 @@ import {TutorialComponent} from "../tutorial/tutorial.component";
     FaIconComponent,
     RouterLink,
     BasePageComponent,
-    TutorialComponent
+    TutorialComponent,
+    TranslateModule
   ]
 })
 
@@ -70,9 +73,9 @@ export class UserProfileComponent implements OnInit {
     private toast: ToastService,
     public authService: AuthService,
     private modalService: NgbModal,
-    private achievementService: AchievementService
-  ) {
-  }
+    private achievementService: AchievementService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.userService.getUpdatedUserInfo();
@@ -99,7 +102,7 @@ export class UserProfileComponent implements OnInit {
     }
     this.userService.changePassword(this.newPassword).subscribe({
       next: () => {
-        this.toast.showSuccessToast("Password update", 'Password updated successfully');
+        this.toast.showErrorToast(this.translate.instant("password_update"), this.translate.instant("password_update_success"),)
         if (this.modalRef) {
           this.modalRef.close();
         }
@@ -107,12 +110,12 @@ export class UserProfileComponent implements OnInit {
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "You are not login. You will be send to the login screen")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("your_not_signed_in"))
             this.router.navigate(['/login']);
             break;
           default:
             console.error(err)
-            this.toast.showErrorToast("Password update", "An error occurred")
+            this.toast.showErrorToast(this.translate.instant("password_update"), this.translate.instant("an_error_occurred"))
             break;
         }
         this.buttonModalIsPressed = false;
@@ -126,15 +129,15 @@ export class UserProfileComponent implements OnInit {
     this.passwordRepeatError = '';
 
     if (!this.newPassword || this.newPassword.trim().length === 0) {
-      this.passwordError = 'Field cannot be empty';
+      this.passwordError = this.translate.instant("field_cannot_be_empty");
     } else if (this.newPassword.length < 8 || this.newPassword.length > 72) {
-      this.passwordError = 'Your password must be between 8 and 72 characters';
+      this.passwordError = this.translate.instant("password_length_min_max");
     }
 
     if (!this.reenterNewPassword || this.reenterNewPassword.trim().length === 0) {
-      this.passwordRepeatError = 'Field cannot be empty';
+      this.passwordRepeatError = this.translate.instant("field_cannot_be_empty");
     } else if (this.newPassword !== this.reenterNewPassword) {
-      this.passwordRepeatError = 'Passwords do not match';
+      this.passwordRepeatError = this.translate.instant("passwords_not_match");
     }
   }
 
@@ -149,7 +152,7 @@ export class UserProfileComponent implements OnInit {
     const numberOfCards = this.userProfile.cardsToLearn;
 
     if (numberOfCards < 1) {
-      this.toast.showInfoToast("Info", "Please select at least one card to learn.");
+      this.toast.showInfoToast(this.translate.instant("info"), this.translate.instant("select_one_card_to_learn"));
       return;
     }
 
@@ -157,19 +160,21 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.updateUserInfo(this.userProfile).subscribe({
       next: (data) => {
-        this.userProfile = data;
-        this.toast.showSuccessToast("Profile Update", "Your profile has been updated successfully");
+        this.userProfile = data
+        this.translate.use(this.userProfile.langCode.toLowerCase())
+
+        this.toast.showSuccessToast(this.translate.instant("profile_update"), this.translate.instant("profile_updated_successfully"));
       },
 
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "You are not logged in. You will be sent to the login screen");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("your_are_not_logged_in_send_to_login"));
             this.router.navigate(['/login']);
             break;
           default:
             console.error(err);
-            this.toast.showErrorToast("Profile Update", "An error occurred");
+            this.toast.showErrorToast(this.translate.instant("profile_update"), this.translate.instant("an_error_occurred"));
             break;
         }
       }
@@ -182,20 +187,20 @@ export class UserProfileComponent implements OnInit {
     this.emailError = '';
     let isValid = true;
     if (!this.userProfile.username || this.userProfile.username.trim().length === 0) {
-      this.nameError = 'Field cannot be empty';
+      this.nameError = this.translate.instant("field_cannot_be_empty");
       isValid = false;
     } else if (this.userProfile.username.length < 4) {
-      this.nameError = 'Username too short';
+      this.nameError = this.translate.instant("username_too_short");
       isValid = false;
     } else if (this.userProfile.username.length > 30) {
-      this.nameError = 'Username too long';
+      this.nameError = this.translate.instant("username_too_long");
       isValid = false;
     }
     if (!this.userProfile.email || this.userProfile.email.trim().length === 0) {
-      this.emailError = 'Field cannot be empty';
+      this.emailError = this.translate.instant("field_cannot_be_empty");
       isValid = false;
     } else if (!this.validateEmail(this.userProfile.email)) {
-      this.emailError = 'Invalid email address';
+      this.emailError = this.translate.instant("email_invalid");
       isValid = false;
     }
     return isValid;
@@ -226,7 +231,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   logoutWarningPopup(): void {
-    if (confirm("Are you sure you want to logout?")) {
+    if (confirm(this.translate.instant("are_you_sure_logout"))) {
       this.authService.logout();
     }
   }
@@ -259,17 +264,17 @@ export class UserProfileComponent implements OnInit {
             console.error('Error fetching achievement:', err);
             switch (err.status) {
               case HttpStatusCode.BadRequest:
-                this.toast.showErrorToast("Error", "Invalid request for achievement data");
+                this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("achievement_request_invalid"));
                 break;
               case HttpStatusCode.Unauthorized:
-                this.toast.showErrorToast("Error", "You are not logged in. Redirecting to login screen");
+                this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("not_logged_in_redirect"));
                 this.router.navigate(['/login']);
                 break;
               case HttpStatusCode.NotFound:
-                this.toast.showErrorToast("Error", "Achievement not found");
+                this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("achievement_not_found"));
                 break;
               default:
-                this.toast.showErrorToast("Error", "An error occurred while fetching achievements");
+                this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("achievement_default_error"));
                 break;
             }
           }

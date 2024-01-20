@@ -21,20 +21,22 @@ import {MultipleChoiceCardImage} from "../models/learn-session/MultipleChoiceCar
 import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {TutorialComponent} from "../tutorial/tutorial.component";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   standalone: true,
   selector: 'app-learn-card-view',
   templateUrl: './learn-card-view.component.html',
-    imports: [
-        NgIf,
-        NgForOf,
-        FontAwesomeModule,
-        BasePageComponent,
-        NgOptimizedImage,
-        DonutChartComponent,
-        TutorialComponent
-    ],
+  imports: [
+    NgIf,
+    NgForOf,
+    FontAwesomeModule,
+    BasePageComponent,
+    NgOptimizedImage,
+    DonutChartComponent,
+    TutorialComponent,
+    TranslateModule
+  ],
   styleUrls: ['./learn-card-view.component.css']
 })
 
@@ -65,7 +67,14 @@ export class LearnCardViewComponent implements OnInit {
   @ViewChild('content') private donutModal: ElementRef | undefined;
 
   private modalRef: NgbModalRef | undefined;
-  chartNames: string[] = ['Easy', 'Ok', 'Kinda difficult', 'Difficult', 'I guessed', 'No clue'];
+  chartNames: string[] = [
+    this.translate.instant("easy"),
+    this.translate.instant("ok"),
+    this.translate.instant("kinda_difficult"),
+    this.translate.instant("difficult"),
+    this.translate.instant("guessed"),
+    this.translate.instant("no_clue")
+  ];
   chartColors: string[] = ["#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"];
   chartData: number[] = []
   awaitChange: boolean = false;
@@ -80,6 +89,7 @@ export class LearnCardViewComponent implements OnInit {
     private router: Router,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
+    private translate: TranslateService
   ) {
   }
 
@@ -91,7 +101,7 @@ export class LearnCardViewComponent implements OnInit {
   }
 
   canDestroy():boolean {
-    return this.unauthorizedFound || this.isSessionFinished || (confirm("Are you sure you want to leave this learn session") && !this.isSessionFinished && !this.unauthorizedFound);
+    return this.unauthorizedFound || this.isSessionFinished || (confirm(this.translate.instant("leave_learn_session_confirmation")) && !this.isSessionFinished && !this.unauthorizedFound);
   }
 
   ngOnDestroy(){
@@ -118,11 +128,11 @@ export class LearnCardViewComponent implements OnInit {
             break;
           case HttpStatusCode.NoContent: //No cards left -> set Status to finished
             this.finishLearnSession(Number(this.deckId));
-            this.reasonToEndSession = "Finished the Learn Session"
+            this.reasonToEndSession = this.translate.instant("finished_learn_session")
             this.isSessionFinished = true;
             break;
           default:
-            this.toastService.showInfoToast("Notice", "Received unhandled status code");
+            this.toastService.showInfoToast(this.translate.instant("notice"), this.translate.instant("unpredicted_error"));
             break;
         }
       },
@@ -130,24 +140,24 @@ export class LearnCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Deck not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_deck_not_found"));
             break;
           case HttpStatusCode.Conflict: //Limit of learning Cards reached -> set Status to finished
             this.finishLearnSession(Number(this.deckId));
-            this.reasonToEndSession = "Reached limit of Cards to learn in a Session"
+            this.reasonToEndSession = this.translate.instant("cards_limit")
             this.isSessionFinished = true;
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         this.buttonIsPressed = false;
@@ -165,19 +175,19 @@ export class LearnCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or LearnSession not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_learn_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         this.buttonIsPressed = false;
@@ -330,19 +340,19 @@ export class LearnCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "Image not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("image_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         return of(undefined);
@@ -362,19 +372,19 @@ export class LearnCardViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Deck not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_deck_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         this.buttonIsPressed = false;
@@ -391,19 +401,19 @@ export class LearnCardViewComponent implements OnInit {
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Learn-session not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_learn_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
         this.buttonIsPressed = false;
@@ -428,19 +438,19 @@ export class LearnCardViewComponent implements OnInit {
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Learn-session not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_learn_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }
@@ -456,19 +466,19 @@ export class LearnCardViewComponent implements OnInit {
       error: (err) => {
         switch (err.status) {
           case HttpStatusCode.InternalServerError:
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast("Error", this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed:
           case HttpStatusCode.Unauthorized:
-            this.toastService.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.unauthorizedFound = true;
             this.authService.logout();
             break;
           case HttpStatusCode.NotFound:
-            this.toastService.showErrorToast("Error", "User or Deck not found");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("user_or_deck_not_found"));
             break;
           default:
-            this.toastService.showErrorToast("Error", "An unpredicted Error occurred");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }

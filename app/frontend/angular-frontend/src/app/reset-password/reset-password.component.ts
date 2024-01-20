@@ -5,6 +5,7 @@ import {UserService} from "../services/user-service/user.service";
 import {ToastService} from "../services/toast-service/toast.service";
 import {CommonModule} from '@angular/common';
 import {FormsModule} from "@angular/forms";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 
 @Component({
@@ -15,15 +16,21 @@ import {FormsModule} from "@angular/forms";
     NgIf,
     RouterLink,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent {
   isLoading: boolean = false;
 
-  constructor(private router: Router, private route: ActivatedRoute, private userService: UserService, private toast: ToastService) {
-  }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private userService: UserService,
+    private toast: ToastService,
+    private translate: TranslateService
+  ) {}
 
   comparePassword(firstPw: string, secondPw: string) {
     return firstPw !== secondPw && secondPw !== ''
@@ -31,12 +38,12 @@ export class ResetPasswordComponent {
 
   submit(newPw: string) {
     if (newPw.length < 8) {
-      this.toast.showErrorToast("Password Error", "Password must be at least 8 characters long")
+      this.toast.showErrorToast(this.translate.instant("password_error"), this.translate.instant("password_min_length"))
       return
     }
 
     if (newPw.length > 72) {
-      this.toast.showErrorToast("Password Error", "Password can not be longer than 72 characters")
+      this.toast.showErrorToast(this.translate.instant("password_error"), this.translate.instant("password_max_length"))
       return
     }
 
@@ -46,7 +53,7 @@ export class ResetPasswordComponent {
       const email = value["email"]
       this.userService.requestPasswordReset(newPw, token, email).subscribe({
         next: res => {
-          this.toast.showSuccessToast("Password Reset", "Your password reset was a success Have fun with your account and happy learning ❤️")
+          this.toast.showSuccessToast(this.translate.instant("password_reset"), this.translate.instant("password_reset_success"))
           this.router.navigate(["/login"]);
           this.isLoading = false
         },
@@ -56,19 +63,19 @@ export class ResetPasswordComponent {
           const errStatus = err.error.status as number
           switch (errStatus) {
             case 3: {
-              this.toast.showErrorToast("Password Reset", "Error, Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/")
+              this.toast.showErrorToast(this.translate.instant("password_reset"), this.translate.instant("password_constraint"))
               break
             }
             case 4: {
-              this.toast.showErrorToast("Password Reset", "Authentication failed: The user is not verified")
+              this.toast.showErrorToast(this.translate.instant("password_reset"), this.translate.instant("verification_constraint"))
               break
             }
             case 5: {
-              this.toast.showErrorToast("Password Reset", "The reset-token is valid, expired or already used. Please request another password reset")
+              this.toast.showErrorToast(this.translate.instant("password_reset"), this.translate.instant("reset_token_response"))
               break
             }
             default: {
-              this.toast.showErrorToast("Password Reset", "An error occurred while trying to reset your password")
+              this.toast.showErrorToast(this.translate.instant("password_reset"), this.translate.instant("password_reset_default"))
             }
           }
         }

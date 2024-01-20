@@ -13,7 +13,7 @@ import {HttpStatusCode} from "@angular/common/http";
 import {defaults} from "chart.js";
 import {faArrowUpZA, faFileImport, faListUl, faPlus, faSearch, faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {faSort} from "@fortawesome/free-solid-svg-icons/faSort";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-deck-list-view',
@@ -24,7 +24,9 @@ import {faSort} from "@fortawesome/free-solid-svg-icons/faSort";
     RouterLink,
     FormsModule,
     ToasterComponent,
-    FaIconComponent],
+    FaIconComponent,
+    TranslateModule
+  ],
   templateUrl: './deck-list-view.component.html',
   styleUrl: './deck-list-view.component.css'
 })
@@ -51,7 +53,8 @@ export class DeckListViewComponent implements OnInit {
     private toast: ToastService,
     private userService: AuthService,
     private modalService: NgbModal,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translate: TranslateService
   ) { }
 
   @ViewChild('content') private modalReference: ElementRef | undefined;
@@ -80,18 +83,18 @@ export class DeckListViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toast.showErrorToast("Error", "Server cannot be reached");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.userService.logout();
             this.router.navigate(["/login"])
             break;
           case HttpStatusCode.NoContent:
-            this.toast.showErrorToast("Error", "No Deck was found")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("no_decks_yet"))
             break;
           case defaults:
-            this.toast.showErrorToast("Error", "Deck could not be Updated")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("update_deck_error"))
             break;
         }
       }
@@ -101,7 +104,7 @@ export class DeckListViewComponent implements OnInit {
   addItem() {
 
     if (this.isSearchActive) {
-      this.toastService.showInfoToast('Info', 'Adding not possible while a search is active');
+      this.toastService.showInfoToast(this.translate.instant("info"), this.translate.instant("search_constraint"));
       return;
     }
 
@@ -142,13 +145,13 @@ export class DeckListViewComponent implements OnInit {
     this.wipCreateDeck = true
     const newDeckName = (document.getElementById("add-new-item-field") as HTMLInputElement).value;
     if (newDeckName == "") {
-      this.toast.showErrorToast("Error","Deck Name can not be Empty")
+      this.toast.showErrorToast(this.translate.instant("error"),this.translate.instant("deck_empty_constraint"))
       this.wipCreateDeck = false;
       return;
     }
 
     if(newDeckName.length > 128){
-      this.toast.showErrorToast("Error","No more then 128 Character allowed")
+      this.toast.showErrorToast(this.translate.instant("error"),this.translate.instant("deck_max_length_constraint"))
       this.wipCreateDeck = false;
       return;
     }
@@ -164,15 +167,15 @@ export class DeckListViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toast.showErrorToast("Error", "Server cannot be reached");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.userService.logout();
             this.router.navigate(["/login"])
             break;
           case defaults:
-            this.toast.showErrorToast("Error", "Could not create a new Deck")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("deck_creation_error"))
             break;
         }
         this.wipCreateDeck = false;
@@ -248,7 +251,7 @@ export class DeckListViewComponent implements OnInit {
 
   deleteItem($event: Event, id: number) {
     $event.stopPropagation()
-    if (!confirm("Are you sure you want to delete the deck?"))
+    if (!confirm(this.translate.instant("delete_deck_confirmation")))
       return
     this.cardService.deleteDeck(id).subscribe({
       next: () => {
@@ -262,15 +265,15 @@ export class DeckListViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toast.showErrorToast("Error", "Server cannot be reached");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.userService.logout();
             this.router.navigate(["/login"])
             break;
           case defaults:
-            this.toast.showErrorToast("Loading Error", "Deck could not be deleted")
+            this.toast.showErrorToast(this.translate.instant("loading_error"), this.translate.instant("deck_deletion_error"))
             break;
         }
       }
@@ -295,7 +298,7 @@ export class DeckListViewComponent implements OnInit {
     formData.append('file', this.selectedFile, this.selectedFile.name);
     this.cardService.importDeckUpload(formData).subscribe({
       next: value => {
-        this.toast.showSuccessToast("Import Deck", "Your deck has been imported successfully");
+        this.toast.showSuccessToast(this.translate.instant("import_deck_toast"), this.translate.instant("import_success"));
         this.buttonIsPressed = false;
         this.updateDecks();
         this.modalRef?.close()
@@ -304,18 +307,18 @@ export class DeckListViewComponent implements OnInit {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toast.showErrorToast("Error", "Server cannot be reached");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.userService.logout();
             this.router.navigate(["/login"])
             break;
           case HttpStatusCode.UnprocessableEntity:
-            this.toast.showErrorToast("Error", "Wrong format")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("wrong_format"))
             break;
           case defaults:
-            this.toast.showErrorToast("Error", "Deck could not be imported")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("import_error"))
             break;
         }
         this.buttonIsPressed = false;
@@ -332,7 +335,7 @@ export class DeckListViewComponent implements OnInit {
   }
 
   showSearchActiveToast(): void {
-    this.toastService.showInfoToast('Action not possible', 'Action not possible while searching');
+    this.toastService.showInfoToast(this.translate.instant("action_not_possible"), this.translate.instant("action_not_possible_search"));
   }
 
   protected readonly faSearch = faSearch;

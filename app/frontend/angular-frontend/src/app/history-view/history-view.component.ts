@@ -13,11 +13,12 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {DonutChartComponent} from "../donut-chart/donut-chart.component";
 import {LearnSessionDetailDTO} from "../models/history/LearnSessionDetailDTO";
 import {Timestamp} from "rxjs";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-history-view',
   standalone: true,
-  imports: [CommonModule, BasePageComponent, FormsModule, ReactiveFormsModule, RouterLink, DonutChartComponent],
+  imports: [CommonModule, BasePageComponent, FormsModule, ReactiveFormsModule, RouterLink, DonutChartComponent, TranslateModule],
   templateUrl: './history-view.component.html',
   providers: [DatePipe],
   styleUrl: './history-view.component.css'
@@ -32,7 +33,14 @@ export class HistoryViewComponent {
   deckId: string = "";
   learnedCards: number = 0;
 
-  chartNames: string[] = ['Easy', 'Ok', 'Kinda difficult', 'Difficult', 'I guessed', 'No clue'];
+  chartNames: string[] = [
+    this.translate.instant("easy"),
+    this.translate.instant("ok"),
+    this.translate.instant("kinda_difficult"),
+    this.translate.instant("difficult"),
+    this.translate.instant("guessed"),
+    this.translate.instant("no_clue")
+  ];
   chartColor: string[] =  ["#cce5ff","#ccffcc","#fff2cc","#FAC898","#FFB8A9","#E96954"];
   chartData: number[] = []
   awaitChange: boolean = false;
@@ -44,7 +52,8 @@ export class HistoryViewComponent {
               private router: Router,
               private activatedRoute: ActivatedRoute,
               private modalService: NgbModal,
-              private datePipe: DatePipe) {
+              private datePipe: DatePipe,
+              private translate: TranslateService) {
   }
 
 
@@ -62,18 +71,18 @@ export class HistoryViewComponent {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toast.showErrorToast("Error", "Server cannot be reached");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.authService.logout();
             this.router.navigate(["/login"])
             break;
           case HttpStatusCode.NoContent:
-            this.toast.showErrorToast("Error", "No Histories were found")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("no_histories_found"))
             break;
           case defaults:
-            this.toast.showErrorToast("Error", "Histories could not be Loaded")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }
@@ -112,18 +121,18 @@ export class HistoryViewComponent {
         const statusCode = err.status;
         switch (statusCode) {
           case HttpStatusCode.InternalServerError:
-            this.toast.showErrorToast("Error", "Server cannot be reached");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
             break;
           case HttpStatusCode.PreconditionFailed || HttpStatusCode.Unauthorized:
-            this.toast.showErrorToast("Error", "Authentication Failed. Please Login again.");
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("authentication_failed_login_again"));
             this.authService.logout();
             this.router.navigate(["/login"])
             break;
           case HttpStatusCode.NoContent:
-            this.toast.showErrorToast("Error", "History Record was not found")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("no_histories_found"))
             break;
           case defaults:
-            this.toast.showErrorToast("Error", "History could not be Loaded")
+            this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("unpredicted_error"));
             break;
         }
       }

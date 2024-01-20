@@ -3,6 +3,7 @@ import { Toast } from 'bootstrap';
 import { fromEvent, take } from 'rxjs';
 import { EventTypes } from '../services/toast-service/models/event-type';
 import {NgClass} from "@angular/common";
+import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-toast',
@@ -10,7 +11,8 @@ import {NgClass} from "@angular/common";
   templateUrl: './toast.component.html',
   styleUrls: ['./toast.component.css'],
   imports: [
-    NgClass
+    NgClass,
+    TranslateModule
   ]
 })
 export class ToastComponent implements OnInit {

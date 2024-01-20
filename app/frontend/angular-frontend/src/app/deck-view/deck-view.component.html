@@ -8,11 +8,11 @@
 
             <!-- Deck Information -->
             <div class="text-center">
-              <!-- Editierbarer Titel -->
+              <!-- Editable Title -->
               <div *ngIf="!editMode; else editTemplate">
                 <div class="title-container d-flex justify-content-center align-items-center my-3">
                   <h2 class="title-text">{{ deckTitle }}</h2>
-                  <button class="edit-button" title="Edit" (click)="enableEditMode()">
+                  <button class="edit-button" [title]="'edit' | translate" (click)="enableEditMode()">
                     <fa-icon class="edit-icon fa-xl" [icon]="faPencil"></fa-icon>
                   </button>
                 </div>
@@ -22,10 +22,10 @@
               <ng-template #editTemplate>
                 <div class="title-container d-flex justify-content-center align-items-center my-3">
                   <input type="text" class="form-control title-input" [(ngModel)]="editableTitle" (keyup.enter)="saveEdit()"/>
-                  <button class="save-button" title="Save" (click)="saveEdit()">
+                  <button class="save-button" [title]="'save' | translate" (click)="saveEdit()">
                     <fa-icon class="save-icon fa-xl" [icon]="faSave"></fa-icon>
                   </button>
-                  <button class="cancel-button" title="Cancel" (click)="cancelEdit()">
+                  <button class="cancel-button" [title]="'cancel' | translate" (click)="cancelEdit()">
                     <fa-icon class="cancel-icon fa-xl" [icon]="faXmark"></fa-icon>
                   </button>
                 </div>
@@ -33,11 +33,11 @@
 
               <div class="deck-info d-flex justify-content-between">
                 <div class="deck-stat-container">
-                  <div class="stat-label">Cards Left</div>
+                  <div class="stat-label">{{ 'cards_left' | translate }}</div>
                   <div class="badge-style">{{ deckCardsLeft }}</div>
                 </div>
                 <div class="deck-stat-container">
-                  <div class="stat-label">Deck Size</div>
+                  <div class="stat-label">{{ 'deck_size' | translate}}</div>
                   <div class="badge-style">{{ deckSize }}</div>
                 </div>
               </div>
@@ -56,19 +56,19 @@
                     routerLink="./learn"
                     [disabled]="deckCardsLeft===0"
                     [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">
-              Start to Learn
+              {{ 'start_to_learn' | translate}}
             </button>
             <button class="btn custom-action-button mb-2" routerLink="./peek"
                     [disabled]="deckSize === 0"
-                    [ngClass]="{'disabled-function-color': deckSize === 0}">Quick Peek
+                    [ngClass]="{'disabled-function-color': deckSize === 0}">{{ 'quick_peek' | translate}}
             </button>
           </div>
 
           <!-- Share and Export -->
           <div class="card-footer mb-4 text-center">
-            <button class="btn custom-button-footer btn-sm" (click)="openModal(content)">Share</button>
-            <button class="btn custom-button-footer btn-sm" (click)="exportButtonPressed()">Export</button>
-            <button class="btn custom-button-footer btn-sm" routerLink="./edit">Edit</button>
+            <button class="btn custom-button-footer btn-sm" (click)="openModal(content)">{{ 'share' | translate }}</button>
+            <button class="btn custom-button-footer btn-sm" (click)="exportButtonPressed()">{{ 'export' | translate}}</button>
+            <button class="btn custom-button-footer btn-sm" routerLink="./edit">{{ 'edit' | translate}}</button>
             <button class="btn custom-button-footer btn-sm" routerLink="./histories">
               <i class="bi bi-clock-history"></i>
             </button>
@@ -80,20 +80,20 @@
 </app-base-page>
 <ng-template #content let-modal>
   <div class="modal-header primary-background-color">
-    <h4 class="modal-title" id="modal-basic-title">Share your Deck</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+    <h4 class="modal-title" id="modal-basic-title">{{ 'share_your_deck' | translate}}</h4>
+    <button type="button" class="btn-close" [attr.aria-label]="'close' | translate" (click)="modal.close()"></button>
   </div>
   <form (submit)="onSubmit()">
     <div class="modal-body">
-      <label for="email-holder">Enter the E-Mail Address of the recipient:</label>
+      <label for="email-holder">{{ 'input_email_other_recipient' | translate }}</label>
       <input type="email" class="form-control" id="email-holder" [style.border-color]="emailBorder" [(ngModel)]="email"
-             name="email"
-             placeholder="example@example.com">
-      <p *ngIf="emailWarn" class="text-center text-danger fw-bold">Please enter a valid e-mail</p>
+             [name]="'email' | translate"
+             placeholder="{{'example_email' | translate}}">
+      <p *ngIf="emailWarn" class="text-center text-danger fw-bold">{{ 'email_invalid' | translate}}</p>
     </div>
     <div class="modal-footer">
       <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
-        <span *ngIf="!buttonIsPressed">Share</span>
+        <span *ngIf="!buttonIsPressed">{{ 'share' | translate}}</span>
         <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
       </button>
     </div>

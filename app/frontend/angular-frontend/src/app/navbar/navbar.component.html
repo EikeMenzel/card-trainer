@@ -5,7 +5,7 @@
       <fa-icon class="nav-icon fa-2xl house-icon" [icon]="faHouse"></fa-icon>
     </div>
     <div class="col-auto d-none d-sm-block custom-text-color text-start">
-      <span class="d-none d-sm-inline ml-2 text-green">{{ this.title }}</span>
+      <span class="d-none d-sm-inline ml-2 text-green">{{ (this.title?? "") | translate }}</span>
     </div>
   </div>
 
@@ -21,9 +21,9 @@
         <fa-icon class="user-icon fa-2xl" [icon]="faUser"></fa-icon>
       </a>
       <div class="dropdown-menu dropdown-menu-right custom-dropdown-window custom-dropdown-menue" ngbDropdownMenu aria-labelledby="navbarDropdown">
-        <button class="dropdown-item" (click)="onClickReturn('/profile')">Profile</button>
+        <button class="dropdown-item" (click)="onClickReturn('/profile')">{{ 'profile' | translate}}</button>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item" (click)="logoutWarningPopup()">Logout</button>
+        <button class="dropdown-item" (click)="logoutWarningPopup()">{{ 'logout' | translate }}</button>
       </div>
     </div>
   </div>
