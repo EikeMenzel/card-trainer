@@ -148,12 +148,13 @@ export class RegisterComponent implements OnInit {
           }
         },
         error: (err) => {
-          const message: MessageResponseDTO = {
-            status: err.error.status,
-            response: err.error.message
-          }
+
           const statusCode = err.status;
           if (statusCode == HttpStatusCode.Conflict || statusCode == HttpStatusCode.BadRequest) {
+            const message: MessageResponseDTO = {
+              status: err.error.status,
+              response: err.error.message
+            }
             switch (message.status) {
               case 1:
                 this.emailBorder = "var(--primary-error-color)";
