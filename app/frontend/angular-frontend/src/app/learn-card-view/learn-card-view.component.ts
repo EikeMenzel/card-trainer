@@ -494,7 +494,6 @@ export class LearnCardViewComponent implements OnInit {
       const imageElement: HTMLImageElement = document.getElementById('modalImage') as HTMLImageElement;
       // Use the sanitizer to make the URL secure
       imageElement.src = this.sanitizer.sanitize(4, imageUrl) || ''; // 4 stands for sanitization of URLs
-
       // Open the bootstrap modal
       const modalElement = document.getElementById('imageModal');
       if (modalElement) {

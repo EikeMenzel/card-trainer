@@ -20,6 +20,7 @@ import {UpdateCardBasicDTO} from "../models/edit-card/UpdateCardBasicDTO";
 import {UpdateCardDTO} from "../models/edit-card/UpdateCardDTO";
 import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
 import {TutorialComponent} from "../tutorial/tutorial.component";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
@@ -61,8 +62,8 @@ export class EditCardViewComponent implements OnInit {
   public cardId: string = this.route.snapshot.paramMap.get("card-id") ?? "";
   public deckId: string = this.route.snapshot.paramMap.get("deck-id") ?? "";
   public cardType: string = "basic";
-
   private modalReference: bootstrap.Modal | undefined
+  private imgModalRef:  bootstrap.Modal | undefined;
 
   constructor(
     private toast: ToastService,
@@ -70,6 +71,7 @@ export class EditCardViewComponent implements OnInit {
     private route: ActivatedRoute,
     private cardService: CardService,
     private router: Router,
+    private sanitizer: DomSanitizer,
     private translate: TranslateService
   ) {
   }
@@ -392,6 +394,21 @@ export class EditCardViewComponent implements OnInit {
 
   isCorrectCheckChanged(i: number, $event: Event) {
     this.choiceAnswers[i].rightAnswer = ($event.target as HTMLInputElement).checked;
+  }
+  openImageModal(imageUrl: SafeUrl | undefined) {
+    console.log(imageUrl)
+    if (imageUrl) {
+      const imageElement: HTMLImageElement = document.getElementById('modalLargeImage') as HTMLImageElement;
+      // Use the sanitizer to make the URL secure
+      imageElement.src = this.sanitizer.sanitize(4, imageUrl) || ''; // 4 stands for sanitization of URLs
+
+      // Open the bootstrap modal
+      const modalElement = document.getElementById('imageLargeModal');
+      if (modalElement) {
+        this.imgModalRef = new bootstrap.Modal(modalElement);
+        this.imgModalRef.show();
+      }
+    }
   }
 
   protected readonly faSearch = faSearch;
