@@ -5,7 +5,7 @@ export class CreateCardBasicDTO {
   constructor(
     public cardDTO: EditCardDTO,
     public textAnswer: string,
-    public imagePath: number | null
+    public imageId: number | null
   ) {
   }
 }
