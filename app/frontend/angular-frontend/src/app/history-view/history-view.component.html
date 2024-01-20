@@ -1,12 +1,12 @@
-<app-base-page [PageTitle]="'History'">
+<app-base-page [PageTitle]="'history' | translate">
   <div class="success-container">
     <table class="table container" id="list">
       <ng-container *ngIf="histories.length != 0">
       <thead>
       <tr>
-        <td><strong>Learn Session</strong></td>
-        <td><strong>Completed</strong></td>
-        <td><strong>Cards Learned</strong></td>
+        <td><strong>{{ 'learn_session' | translate}}</strong></td>
+        <td><strong>{{ 'completed' | translate}}</strong></td>
+        <td><strong>{{ 'cards_learned' | translate}}</strong></td>
       </tr>
       </thead>
       </ng-container>
@@ -24,8 +24,8 @@
         <tr>
           <td colspan="2">
             <div class="text-container text-center">
-              <p>You have not done any Sessions yet. Start your first learn session and see the results here 😁</p>
-              <button class="btn primary-background-color" routerLink="/deck/{{deckId}}">Return to Deck</button>
+              <p>{{ 'no_session_text' | translate}}</p>
+              <button class="btn primary-background-color" routerLink="/deck/{{deckId}}">{{ 'return_to_deck' | translate}}</button>
             </div>
           </td>
         </tr>
@@ -38,18 +38,18 @@
 
 <ng-template #content let-modal>
   <div class="modal-header primary-background-color">
-    <h4 class="modal-title" id="modal-basic-title">History Session Result</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal(content)"></button>
+    <h4 class="modal-title" id="modal-basic-title"> {{'history_result' | translate}}</h4>
+    <button type="button" class="btn-close" [attr.aria-label]="'close' | translate" (click)="closeModal(content)"></button>
   </div>
   <div class="modal-body">
     <div *ngIf="learnedCards > 0">
       <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColor"></app-donut-chart>
-      <b>Cards Learned: {{learnedCards}}</b>
+      <b>{{ 'cards_learned' | translate}}: {{learnedCards}}</b>
     </div>
-    <div *ngIf="learnedCards == 0">No Cards were learned during this Session</div>
+    <div *ngIf="learnedCards == 0">{{ 'session_no_cards_learned' | translate}}</div>
   </div>
   <div></div>
   <div class="modal-footer">
-    <button class="btn primary-background-color" value="Close" (click)="closeModal(content)">Close</button>
+    <button class="btn primary-background-color" [value]="'close' | translate" (click)="closeModal(content)">{{ 'close' | translate}}</button>
   </div>
 </ng-template>

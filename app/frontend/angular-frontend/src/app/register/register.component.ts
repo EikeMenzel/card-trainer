@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule, NgForm} from "@angular/forms";
-import {HttpClientModule, HttpStatusCode} from "@angular/common/http";
+import {HttpStatusCode} from "@angular/common/http";
 import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {RegisterRequestDTO} from "../models/RegisterRequestDTO";
 import {NgIf} from "@angular/common";
@@ -13,6 +13,7 @@ import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {UserService} from "../services/user-service/user.service";
 import {ErrorHandlerService} from "../services/error-handler-service/error-handler.service";
 import {AuthService} from "../services/auth-service/auth-service";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,8 @@ import {AuthService} from "../services/auth-service/auth-service";
     RegisterSuccessfulComponent,
     ToasterComponent,
     RouterLinkActive,
-    FontAwesomeModule
+    FontAwesomeModule,
+    TranslateModule
   ],
   styleUrls: ['./register.component.css']
 })
@@ -57,13 +59,14 @@ export class RegisterComponent implements OnInit {
     private userService: UserService,
     private errHandlerService: ErrorHandlerService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
   }
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn) {
-      this.toastService.showWarningToast("Register", "You are already logged in. If you want to register again, please logout first.");
+      this.toastService.showWarningToast(this.translate.instant("register"), this.translate.instant("already_logged_in"));
       this.router.navigate(['/']);
     }
   }
@@ -75,7 +78,7 @@ export class RegisterComponent implements OnInit {
           this.emailError = "";
           this.emailBorder = "var(--bg-main-color)";
         } else {
-          this.emailError = "Please enter a valid email.";
+          this.emailError = this.translate.instant("email_invalid");
           this.emailBorder = "var(--primary-error-color)";
         }
         break;
@@ -84,7 +87,7 @@ export class RegisterComponent implements OnInit {
           this.usernameError = "";
           this.usernameBorder = "var(--bg-main-color)";
         } else {
-          this.usernameError = "Username is required.";
+          this.usernameError = this.translate.instant("username_required");
           this.usernameBorder = "var(--primary-error-color)";
         }
         break;
@@ -93,7 +96,7 @@ export class RegisterComponent implements OnInit {
           this.passwordError = "";
           this.passwordBorder = "var(--bg-main-color)";
         } else {
-          this.passwordError = "Password is required.";
+          this.passwordError = this.translate.instant("password_required");
           this.passwordBorder = "var(--primary-error-color)";
         }
         break;
@@ -102,7 +105,7 @@ export class RegisterComponent implements OnInit {
           this.passwordRepeatError = "";
           this.passwordRepeatBorder = "var(--bg-main-color)";
         } else {
-          this.passwordRepeatError = "Password is required.";
+          this.passwordRepeatError = this.translate.instant("password_required");
           this.passwordRepeatBorder = "var(--primary-error-color)";
         }
         break;
@@ -172,7 +175,7 @@ export class RegisterComponent implements OnInit {
             }
           }
           if (statusCode == HttpStatusCode.InternalServerError) {
-            this.toastService.showErrorToast("Error", "Server cannot be reached");
+            this.toastService.showErrorToast(this.translate.instant("error"), this.translate.instant("server_unreachable"));
           }
           this.buttonIsPressed = false;
           return;
@@ -181,24 +184,24 @@ export class RegisterComponent implements OnInit {
     } else { //Checks if the Input Fields are empty by the time a Submit was sent
       if (email == "") {
         this.emailBorder = "var(--primary-error-color)";
-        this.emailError = "Please enter a valid email."
+        this.emailError = this.translate.instant("email_invalid")
       }
       if (username == "") {
         this.usernameBorder = "var(--primary-error-color)";
-        this.usernameError = "Username is required."
+        this.usernameError = this.translate.instant("username_required")
       }
       if (password == "") {
         this.passwordBorder = "var(--primary-error-color)";
-        this.passwordError = "Password is required."
+        this.passwordError = this.translate.instant("password_required")
       }
       if (passwordRepeat == "") {
         this.passwordRepeatBorder = "var(--primary-error-color)";
-        this.passwordRepeatError = "Password is required."
+        this.passwordRepeatError = this.translate.instant("password_required")
       }
       if (password != passwordRepeat && passwordRepeat != "") {
         this.passwordBorder = "var(--primary-error-color)";
         this.passwordRepeatBorder = "var(--primary-error-color)";
-        this.passwordRepeatError = "Passwords are not the same!"
+        this.passwordRepeatError = this.translate.instant("passwords_do_not_match")
       }
       this.buttonIsPressed = false;
     }

@@ -1,4 +1,4 @@
-<app-base-page [PageTitle]="'Your Decks'">
+<app-base-page [PageTitle]="'deck_list_title' | translate">
 
   <div class="container search-and-sort-container mt-5">
     <div class="row align-items-center justify-content-end">
@@ -7,9 +7,9 @@
         <div class="search-container align-items-center d-flex">
           <fa-icon class="custom-icon fa-l fa-solid" [icon]="faSearch"></fa-icon>
           <input type="text"
-                 placeholder="Search"
+                 placeholder= "{{ 'search' | translate }}"
                  class="form-control search-input custom-search-bar"
-                 aria-label="Search"
+                 [attr.aria-label]="'search' | translate"
                  [(ngModel)]="searchTerm"
                  (ngModelChange)="onSearchChange()">
         </div>
@@ -19,16 +19,16 @@
       <div class="col-12 col-md-6 col-lg-3 mb-3">
         <div class="sort-container align-items-center d-flex">
           <fa-icon [icon]="faArrowUpZA" class="custom-icon fa-l fa-solid"></fa-icon>
-          <select class="form-select sort-select custom-sort-bar" aria-label="Sort order" [(ngModel)]="sortOrder" (ngModelChange)="onSortOrderChange()">
-            <option value="" disabled selected>Sort by</option>
-            <option value="oldest" selected>Oldest created</option>
-            <option value="newest">Newest created</option>
-            <option value="nameAsc">Name ascending</option>
-            <option value="nameDesc">Name descending</option>
-            <option value="cardsToLearnAsc">Least cards left</option>
-            <option value="cardsToLearnDesc">Most cards left</option>
-            <option value="lastLearnedAsc">Last learned ascending</option>
-            <option value="lastLearnedDesc">Last learned descending</option>
+          <select class="form-select sort-select custom-sort-bar" [attr.aria-label]="'sort_order' | translate" [(ngModel)]="sortOrder" (ngModelChange)="onSortOrderChange()">
+            <option value="" disabled selected>{{ 'sort_order' | translate }}</option>
+            <option value="oldest" selected>{{ 'sort_oldest_created' | translate }}</option>
+            <option value="newest">{{ 'sort_newest_created' | translate}}</option>
+            <option value="nameAsc">{{ 'sort_name_asc' | translate}}</option>
+            <option value="nameDesc">{{ 'sort_name_asc' | translate}}</option>
+            <option value="cardsToLearnAsc">{{ 'sort_least_cards_left' | translate}}</option>
+            <option value="cardsToLearnDesc">{{ 'sort_most_cards_left' | translate}}</option>
+            <option value="lastLearnedAsc">{{ 'sort_last_learned_asc' | translate}}</option>
+            <option value="lastLearnedDesc">{{ 'sort_last_learned_desc' | translate}}</option>
           </select>
         </div>
       </div>
@@ -41,8 +41,8 @@
 
       <thead>
       <tr>
-        <td class="text-start"><strong>Name</strong></td>
-        <td class="text-end"><strong>Card(s) left</strong></td>
+        <td class="text-start"><strong>{{ 'name' | translate}}</strong></td>
+        <td class="text-end"><strong>{{ 'cards_left' | translate}}</strong></td>
       </tr>
       </thead>
 
@@ -66,11 +66,11 @@
           <tr>
             <td class="align-middle">
               <form (ngSubmit)="addedNewDeck()">
-                <input id="add-new-item-field" class="form-control" type="text" placeholder="Enter Deck Name" maxlength="255">
+                <input id="add-new-item-field" class="form-control" type="text" placeholder="{{'input_deck_name' | translate}}" maxlength="255">
               </form>
             </td>
             <td class="align-middle">
-              <button class="btn btn-secondary" (click)="cancelAddItem()">Cancel</button>
+              <button class="btn btn-secondary" (click)="cancelAddItem()">{{ 'cancel' | translate}}</button>
             </td>
           </tr>
         </ng-template>
@@ -81,7 +81,7 @@
         <tr>
           <td colspan="2" class="align-middle">
             <div class="text-container text-center">
-              <p>You have not created any decks yet. Let's create one! 😊</p>
+              <p>{{ 'no_decks_created' | translate }}</p>
               <button class="btn menu-item menu-circle text-white custom-add-button" (click)="addItem()">
                 <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
               </button>
@@ -119,17 +119,17 @@
 
 <ng-template #content let-modal>
   <div class="modal-header primary-background-color">
-    <h4 class="modal-title" id="modal-basic-title">Import your Deck</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+    <h4 class="modal-title" id="modal-basic-title">{{ 'import_deck' | translate}}</h4>
+    <button type="button" class="btn-close" [attr.aria-label]="'close' | translate" (click)="modal.close()"></button>
   </div>
   <form (submit)="onSubmitImportDeck($event)">
     <div class="modal-body">
-      <input type="file" name="importDeckField" accept="application/zip" (change)="onFileSelected($event)"
+      <input type="file" [name]="'deck_list_title' | translate" accept="application/zip" (change)="onFileSelected($event)"
              [(ngModel)]="importFile">
     </div>
     <div class="modal-footer">
-      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
-        <span *ngIf="!buttonIsPressed">Import</span>
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send Email">
+        <span *ngIf="!buttonIsPressed">{{ 'import' | translate }}</span>
         <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
       </button>
     </div>
