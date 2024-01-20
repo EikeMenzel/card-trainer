@@ -30,23 +30,33 @@ export class TutorialComponent implements OnInit {
   }
 
   private showTutorial() {
-    if (!this.tutorialService.hasSeenTutorial(this.pageName)) {
-      const modalElement = document.getElementById('tutorialModal');
-      if (modalElement) {
-        this.modalRef = new bootstrap.Modal(modalElement);
-        this.modalRef.show();
-        // Event listener to set the cookie when the tutorial is closed
-        modalElement.addEventListener('hidden.bs.modal', () => {
-          this.tutorialService.setSeenTutorial(this.pageName);
-        });
+    this.tutorialService.hasSeenTutorial(this.pageName).subscribe(hasSeen => {
+      // console.log(`Hello ${this.pageName}: ${hasSeen}`);
+
+      if (!hasSeen) {
+        const modalElement = document.getElementById('tutorialModal');
+        if (modalElement) {
+          this.modalRef = new bootstrap.Modal(modalElement);
+          this.modalRef.show();
+
+          // Event listener to set the tutorial as seen when the modal is closed
+          modalElement.addEventListener('hidden.bs.modal', () => {
+            // console.log(`Set seen ${this.pageName}`);
+            this.tutorialService.setSeenTutorial(this.pageName).subscribe(() => {
+             // console.log(`Mark seen ${this.pageName}`);
+            });
+          });
+        }
       }
-    }
+    });
   }
+
+
 
 
   getTutorialContent(page: string): string {
     switch (page) {
-      case 'user-profile':
+      case 'USER_PROFILE':
         return "Wow, lookin´ good on that profile picture!\n" +
           "On your user profile, you're the boss!\n" +
           "Change your name, switch up your email address, and level up that password game. " +
@@ -57,13 +67,13 @@ export class TutorialComponent implements OnInit {
           "And oh, the magic word is 'Save' – don't forget to give it a tap!\n" +
           "Sending loads of love and learning vibes your way,\n" +
           "🦊Simon";
-      case 'edit-card':
+      case 'EDIT_DECK':
         return "Welcome to the card creation wonderland!\n" +
           "Unleash your creativity, edit existing cards, and even upload images to spice up your learning journey. " +
           "It's your canvas, so paint it with knowledge!\n" +
           "Sending oodles of love and heaps of fun your way,\n" +
           "🦊Simon";
-      case 'deck-view':
+      case 'DECK_VIEW':
         return "Welcome to your deck command center!\n" +
           "Dive into the details: see how grand your deck has become and how many cards await your mastery. " +
           "Fancy a deck makeover? " +
@@ -73,7 +83,7 @@ export class TutorialComponent implements OnInit {
           "Or, feeling curious for a quick peek today?\n" +
           "Sending love and knowledge vibes,\n" +
           "🦊Simon";
-      case 'learn-card-view':
+      case 'LEARN_CARD_VIEW':
         return "Welcome to your flashcard fiesta!\n" +
           "Ready for the flip? " +
           "Click the rotate button to reveal the back, and click again to return to the front-row seat of knowledge.\n" +
@@ -81,7 +91,7 @@ export class TutorialComponent implements OnInit {
           "Clicking them not only helps you but also guides you to the next card in your learning adventure.\n" +
           "Embrace the joy of learning! 🚀 Let the fun begin!\n" +
           "🦊Simon";
-      case 'peek-card-view':
+      case 'PEEK_CARD_VIEW':
         return "Feeling a bit spontaneous?" +
           "Perfect! In the Peek Learning Session, it's all about your pace. " +
           "Click the Rotate button for a sneak peek at the flip side, and with another click, you're back to the front.\n" +
