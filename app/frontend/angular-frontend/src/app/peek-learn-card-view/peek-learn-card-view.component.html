@@ -93,7 +93,7 @@
 
                     <!-- Choices Area -->
                     <div class="choices-area d-flex flex-column justify-content-center mt-4">
-                      <div class="row justify-content-center align-items-center">
+                      <div class="row justify-content-start align-items-center">
                         <ng-container *ngFor="let choice of multipleChoiceCard?.choiceAnswers; let i = index">
                           <div class="col-sm-6 mb-2">
                             <div class="d-flex flex-column align-items-center justify-content-center">
@@ -105,8 +105,8 @@
                                   alt="mcImg">
                               </div>
                               <div class="select-area d-flex align-items-center">
-                                <input type="checkbox" [id]="'choice-' + i" (change)="updateSelectedChoices($event, choice.answer)" class="me-2">
-                                <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                                <input type="checkbox" [id]="'choice-' + i" (change)="updateSelectedChoices($event, choice.answer)" class="me-2"/>
+                                <label [for]="'choice-' + i" style="word-break: break-word; white-space: normal;">{{ choice.answer }}</label>
                               </div>
                             </div>
                           </div>
@@ -142,7 +142,7 @@
                           </div>
                           <div class="select-area d-flex align-items-center">
                             <input type="checkbox" [id]="'choice-' + i" [checked]="isCorrectChoice(choice.answer)" [disabled]="true" class="me-2">
-                            <label [for]="'choice-' + i">{{ choice.answer }}</label>
+                            <label [for]="'choice-' + i" style="word-break: break-word; white-space: normal;">{{ choice.answer }}</label>
                           </div>
                         </div>
                       </div>

@@ -38,11 +38,16 @@
             </div>
             <div class="col-sm-2 mt-2">
               <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
-                <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
+                <fa-icon class="fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
-                <img class="oldImgDisplay" [src]="'api/v1/images/' + this.questionCardDTO.imageId" width="50"
-                     height="50" [alt]="'upload_image' | translate">
+                <img
+                class="oldImgDisplay"
+                [src]="'api/v1/images/' + this.questionCardDTO.imageId"
+                width="50"
+                height="50"
+                [alt]="'upload_image' | translate"
+                (click)="openImageModal('api/v1/images/' + this.questionCardDTO.imageId)">
                 <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -64,8 +69,13 @@
                 <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.choiceAnswers[0]?.imageId">
-                <img class="oldImgDisplay" [src]="'api/v1/images/' + this.choiceAnswers[0].imageId" width="50"
-                     height="50" [alt]="'upload_image' | translate">
+                <img
+                class="oldImgDisplay"
+                [src]="'api/v1/images/' + this.choiceAnswers[0].imageId"
+                width="50"
+                height="50"
+                [alt]="'upload_image' | translate"
+                (click)="openImageModal('api/v1/images/' + this.choiceAnswers[0].imageId)")>
                 <a class="deleteOldImg" (click)="deleteImgBasicAnswer(0)">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -90,8 +100,14 @@
                 <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
-                <img class="oldImgDisplay" [src]="'api/v1/images/' + this.questionCardDTO.imageId" width="50"
-                     height="50" [alt]="'upload_image' | translate">
+
+                <img
+                class="oldImgDisplay"
+                [src]="'api/v1/images/' + this.questionCardDTO.imageId"
+                width="50"
+                height="50"
+                [alt]="'upload_image' | translate"
+                (click)="openImageModal('api/v1/images/' + this.questionCardDTO.imageId)">
                 <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -125,8 +141,12 @@
                   <fa-icon class="nav-icon fa-xl" [icon]="faTrash"></fa-icon>
                 </button>
                 <div class="oldImgDisplayWrapper" *ngIf="answer.imageId">
-                  <img class="oldImgDisplay" [src]="'api/v1/images/' + answer.imageId" width="50" height="50"
-                       [alt]="'upload_image' | translate">
+                  <img
+                  class="oldImgDisplay"
+                  [src]="'api/v1/images/' + answer.imageId"
+                  width="50" height="50"
+                  [alt]="'upload_image' | translate"
+                  (click)="openImageModal('api/v1/images/' + answer.imageId)")>
                   <a class="deleteOldImg" (click)="deleteImgBasicAnswer(i)">
                     <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                   </a>
@@ -183,7 +203,7 @@
               <!-- Drag & Drop Area -->
               <div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
                 {{ 'drag_n_drop' | translate}}
-                <a href="#" class="browse-link" (click)="openFilePicker($event)">{{ 'click_browse' | translate}}</a>
+                <a class="browse-link" (click)="openFilePicker($event)">{{ 'click_browse' | translate}}</a>
               </div>
               <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onFileSelected($event, fileInput)"
                      hidden>
@@ -206,6 +226,22 @@
           </div>
         </div>
       </div>
+
+      <!-- Modal for image enlargement -->
+      <div class="modal fade" id="imageLargeModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="imageModalLabel">Image</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+              <img id="modalLargeImage" src="" class="img-fluid" alt="imgBig"/>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </app-base-page>
+
