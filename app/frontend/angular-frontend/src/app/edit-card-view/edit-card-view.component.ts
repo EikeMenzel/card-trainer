@@ -22,6 +22,7 @@ import {UpdateCardMCDTO} from "../models/edit-card/UpdateCardMCDTO";
 import {TutorialComponent} from "../tutorial/tutorial.component";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   standalone: true,
@@ -78,6 +79,7 @@ export class EditCardViewComponent implements OnInit {
 
   ngOnDestroy(){
     this.modalReference?.dispose()
+    this.imgModalRef?.dispose()
   }
 
   ngOnInit() {
@@ -395,8 +397,8 @@ export class EditCardViewComponent implements OnInit {
   isCorrectCheckChanged(i: number, $event: Event) {
     this.choiceAnswers[i].rightAnswer = ($event.target as HTMLInputElement).checked;
   }
+
   openImageModal(imageUrl: SafeUrl | undefined) {
-    console.log(imageUrl)
     if (imageUrl) {
       const imageElement: HTMLImageElement = document.getElementById('modalLargeImage') as HTMLImageElement;
       // Use the sanitizer to make the URL secure
