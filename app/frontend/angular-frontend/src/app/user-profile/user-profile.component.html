@@ -71,11 +71,10 @@
                 {{ emailError }}
               </div>
             </div>
-
             <!-- Update Password button -->
             <div class="form-group row mb-2">
               <div class="col-sm-4">
-                <button type="button" class="btn update-pw-button w-100"
+                <button type="button" class="btn update-pw-button w-100" id="updatePasswordButton"
                         (click)="openModal(content)">{{ 'update_password' |translate }}
                 </button>
               </div>
@@ -139,7 +138,7 @@
                       </div>
                     </div>
                     <div class="modal-footer update-pw-footer mb-2">
-                      <button [disabled]="buttonModalIsPressed" type="submit" class="btn change-pw-button">
+                      <button [disabled]="buttonModalIsPressed" id="changePwButton" type="submit" class="btn change-pw-button">
                         <span *ngIf="!buttonModalIsPressed">{{ 'update_password' | translate }}</span>
                         <span *ngIf="buttonModalIsPressed" class="spinner-border spinner-border-sm"></span>
                       </button>
@@ -189,12 +188,12 @@
             <div class="form-group row d-flex justify-content-end">
               <!-- Logout button -->
               <div class="col-sm-4 col-md-3 mb-2 mb-md-0 mb-2">
-                <button type="button" class="btn logout-button w-100" (click)="logoutWarningPopup()">{{ 'logout' | translate }}</button>
+                <button type="button" id="logoutButton" class="btn logout-button w-100" (click)="logoutWarningPopup()">{{ 'logout' | translate }}</button>
               </div>
 
               <!-- Save button -->
               <div class="col-sm-4 col-md-3">
-                <button type="submit" class="btn save-button w-100">{{ 'save' | translate }}</button>
+                <button type="submit" class="btn save-button w-100" id="saveProfileButton">{{ 'save' | translate }}</button>
               </div>
             </div>
           </form>
@@ -211,10 +210,17 @@
   </div>
   <div class="modal-body custom-modal-body no-border">
     <div class="achievements-container">
-      <div *ngFor="let achievement of achievements" class="achievement"
-           [attr.data-name]="achievement.achievementName" [attr.data-description]="achievement.description">
-        <img *ngIf="achievementImages.get(achievement.achievementId)" class="achievement-image"
-             [src]="achievementImages.get(achievement.achievementId)" alt="{{achievement.achievementName}}">
+      <div
+        *ngFor="let achievement of achievements"
+        class="achievement"
+        [attr.data-name]="achievement.achievementName"
+        [attr.data-description]="achievement.description"
+        id="achievementModal-{{achievement.achievementId}}">
+        <img
+          *ngIf="achievementImages.get(achievement.achievementId)"
+          class="achievement-image"
+          [src]="achievementImages.get(achievement.achievementId)"
+          alt="{{achievement.achievementName}}">
         <div class="speech-bubble">
           <strong>{{ achievement.achievementName }}</strong>
           <p>{{ achievement.description }}</p>
@@ -226,6 +232,3 @@
     <button type="button" class="btn continue-button" (click)="modal.dismiss()">{{ 'continue' | translate }}</button>
   </div>
 </ng-template>
-
-
-
