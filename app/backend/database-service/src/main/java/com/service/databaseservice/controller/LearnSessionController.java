@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +26,7 @@ public class LearnSessionController {
     private final CardService cardService;
     private final RepetitionService repetitionService;
     private final UserService userService;
+
     public LearnSessionController(LearnSessionService learnSessionService, DeckService deckService, CardService cardService, RepetitionService repetitionService, UserService userService) {
         this.learnSessionService = learnSessionService;
         this.deckService = deckService;
@@ -177,10 +176,10 @@ public class LearnSessionController {
         if (!deckService.existsByDeckIdAndUserId(deckId, userId))
             return ResponseEntity.notFound().build();
 
-        if(!learnSessionService.doesLearnSessionFromUserExist(userId, learnSessionId))
+        if (!learnSessionService.doesLearnSessionFromUserExist(userId, learnSessionId))
             return ResponseEntity.notFound().build();
 
-        if(learnSessionService.getCardsLearnedInThisSession(learnSessionId) >= userService.getCardsToLearn(userId))
+        if (learnSessionService.getCardsLearnedInThisSession(learnSessionId) >= userService.getCardsToLearn(userId))
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponseDTO("Reach maximum cards learned"));
 
         return cardService.getOldestCardToLearn(deckId)
