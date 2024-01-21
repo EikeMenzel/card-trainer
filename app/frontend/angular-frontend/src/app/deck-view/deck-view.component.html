@@ -33,11 +33,11 @@
               <div class="deck-info d-flex justify-content-between mt-4 mb-4">
                 <div class="deck-stat-container">
                   <div class="stat-label">{{ 'cards_left' | translate }}</div>
-                  <div class="badge-style">{{ deckCardsLeft }}</div>
+                  <div class="badge-style" id="cards-left">{{ deckCardsLeft }}</div>
                 </div>
                 <div class="deck-stat-container">
                   <div class="stat-label">{{ 'deck_size' | translate}}</div>
-                  <div class="badge-style">{{ deckSize }}</div>
+                  <div class="badge-style" id="deck-size">{{ deckSize }}</div>
                 </div>
               </div>
             </div>
@@ -51,13 +51,13 @@
 
 
           <div class="deck-actions mb-4 text-center d-flex flex-column align-items-center">
-            <button class="btn custom-action-button mb-2"
+            <button class="btn custom-action-button mb-2" id="start-learn-session-button"
                     routerLink="./learn"
                     [disabled]="deckCardsLeft===0"
                     [ngClass]="{'disabled-function-color': deckCardsLeft === 0}">
               {{ 'start_to_learn' | translate}}
             </button>
-            <button class="btn custom-action-button mb-2" routerLink="./peek"
+            <button class="btn custom-action-button mb-2" routerLink="./peek" id="start-peek-session-button"
                     [disabled]="deckSize === 0"
                     [ngClass]="{'disabled-function-color': deckSize === 0}">{{ 'quick_peek' | translate}}
             </button>
@@ -65,10 +65,10 @@
 
           <!-- Share and Export -->
           <div class="card-footer mb-4 text-center">
-            <button class="btn custom-button-footer btn-sm" (click)="openModal(content)">{{ 'share' | translate }}</button>
-            <button class="btn custom-button-footer btn-sm" (click)="exportButtonPressed()">{{ 'export' | translate}}</button>
-            <button class="btn custom-button-footer btn-sm" routerLink="./edit">{{ 'edit' | translate}}</button>
-            <button class="btn custom-button-footer btn-sm" routerLink="./histories">
+            <button class="btn custom-button-footer btn-sm" id="share-modal-button" (click)="openModal(content)">{{ 'share' | translate }}</button>
+            <button class="btn custom-button-footer btn-sm" id="export-button"(click)="exportButtonPressed()">{{ 'export' | translate}}</button>
+            <button class="btn custom-button-footer btn-sm" id="edit-card-button" routerLink="./edit">{{ 'edit' | translate}}</button>
+            <button class="btn custom-button-footer btn-sm" id="history-button" routerLink="./histories">
               <i class="bi bi-clock-history"></i>
             </button>
           </div>
@@ -91,7 +91,7 @@
       <p *ngIf="emailWarn" class="text-center text-danger fw-bold">{{ 'email_invalid' | translate}}</p>
     </div>
     <div class="modal-footer">
-      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send E-Mail">
+      <button [disabled]="buttonIsPressed" type="submit" id="share-deck-button" class="btn primary-background-color" value="Send E-Mail">
         <span *ngIf="!buttonIsPressed">{{ 'share' | translate}}</span>
         <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
       </button>

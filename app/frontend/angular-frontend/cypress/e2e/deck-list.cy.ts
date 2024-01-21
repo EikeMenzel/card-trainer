@@ -157,6 +157,11 @@ describe('Deck-List Component', () => {
 
     cy.reload()
 
+    cy.intercept('GET', 'api/v1/decks', {
+      statusCode: 200,
+      body: []
+    })
+
     cy.get('#toggle-options').click()
     cy.get('#toggle-delete-button').click()
 
