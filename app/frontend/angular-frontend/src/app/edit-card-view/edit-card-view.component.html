@@ -3,7 +3,7 @@
   <div class="edit-card container mt-5">
     <div class="edit-card-form mt-2">
       <div>
-        <div class="align-items-start mb-2" [routerLink]="'/deck/' + this.deckId + '/edit'">
+        <div class="align-items-start mb-2" [routerLink]="'/deck/' + this.deckId + '/edit'" id="return-to-card-list">
           <button class="btn return-button p-2">
             <fa-icon [icon]="faReply" class="fa fa-solid"></fa-icon>
             {{ 'return_to_deck' | translate}}
@@ -32,12 +32,12 @@
           <div class="form-group row mb-4 align-items-center">
             <div class="col-sm-2 col-form-label">{{ 'add_question' | translate}}</div>
             <div class="col-sm-8">
-              <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard"
+              <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard" id="basic-card-question"
                         [(ngModel)]="questionCardDTO.question"
                         name="cardFront"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
-              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)" id="image-modal-question">
                 <fa-icon class="fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
@@ -60,12 +60,12 @@
           <div class="form-group row mb-2 mt-4 align-items-center">
             <div class="col-sm-2 col-form-label">{{ 'add_answer' | translate}}</div>
             <div class="col-sm-8">
-              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard"
+              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard" id="basic-card-answer"
                         [(ngModel)]="choiceAnswers[0].answer"
                         name="cardBack"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
-              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(1)">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(1)" id="image-modal-answer">
                 <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.choiceAnswers[0]?.imageId">
@@ -92,7 +92,7 @@
             <div class="col-sm-2 col-form-label">{{ 'add_question' | translate}}</div>
             <div class="col-sm-8">
               <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="questionCardDTO.question"
-                        name="cardFront"></textarea>
+                        name="cardFront" id="multiple-question-card"></textarea>
             </div>
             <div class="col-sm-2 mt-2">
               <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
@@ -126,7 +126,7 @@
               <div class="col-sm-6">
                 <textarea rows="10" cols="40" type="text" class="form-control custom-textarea-multiple-choice"
                           [ngModel]="answer.answer"
-                          (ngModelChange)="updateOptionText(i, $event)" name="option{{i}}"></textarea>
+                          (ngModelChange)="updateOptionText(i, $event)" name="option{{i}}" id="options-multi-card{{i}}"></textarea>
               </div>
               <!-- Upload image button and delete option button -->
               <div class="col-sm-4 mt-2 d-flex align-items-center">
@@ -135,7 +135,7 @@
                   <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
                 </button>
                 <!-- Delete option button -->
-                <button type="button" class="btn btn-danger delete-option-button ml-2 customized-margin-left"
+                <button type="button" class="btn btn-danger delete-option-button ml-2 customized-margin-left" id="delete-answer-multiple"
                         (click)="deleteOption(i)">
                   <fa-icon class="nav-icon fa-xl" [icon]="faTrash"></fa-icon>
                 </button>
@@ -168,7 +168,7 @@
           <!-- Button to add more options -->
           <div class="form-group row">
             <div class="col-md-10 text-center">
-              <button type="button" class="btn add-option-button" (click)="addOption()">
+              <button type="button" class="btn add-option-button" (click)="addOption()" id="add-multiple-answers">
                 <fa-icon class="nav-icon fa-xl" [icon]="faPlus"></fa-icon>
               </button>
             </div>
@@ -178,7 +178,7 @@
         <!-- Save card button -->
         <div class="form-group row mt-3 save-button-wrapper">
           <div class="col-sm-12">
-            <button type="submit" class="btn save-button btn-rounded float-end">
+            <button type="submit" class="btn save-button btn-rounded float-end" id="save-card-button">
               <fa-icon class="nav-icon fa-xl" [icon]="faSave"></fa-icon>
             </button>
           </div>
