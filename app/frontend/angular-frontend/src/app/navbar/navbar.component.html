@@ -23,8 +23,7 @@
       <div class="dropdown-menu dropdown-menu-right custom-dropdown-window custom-dropdown-menue" ngbDropdownMenu aria-labelledby="navbarDropdown">
         <button class="dropdown-item" (click)="onClickReturn('/profile')">{{ 'profile' | translate}}</button>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item" (click)="logoutWarningPopup()">{{ 'logout' | translate }}</button>
-        <button class="dropdown-item" id="logout-dropdown" (click)="logoutWarningPopup()">Logout</button>
+        <button class="dropdown-item" id="logout-dropdown" (click)="logoutWarningPopup()">{{ 'logout' | translate }}</button>
       </div>
     </div>
   </div>

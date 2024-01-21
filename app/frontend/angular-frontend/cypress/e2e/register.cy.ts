@@ -4,7 +4,7 @@ describe('Register Component', () => {
   });
 
   it('Register: should show invalid inputs error', () => {
-    cy.contains("Sign Up").click();
+    cy.get('#register-button').click();
     cy.get('.error').should("be.visible")
   })
 
@@ -23,7 +23,7 @@ describe('Register Component', () => {
     cy.get('#password').type("TestUser!1")
     cy.get('#password-repeat').type("TestUser!1")
 
-    cy.contains("Sign Up").click();
+    cy.get('#register-button').click();
 
     cy.contains('Your Email is invalid').should("be.visible")
   });
@@ -42,7 +42,7 @@ describe('Register Component', () => {
     cy.get('#password').type("TestUser!1")
     cy.get('#password-repeat').type("TestUser!1")
 
-    cy.contains("Sign Up").click();
+    cy.get('#register-button').click();
 
     cy.contains('Username is to long or to short').should("be.visible")
   });
@@ -53,9 +53,9 @@ describe('Register Component', () => {
     cy.get('#password').type("TestUser!1")
     cy.get('#password-repeat').type("TestUser1")
 
-    cy.contains("Sign Up").click();
+    cy.get('#register-button').click();
 
-    cy.contains("Passwords are not the same!").should("be.visible")
+    cy.contains("Passwords do not match").should("be.visible")
   });
 
   it('Register: should show error for unsafe password', () => {
@@ -73,7 +73,7 @@ describe('Register Component', () => {
     cy.get('#password').type("testme")
     cy.get('#password-repeat').type("testme")
 
-    cy.contains("Sign Up").click();
+    cy.get('#register-button').click();
 
     cy.contains("Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/")
       .should("be.visible")
@@ -88,8 +88,8 @@ describe('Register Component', () => {
     cy.get('#password').type("TestUser!1")
     cy.get('#password-repeat').type("TestUser!1")
 
-    cy.contains("Sign Up").click();
-    cy.contains("Your Registration was successful!").should("be.visible")
+    cy.get('#register-button').click();
+    cy.contains("Your registration was successful!").should("be.visible")
     cy.contains("Back to Login").click().url().should('include',"/login")
   });
 
@@ -107,7 +107,7 @@ describe('Register Component', () => {
     cy.get('#password').type("TestUser!1")
     cy.get('#password-repeat').type("TestUser!1")
 
-    cy.contains("Sign Up").click();
+    cy.get('#register-button').click();
 
     cy.contains("Server cannot be reached").should("be.visible")
   });
