@@ -11,6 +11,8 @@ import com.service.databaseservice.payload.out.export.CardExportDTO;
 import com.service.databaseservice.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -172,14 +175,6 @@ class DeckControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void whenGetAmountOfCardsInDeck_DeckOrUserNotFound_thenReturnsNotFound() throws Exception {
-        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(false);
-
-        mockMvc.perform(get("/api/v1/db/users/1/decks/2/cards/count")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
 
     @Test
     void whenGetCardsToLearnAmount_ValidData_thenReturnsOk() throws Exception {
@@ -193,15 +188,6 @@ class DeckControllerTest {
     }
 
     @Test
-    void whenGetCardsToLearnAmount_DeckOrUserNotFound_thenReturnsNotFound() throws Exception {
-        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(false);
-
-        mockMvc.perform(get("/api/v1/db/users/1/decks/2/cards-to-learn/count")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void whenCountCardValues_ValidData_thenReturnsOk() throws Exception {
         when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(true);
         when(cardService.getCardsByDeckId(anyLong())).thenReturn(new ArrayList<>());
@@ -212,14 +198,6 @@ class DeckControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void whenCountCardValues_DeckOrUserNotFound_thenReturnsNotFound() throws Exception {
-        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(false);
-
-        mockMvc.perform(get("/api/v1/db/users/1/decks/2/learn-state")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
 
     @Test
     void whenExistsDeckByUserIdAndDeckId_DeckExists_thenReturnsNoContent() throws Exception {
@@ -228,15 +206,6 @@ class DeckControllerTest {
         mockMvc.perform(get("/api/v1/db/users/1/decks/2/exists")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void whenExistsDeckByUserIdAndDeckId_DeckNotFound_thenReturnsNotFound() throws Exception {
-        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(false);
-
-        mockMvc.perform(get("/api/v1/db/users/1/decks/2/exists")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -299,5 +268,24 @@ class DeckControllerTest {
         mockMvc.perform(post("/api/v1/db/decks/share/" + token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideUrls")
+    void whenDeckOrUserNotFound_thenReturnsNotFound(String url) throws Exception {
+        when(deckService.existsByDeckIdAndUserId(anyLong(), anyLong())).thenReturn(false);
+
+        mockMvc.perform(get(url)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    private static Stream<String> provideUrls() {
+        return Stream.of(
+                "/api/v1/db/users/1/decks/2/cards/count",
+                "/api/v1/db/users/1/decks/2/cards-to-learn/count",
+                "/api/v1/db/users/1/decks/2/exists",
+                "/api/v1/db/users/1/decks/2/learn-state"
+        );
     }
 }

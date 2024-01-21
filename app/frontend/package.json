@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "sonarqube-scanner": "^3.3.0",
+    "wait-on": "^7.2.0"
+  }
+}

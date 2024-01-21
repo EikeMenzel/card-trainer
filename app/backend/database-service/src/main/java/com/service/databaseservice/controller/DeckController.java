@@ -3,7 +3,6 @@ package com.service.databaseservice.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.service.databaseservice.model.Deck;
 import com.service.databaseservice.model.User;
-import com.service.databaseservice.payload.import_function.CardDTO;
 import com.service.databaseservice.payload.inc.DeckNameDTO;
 import com.service.databaseservice.payload.out.DeckDTO;
 import com.service.databaseservice.payload.out.export.CardExportDTO;
@@ -18,8 +17,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -295,7 +292,7 @@ public class DeckController {
         exportDTO.cardExportDTOList().forEach(dto -> {
             if (dto instanceof TextAnswerDTO textAnswerDTO) {
                 var cardDTO = new com.service.databaseservice.payload.savecard.CardDTO(textAnswerDTO.getCardDTO().question(), imageService.saveImage(userId, textAnswerDTO.getCardDTO().image()).orElse(null));
-                var jsonNode = objectMapper.valueToTree(new TextAnswerCardDTO(cardDTO, textAnswerDTO.getTextAnswer(), imageService.saveImage(userId,textAnswerDTO.getImage()).orElse(null)));
+                var jsonNode = objectMapper.valueToTree(new TextAnswerCardDTO(cardDTO, textAnswerDTO.getTextAnswer(), imageService.saveImage(userId, textAnswerDTO.getImage()).orElse(null)));
                 cardService.saveCard(jsonNode, 1L, deck.get().getId());
             } else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
                 var cardDTO = new com.service.databaseservice.payload.savecard.CardDTO(multipleChoiceCardDTO.getCardDTO().question(), imageService.saveImage(userId, multipleChoiceCardDTO.getCardDTO().image()).orElse(null));

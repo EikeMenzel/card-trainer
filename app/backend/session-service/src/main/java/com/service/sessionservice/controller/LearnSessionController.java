@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +64,7 @@ public class LearnSessionController {
             @Parameter(description = "Deck ID for retrieving the next card", required = true) @PathVariable Long deckId,
             @Parameter(description = "LearnSession ID for checking current amount of cards learned", required = true) @PathVariable Long learnSessionId) {
         Pair<HttpStatusCode, Object> httpStatusCodeObjectPair = dbQueryService.getLongestUnseenCard(userId, deckId, learnSessionId);
-        if(httpStatusCodeObjectPair.getLeft() == HttpStatus.OK || httpStatusCodeObjectPair.getLeft() == HttpStatus.CONFLICT) {
+        if (httpStatusCodeObjectPair.getLeft() == HttpStatus.OK || httpStatusCodeObjectPair.getLeft() == HttpStatus.CONFLICT) {
             return ResponseEntity.status(httpStatusCodeObjectPair.getLeft()).body(httpStatusCodeObjectPair.getRight());
         }
 
@@ -90,7 +88,7 @@ public class LearnSessionController {
             @Parameter(description = "RatingDTO, with the rating", required = true,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = RatingCardHandlerDTO.class))) @RequestBody RatingCardHandlerDTO ratingCardHandlerDTO) {
         var httpStatus = dbQueryService.updateLearnSessionDifficulty(userId, learnSessionId, ratingCardHandlerDTO);
-        if(httpStatus.is2xxSuccessful())
+        if (httpStatus.is2xxSuccessful())
             achievementQueryService.checkCardsLearnedAchievements(userId);
 
         return ResponseEntity.status(httpStatus).build();
@@ -113,7 +111,7 @@ public class LearnSessionController {
             @Parameter(description = "StatusTypeDTO - Status - Finished or Aborted", required = true,
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = StatusTypeDTO.class))) @RequestBody StatusTypeDTO statusTypeDTO) {
         var httpStatus = dbQueryService.updateLearnSessionStatus(userId, learnSessionId, statusTypeDTO);
-        if(httpStatus.is2xxSuccessful())
+        if (httpStatus.is2xxSuccessful())
             achievementQueryService.checkSessionAchievements(userId);
 
         return ResponseEntity.status(httpStatus).build();
