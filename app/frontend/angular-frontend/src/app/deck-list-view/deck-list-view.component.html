@@ -56,7 +56,7 @@
               <span class="d-inline-block">{{ limitTextLength(deck.deckName) }}</span>
             </td>
             <td class="pos-delete-button align-middle">
-              <a class="delete-button" *ngIf="showDelete" (click)="deleteItem($event, deck.deckId)">
+              <a class="delete-button" *ngIf="showDelete" (click)="deleteItem($event, deck.deckId)" id="trigger-delete-button">
                 <fa-icon class="fa text-danger" [icon]="faTrashCan"></fa-icon>
               </a>
               <span>{{ deck.cardsToLearn }}</span>
@@ -67,7 +67,7 @@
         <ng-template #newItem>
           <tr>
             <td class="align-middle">
-              <form (ngSubmit)="addedNewDeck()">
+              <form (ngSubmit)="addedNewDeck()" id="form-add-new-field">
                 <input id="add-new-item-field" class="form-control" type="text" placeholder="{{'input_deck_name' | translate}}" maxlength="255">
               </form>
             </td>
@@ -84,7 +84,7 @@
           <td colspan="2" class="align-middle">
             <div class="text-container text-center">
               <p>{{ 'no_decks_created' | translate }}</p>
-              <button class="btn menu-item menu-circle text-white custom-add-button" (click)="addItem()">
+              <button class="btn menu-item menu-circle text-white custom-add-button" id="first-time-add" (click)="addItem()">
                 <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
               </button>
             </div>
@@ -99,20 +99,20 @@
 
   <div class="menu-wrapper">
     <div *ngIf="showOptions" class="options-panel">
-      <button class="btn btn-success menu-item menu-circle sub-menu-circle"
+      <button class="btn btn-success menu-item menu-circle sub-menu-circle" id="add-deck-button"
               (click)="isSearchActive ? showSearchActiveToast() : addItem()">
         <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
       </button>
-      <button class="btn btn-primary menu-item menu-circle sub-menu-circle"
+      <button class="btn btn-primary menu-item menu-circle sub-menu-circle" id="import-button"
               (click)="isSearchActive ? showSearchActiveToast() : showImportModal(content)">
         <fa-icon class="fa-l fa-solid" [icon]="faFileImport"></fa-icon>
       </button>
-      <button class="btn btn-danger menu-item menu-circle sub-menu-circle"
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" id="toggle-delete-button"
               (click)="toggleDeleteItem()">
         <fa-icon class="fa-l fa-solid" [icon]="faTrashCan"></fa-icon>
       </button>
     </div>
-    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button"
+    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button" id="toggle-options"
             (click)="toggleOptions()">
       <fa-icon class="fa-l fa-solid" [icon]="faListUl"></fa-icon>
     </button>
