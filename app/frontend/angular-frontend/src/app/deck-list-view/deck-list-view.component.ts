@@ -102,14 +102,14 @@ export class DeckListViewComponent implements OnInit {
   }
 
   addItem() {
-
     if (this.isSearchActive) {
       this.toastService.showInfoToast(this.translate.instant("info"), this.translate.instant("search_constraint"));
       return;
     }
 
-    if (this.deckList.at(-1)?.deckId == -1) {
-      this.deckList.pop();
+    let deckDTOIndex = this.deckList.findIndex(value => value.deckId == -1);
+    if (deckDTOIndex !== -1) {
+      this.deckList.splice(deckDTOIndex, 1);
       return;
     }
 
@@ -255,11 +255,7 @@ export class DeckListViewComponent implements OnInit {
       return
     this.cardService.deleteDeck(id).subscribe({
       next: () => {
-        this.deckList = this.deckList.filter(deck => deck.deckId != id);
-        this.filteredList = this.filteredList.filter(deck => deck.deckId != id);
-      },
-      complete: () => {
-        this.deckList = this.deckList.filter(value => value.deckId != id);
+        this.updateDecks()
       },
       error: err => {
         const statusCode = err.status;
