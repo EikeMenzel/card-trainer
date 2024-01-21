@@ -1,19 +1,19 @@
 <app-base-page [PageTitle]="'history' | translate">
   <div class="success-container">
-    <table class="table container" id="list">
+    <table class="table container" id="list" [attr.aria-label]="'history_table_description' | translate">
       <ng-container *ngIf="histories.length != 0">
       <thead>
       <tr>
-        <td><strong>{{ 'learn_session' | translate}}</strong></td>
-        <td><strong>{{ 'completed' | translate}}</strong></td>
-        <td><strong>{{ 'cards_learned' | translate}}</strong></td>
+        <th scope="col"><strong>{{ 'learn_session' | translate}}</strong></th>
+        <th scope="col"><strong>{{ 'completed' | translate}}</strong></th>
+        <th scope="col"><strong>{{ 'cards_learned' | translate}}</strong></th>
       </tr>
       </thead>
       </ng-container>
       <tbody>
       <ng-container *ngFor="let history of histories;">
         <ng-container *ngIf="history.historyId != -1;">
-          <tr (click)="openModal(content,history.historyId)">
+          <tr class="hover-highlight" (click)="openModal(content,history.historyId)">
             <td>{{changeDateFormat(history.createdAt)}}</td>
             <td>{{history.status}}</td>
             <td>{{history.cardsLearned}}</td>
@@ -44,7 +44,7 @@
   <div class="modal-body">
     <div *ngIf="learnedCards > 0">
       <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColor"></app-donut-chart>
-      <b>{{ 'cards_learned' | translate}}: {{learnedCards}}</b>
+      <strong>{{ 'cards_learned' | translate}}: {{learnedCards}}</strong>
     </div>
     <div *ngIf="learnedCards == 0">{{ 'session_no_cards_learned' | translate}}</div>
   </div>

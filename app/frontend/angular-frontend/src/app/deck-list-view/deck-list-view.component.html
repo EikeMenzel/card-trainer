@@ -37,18 +37,14 @@
 
 
   <div class="success-container">
-    <table class="table container" id="list">
-
+    <table class="table container" id="list" [attr.aria-label]="'deck_list_table_description' | translate">
       <thead>
       <tr>
-        <td class="text-start"><strong>{{ 'name' | translate}}</strong></td>
-        <td class="text-end"><strong>{{ 'cards_left' | translate}}</strong></td>
+        <th class="text-start" scope="col"><strong>{{ 'name' | translate}}</strong></th>
+        <th class="text-end" scope="col"><strong>{{ 'cards_left' | translate}}</strong></th>
       </tr>
       </thead>
-
       <tbody>
-
-
       <ng-container *ngFor="let deck of filteredList;">
         <ng-container *ngIf="deck.deckId != -1; else newItem">
           <tr class="hover-highlight" routerLink="/deck/{{deck.deckId}}">

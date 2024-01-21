@@ -75,7 +75,7 @@
                 width="50"
                 height="50"
                 [alt]="'upload_image' | translate"
-                (click)="openImageModal('api/v1/images/' + this.choiceAnswers[0].imageId)")>
+                (click)="openImageModal('api/v1/images/' + this.choiceAnswers[0].imageId)">
                 <a class="deleteOldImg" (click)="deleteImgBasicAnswer(0)">
                   <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                 </a>
@@ -96,7 +96,6 @@
             </div>
             <div class="col-sm-2 mt-2">
               <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
-                <i class="fa fa-upload"></i>
                 <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
               </button>
               <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
@@ -146,7 +145,7 @@
                   [src]="'api/v1/images/' + answer.imageId"
                   width="50" height="50"
                   [alt]="'upload_image' | translate"
-                  (click)="openImageModal('api/v1/images/' + answer.imageId)")>
+                  (click)="openImageModal('api/v1/images/' + answer.imageId)">
                   <a class="deleteOldImg" (click)="deleteImgBasicAnswer(i)">
                     <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
                   </a>
