@@ -1,5 +1,3 @@
-import {HttpStatusCode} from "@angular/common/http";
-
 describe('Login Component', () => {
   beforeEach(() => {
     cy.visit('http://localhost:4200/login');

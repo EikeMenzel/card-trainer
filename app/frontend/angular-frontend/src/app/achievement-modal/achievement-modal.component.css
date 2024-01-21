@@ -1,9 +1,3 @@
-.modal-image {
-  max-width: 150px;
-  max-height: 250px;
-  height: auto;
-  transition: transform 0.5s ease;
-}
 .modal-image:hover {
   transform: scale(1.1);
 }
