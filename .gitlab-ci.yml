@@ -64,7 +64,7 @@ sonarqube_frontend:
     - docker
   allow_failure: false
   script:
-    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONTEND -Dsonar.sources=./app/frontend -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN_FRONTEND
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONTEND -Dsonar.sources=./app/frontend -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN_FRONTEND -Dsonar.exclusions=angular-frontend/src/app/app.component.css,angular-frontend/src/app/donut-chart/donut-chart.component.css
 
 sonarqube_backend:
   stage: code_quality

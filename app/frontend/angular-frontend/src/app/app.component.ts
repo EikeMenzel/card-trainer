@@ -16,11 +16,8 @@ import {WebsocketService} from "./services/websocket/websocket-service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'angular-frontend';
+  title = 'Card Trainer';
 
-  constructor(private authService: AuthService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private websocket: WebsocketService) {
+  constructor(private router: Router) {
   }
 }

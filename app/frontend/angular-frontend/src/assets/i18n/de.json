@@ -1,4 +1,6 @@
 {
+  "deck_list_table_description": "Liste deiner Decks",
+  "history_table_description": "Liste von vergangenen Lerneinheiten",
   "date_format": "dd.MM.yyyy HH:mm",
   "Achievement Made! All beginning is … easy": "Erfolg Erreicht! Aller Anfang ist … leicht",
   "Achievement Made! Master of cards": "Erfolg Erreicht! Meister der Karten",

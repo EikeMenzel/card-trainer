@@ -112,9 +112,6 @@
 .sort-select {
   padding-left: 35px; /* Adjust so text doesn't overlap icon */
   width: 100%;
-}
-
-.sort-select {
   -webkit-appearance: none; /* Chrome, Safari */
   -moz-appearance: none;    /* Firefox */
   appearance: none;         /* Standard */
