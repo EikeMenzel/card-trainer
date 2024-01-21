@@ -74,7 +74,7 @@
                 </div>
               </div>
 
-              <button [disabled]="buttonIsPressed" type="submit" class="btn btn-block submit-button">
+              <button [disabled]="buttonIsPressed" type="submit" id="register-button" class="btn btn-block submit-button">
                 <span *ngIf="!buttonIsPressed">{{ 'sign_up' | translate }}</span>
                 <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
               </button>

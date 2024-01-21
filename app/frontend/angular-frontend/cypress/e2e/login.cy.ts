@@ -31,7 +31,7 @@ describe('Login Component', () => {
     cy.get("#login-button")
       .click();
 
-    cy.url().should("include","/")
+    cy.url().should("include","/").should("not.include","login")
   });
 
   it('Login: should not find account', () => {
@@ -87,7 +87,7 @@ describe('Login Component', () => {
   });
 
   it('Login: should visit register Screen', () => {
-    cy.contains("Sign Up").click()
+    cy.contains("Sign up").click()
     cy.url().should("include","/register")
   });
 
