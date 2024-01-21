@@ -61,12 +61,12 @@
       <!-- Default list entries -->
       <tr *ngFor="let card of displayedCards" class="hover-highlight" routerLink="/deck/{{deckId}}/card/{{card.id}}/edit">
         <td class="align-middle">
-          <span class="d-inline-block">{{ limitTextLength(card.question) }}</span>
+          <span class="d-inline-block" id="card-question">{{ limitTextLength(card.question) }}</span>
         </td>
         <td class="align-center">
           <div class="row g-2 justify-content-end align-items-center">
             <div class="col-auto">
-              <div class="text-end">{{ card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card" }}</div>
+              <div class="text-end" id="type-of-card">{{ card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card" }}</div>
             </div>
             <div class="col-auto">
               <!-- Delete -->
@@ -86,7 +86,7 @@
         <tr>
           <td colspan="2" class="text-center">
             <p class="text-muted">{{'no_cards_create' | translate}}</p>
-            <button class="btn menu-item menu-circle text-white custom-add-button"
+            <button class="btn menu-item menu-circle text-white custom-add-button" id="first-card-button"
                     routerLink="/deck/{{deckId}}/card/new/edit">
               <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
             </button>
@@ -100,15 +100,15 @@
 
   <div class="menu-wrapper">
     <div *ngIf="showOptions" class="options-panel">
-      <button class="btn btn-success menu-item menu-circle sub-menu-circle sub-add-button"
+      <button class="btn btn-success menu-item menu-circle sub-menu-circle sub-add-button" id="create-card-button"
               routerLink="/deck/{{deckId}}/card/new/edit">
         <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
       </button>
-      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()">
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()" id="delete-card-button">
         <fa-icon class="fa-l fa-solid" [icon]="faTrashCan"></fa-icon>
       </button>
     </div>
-    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button"
+    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button" id="toggle-menu"
             (click)="toggleOptions()">
       <fa-icon class="fa-l fa-solid" [icon]="faListUl"></fa-icon>
     </button>
