@@ -215,9 +215,9 @@
     <h4 class="modal-title" id="modal-basic-title">{{ 'your_session_results' | translate }}</h4>
   </div>
   <div class="modal-body">
-    <b>{{reasonToEndSession}}</b>
+    <strong>{{reasonToEndSession}}</strong>
     <app-donut-chart *ngIf="awaitChange" [chartNames]="chartNames" [chartValues]="chartData" [chartColors]="chartColors"></app-donut-chart>
-    <b>{{ 'cards_learned' | translate}}: {{cardsLearned}}</b>
+    <strong>{{ 'cards_learned' | translate}}: {{cardsLearned}}</strong>
   </div>
   <div></div>
   <div class="modal-footer">

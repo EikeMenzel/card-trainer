@@ -13,10 +13,6 @@
   background-color: var(--bg-main-color);
 }
 
-.title-container {
-  text-align: center;
-}
-
 .title-text {
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -200,12 +196,6 @@
   }
 }
 
-.title-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .edit-button,
 .cancel-button,
 .save-button {
@@ -231,6 +221,7 @@
   justify-content: center;
   align-items: center;
   height: 100px;
+  text-align: center;
 }
 
 .title-input {
