@@ -130,8 +130,10 @@ export class UserProfileComponent implements OnInit {
 
     if (!this.newPassword || this.newPassword.trim().length === 0) {
       this.passwordError = this.translate.instant("field_cannot_be_empty");
-    } else if (this.newPassword.length < 8 || this.newPassword.length > 72) {
-      this.passwordError = this.translate.instant("password_length_min_max");
+    } else if (this.newPassword.length < 8) {
+      this.passwordError = this.translate.instant("password_min_length");
+    } else if (this.newPassword.length > 72) {
+      this.passwordError = this.translate.instant("password_max_length");
     } else if (!/\d/.test(this.newPassword)) {
       // Check if the password contains at least one number
       this.passwordError = this.translate.instant("password_requirements");
