@@ -185,7 +185,7 @@
   "username_constraint": "Username is to long or to short",
   "password_constraint": "Please make sure you are using at least 1x digit, 1x capitalized and 1x lower-case letter and at least 1x symbol from the following pool: ~`! @#$%^&*()_-+={[}]|:;<,>.?/",
   "verification_constraint": "Authentication failed: The user is not verified",
-  "reset_token_response": "The reset-token is valid, expired or already used. Please request another password reset",
+  "reset_token_response": "The reset-token is invalid, expired or already used. Please request another password reset",
   "user_loading_error": "User Loading error",
   "user_loading_error_data": "Could not load user data",
   "password_reset": "Password reset",
