@@ -8,9 +8,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - type: bind
-        source: ./database/data
-        target: /var/lib/postgresql/data
 
     networks:
       - postgres-network
@@ -85,10 +82,9 @@ services:
   gateway:
     container_name: gateway-service
     image: git-registry.thm.de/swtp-suess/ws-23/card-trainer/dev/gateway:latest
-    ports:
-      - "80:80"
     networks:
       - postgres-network
+      - proxy
     depends_on:
       - db-service
       - cards
@@ -97,6 +93,19 @@ services:
       - user
       - frontend
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cards.entrypoints=http"
+      - "traefik.http.routers.cards.rule=Host(`cards.${DOMAIN}`)"
+      - "traefik.http.middlewares.cards-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.cards.middlewares=cards-https-redirect"
+      - "traefik.http.routers.cards-secure.entrypoints=https"
+      - "traefik.http.routers.cards-secure.rule=Host(`cards.${DOMAIN}`)"
+      - "traefik.http.routers.cards-secure.tls=true"
+      - "traefik.http.routers.cards-secure.tls.certresolver=netcup"
+      - "traefik.http.routers.cards-secure.service=cards"
+      - "traefik.http.services.cards.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy"
 
   email:
     container_name: email-service
@@ -150,3 +159,5 @@ services:
 networks:
   postgres-network:
     driver: bridge
+  proxy:
+    external: true

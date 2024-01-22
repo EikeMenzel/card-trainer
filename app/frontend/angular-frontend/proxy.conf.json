@@ -1,11 +1,3 @@
 {
-  "/api": {
-    "target": "http://localhost:80",
-    "secure": false
-  },
-  "/tmp": {
-    "target": "ws://localhost:80",
-    "ws": true,
-    "secure": false
-  }
+
 }

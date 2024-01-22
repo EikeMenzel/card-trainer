@@ -67,7 +67,6 @@ export class UserService {
 
     if (request.status == HttpStatusCode.PreconditionFailed || request.status == HttpStatusCode.Unauthorized) {
       this.auth.logout()
-      this.router.navigate(["/login"])
     }
 
     if (request.status != HttpStatusCode.Unauthorized)
