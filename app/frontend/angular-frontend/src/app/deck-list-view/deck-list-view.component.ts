@@ -346,7 +346,7 @@ export class DeckListViewComponent implements OnInit {
     } else if (screenWidth <= 1200) {
       return text.substring(0, 60) + '...';
     } else {
-      return text.substring(0, 120) + '...';
+      return text;
     }
   }
 
