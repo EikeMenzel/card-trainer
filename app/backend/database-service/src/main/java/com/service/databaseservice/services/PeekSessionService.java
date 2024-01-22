@@ -15,10 +15,13 @@ import com.service.databaseservice.repository.sessions.PeekSessionRepository;
 import com.service.databaseservice.repository.sessions.StatusTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,8 +35,9 @@ public class PeekSessionService {
     private final PeekSessionCardsRepository peekSessionCardsRepository;
     private final CardService cardService;
     private final CardRepository cardRepository;
-    private final SecureRandom random = new SecureRandom ();
+    private final SecureRandom random = new SecureRandom();
     private final Logger logger = LoggerFactory.getLogger(PeekSessionService.class);
+
     public PeekSessionService(StatusTypeRepository statusTypeRepository, UserRepository userRepository, DeckRepository deckRepository, PeekSessionRepository peekSessionRepository, PeekSessionCardsRepository peekSessionCardsRepository, CardService cardService, CardRepository cardRepository) {
         this.statusTypeRepository = statusTypeRepository;
         this.userRepository = userRepository;
@@ -69,7 +73,7 @@ public class PeekSessionService {
     public Optional<Object> getRandomCardToLearn(Long peekSessionId) {
         try {
             Optional<PeekSession> peekSessionOptional = peekSessionRepository.findById(peekSessionId);
-            if(peekSessionOptional.isEmpty())
+            if (peekSessionOptional.isEmpty())
                 return Optional.empty();
 
             Long deckId = peekSessionOptional.get().getDeck().getId();
@@ -96,7 +100,7 @@ public class PeekSessionService {
         Optional<PeekSession> peekSessionOptional = peekSessionRepository.findById(peekSessionId);
         Optional<StatusType> statusTypeOptional = statusTypeRepository.findById(statusTypeDTO.getFieldId());
 
-        if(peekSessionOptional.isEmpty() || statusTypeOptional.isEmpty())
+        if (peekSessionOptional.isEmpty() || statusTypeOptional.isEmpty())
             return false;
 
         try {
@@ -116,14 +120,14 @@ public class PeekSessionService {
     public boolean savePeekSessionCard(Long peekSessionId, Long cardId, Long userId) {
         try {
             Optional<PeekSession> peekSessionOptional = peekSessionRepository.findById(peekSessionId);
-            if(peekSessionOptional.isEmpty())
+            if (peekSessionOptional.isEmpty())
                 return false;
 
-            if(!cardService.doesCardBelongToOwnerAndDeck(userId, peekSessionOptional.get().getDeck().getId(), cardId))
+            if (!cardService.doesCardBelongToOwnerAndDeck(userId, peekSessionOptional.get().getDeck().getId(), cardId))
                 return false;
 
             Optional<Card> cardOptional = cardRepository.getCardById(cardId);
-            if(cardOptional.isEmpty())
+            if (cardOptional.isEmpty())
                 return false;
 
             peekSessionCardsRepository.save(new PeekSessionCards(cardOptional.get(), peekSessionOptional.get()));
@@ -132,5 +136,17 @@ public class PeekSessionService {
             logger.debug(e.getMessage());
             return false;
         }
+    }
+
+    @Scheduled(cron = "0 0 */3 * * ?")
+    public void scheduledSetSessionsToCanceled() {
+        var sixHoursAgo = Timestamp.from(Instant.now().minusSeconds((long) (3600 * 3)));
+        Optional<StatusType> statusTypeOptional = statusTypeRepository.findById(3L); //cancel
+        statusTypeOptional.ifPresent(statusType -> peekSessionRepository
+                .saveAll(peekSessionRepository.findByStatusNotAndCreatedAtBefore(sixHoursAgo)
+                        .stream()
+                        .filter(peekSession -> peekSession.getFinishedAt() == null)
+                        .map(learnSession -> learnSession.setPeekStatus(statusType).setEndTimestamp())
+                        .toList()));
     }
 }
