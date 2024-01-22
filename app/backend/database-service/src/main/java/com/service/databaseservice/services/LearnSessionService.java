@@ -14,10 +14,12 @@ import com.service.databaseservice.repository.sessions.LearnSessionRepository;
 import com.service.databaseservice.repository.sessions.StatusTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -102,7 +104,7 @@ public class LearnSessionService {
             case RATING_3 -> learnSession.setRating4(learnSession.getRating4() + 1);
             case RATING_4 -> learnSession.setRating5(learnSession.getRating5() + 1);
             case RATING_5 -> learnSession.setRating6(learnSession.getRating6() + 1);
-            default ->  {
+            default -> {
                 return false;
             }
         }
@@ -121,14 +123,14 @@ public class LearnSessionService {
         Optional<LearnSession> learnSessionOptional = learnSessionRepository.findById(learnSessionId);
         Optional<StatusType> statusTypeOptional = statusTypeRepository.findById(statusTypeDTO.getFieldId());
 
-        if(learnSessionOptional.isEmpty() || statusTypeOptional.isEmpty())
+        if (learnSessionOptional.isEmpty() || statusTypeOptional.isEmpty())
             return false;
 
         try {
             learnSessionRepository.save(
                     learnSessionOptional.get()
-                    .setLearnStatus(statusTypeOptional.get())
-                    .setEndTimestamp()
+                            .setLearnStatus(statusTypeOptional.get())
+                            .setEndTimestamp()
             );
             return true;
         } catch (Exception e) {
@@ -167,5 +169,16 @@ public class LearnSessionService {
                 .stream()
                 .mapToInt(learnSession -> learnSession.getRating1() + learnSession.getRating2() + learnSession.getRating3() + learnSession.getRating4() + learnSession.getRating5() + learnSession.getRating6())
                 .sum();
+    }
+
+    @Scheduled(cron = "0 0 */3 * * ?")
+    public void scheduledSetSessionsToCanceled() {
+        var sixHoursAgo = Timestamp.from(Instant.now().minusSeconds((long) (3600 * 3)));
+        Optional<StatusType> statusTypeOptional = statusTypeRepository.findById(3L); //cancel
+        statusTypeOptional.ifPresent(statusType -> learnSessionRepository.saveAll(learnSessionRepository.findByStatusNotAndCreatedAtBefore(sixHoursAgo)
+                .stream()
+                .filter(learnSession -> learnSession.getFinishedAt() == null)
+                .map(learnSession -> learnSession.setLearnStatus(statusType).setEndTimestamp())
+                .toList()));
     }
 }

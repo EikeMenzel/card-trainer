@@ -10,7 +10,6 @@ import java.time.Instant;
 @Entity
 @Table(name = "learn_session")
 public class LearnSession {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ls_id")
