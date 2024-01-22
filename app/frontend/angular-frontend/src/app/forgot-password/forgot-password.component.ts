@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {HttpClientModule, HttpStatusCode} from '@angular/common/http';
 import {CommonModule} from "@angular/common";
@@ -24,14 +24,27 @@ export class ForgotPasswordComponent {
     private userService: UserService,
     private toast: ToastService,
     private translate: TranslateService
-) { }
+  ) {
+  }
 
-  isValidEmail(email: string): boolean {
+  emailError: string = ""
+
+  isValidEmail(email: string) {
     const emailRegex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}(\.[a-zA-Z]+)?$/);
-    return emailRegex.test(email) && email.length <= 64;
+    if (!emailRegex.test(email) && email.length <= 64) {
+      this.emailError = this.translate.instant("email_invalid")
+      return false;
+    }
+    return true;
   }
 
   onSubmit(email: string) {
+    this.emailError = ""
+    if (email === ""){
+      this.emailError = this.translate.instant("field_cannot_be_empty")
+      return;
+    }
+
     if (!this.isValidEmail(email)) {
       return;
     }
@@ -42,7 +55,7 @@ export class ForgotPasswordComponent {
       next: (data) => {
         if (data.status == HttpStatusCode.Accepted) {
           this.router.navigate(["/"])
-          this.toast.showSuccessToast(this.translate.instant("success"),   this.translate.instant("password_reset_request_part_1") + "" + email + "" + this.translate.instant("password_reset_request_part_2"))
+          this.toast.showSuccessToast(this.translate.instant("success"), this.translate.instant("password_reset_request_part_1") + "" + email + "" + this.translate.instant("password_reset_request_part_2"))
         } else {
           this.toast.showErrorToast(this.translate.instant("error"), this.translate.instant("we_could_not_send_password_reset_mail"))
         }
@@ -56,7 +69,4 @@ export class ForgotPasswordComponent {
     });
   }
 
-  checkEmail() {
-    return;
-  }
 }
