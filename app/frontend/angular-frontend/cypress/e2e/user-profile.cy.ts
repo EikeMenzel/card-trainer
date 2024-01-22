@@ -65,7 +65,7 @@ describe('User Profile Component', () => {
     cy.get('#reenterNewPassword').type('NewPass');
     cy.get('#changePwButton').click();
 
-    cy.contains("Your password must be between 8 and 72 characters").should('be.visible');
+    cy.contains("Password must be at least 8 characters long").should('be.visible');
   });
 
   it('Profile: should enter too Long Password', () => {
@@ -74,7 +74,16 @@ describe('User Profile Component', () => {
     cy.get('#reenterNewPassword').type('MyNewPasswordIsReallySafeSoNoOneCanHackIntoItOrYouCanTryToCrackMyNewPassword');
     cy.get('#changePwButton').click();
 
-    cy.contains("Your password must be between 8 and 72 characters").should('be.visible');
+    cy.contains("Password can not be longer than 72 characters").should('be.visible');
+  });
+
+  it('Profile: should enter not secure password', () => {
+    cy.get('#updatePasswordButton').click();
+    cy.get('#newPassword').type('IamInavlid');
+    cy.get('#reenterNewPassword').type('IamInavlid');
+    cy.get('#changePwButton').click();
+
+    cy.contains("A password must be: • between 8 - 72 characters long • contain at least one number • at least special character: ~ ` ! @ # $ % ^ & * ( ) _ - + = { [ } ] | : ; < , > . ? /").should('be.visible');
   });
 
   it('Profile: should enter not similar Passwords', () => {
