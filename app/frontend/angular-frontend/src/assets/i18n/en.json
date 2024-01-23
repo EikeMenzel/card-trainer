@@ -252,5 +252,7 @@
   "deck_creation_error": "Could not create a new deck",
   "delete_deck_confirmation": "Are you sure you want to delete the deck?",
   "loading_error": "Loading Error",
-  "deck_deletion_error": "Deck could not be deleted"
+  "deck_deletion_error": "Deck could not be deleted",
+  "close": "Close",
+  "done": "Done"
 }
