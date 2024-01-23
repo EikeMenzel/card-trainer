@@ -105,11 +105,12 @@
   color: white;
   border-radius: 10px;
   background-color: var(--primary-color);
-  transition: background-color 0.3s, color 0.3s;
 }
 
 .custom-button-footer:hover,
-.custom-button-footer:active {
+.custom-button-footer:active,
+.custom-action-button:hover,
+.custom-action-button:active {
   background-color: var(--primary-color);
   color: white;
 }

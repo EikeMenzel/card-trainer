@@ -71,7 +71,7 @@ describe('Login Component', () => {
     cy.get("#login-button")
       .click();
 
-    cy.contains("Please Enter a valid E-Mail and Password").should("be.visible");
+    cy.contains("Please enter a valid E-Mail and Password").should("be.visible");
   });
 
   it('Login: should enter invalid password', () => {
@@ -81,7 +81,7 @@ describe('Login Component', () => {
     cy.get("#login-button")
       .click();
 
-    cy.contains("Please Enter a valid E-Mail and Password").should("be.visible");
+    cy.contains("Please enter a valid E-Mail and Password").should("be.visible");
   });
 
   it('Login: should visit register Screen', () => {
