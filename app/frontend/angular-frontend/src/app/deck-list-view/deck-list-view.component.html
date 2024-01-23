@@ -1,0 +1,134 @@
+<app-base-page [PageTitle]="'deck_list_title' | translate">
+  <div class="container search-and-sort-container mt-5">
+    <div class="row align-items-center justify-content-end">
+      <!-- Search -->
+      <div class="col-12 col-md-6 col-lg-3 mb-3">
+        <div class="search-container align-items-center d-flex">
+          <fa-icon class="custom-icon fa-l fa-solid" [icon]="faSearch"></fa-icon>
+          <input type="text"
+                 placeholder= "{{ 'search' | translate }}"
+                 class="form-control search-input custom-search-bar"
+                 [attr.aria-label]="'search' | translate"
+                 [(ngModel)]="searchTerm"
+                 (ngModelChange)="onSearchChange()">
+        </div>
+      </div>
+
+      <!-- Sort -->
+      <div class="col-12 col-md-6 col-lg-3 mb-3">
+        <div class="sort-container align-items-center d-flex">
+          <fa-icon [icon]="faArrowUpZA" class="custom-icon fa-l fa-solid"></fa-icon>
+          <select class="form-select sort-select custom-sort-bar" [attr.aria-label]="'sort_order' | translate" [(ngModel)]="sortOrder" (ngModelChange)="onSortOrderChange()">
+            <option value="" disabled selected>{{ 'sort_order' | translate }}</option>
+            <option value="oldest" selected>{{ 'sort_oldest_created' | translate }}</option>
+            <option value="newest">{{ 'sort_newest_created' | translate}}</option>
+            <option value="nameAsc">{{ 'sort_name_asc' | translate}}</option>
+            <option value="nameDesc">{{ 'sort_name_asc' | translate}}</option>
+            <option value="cardsToLearnAsc">{{ 'sort_least_cards_left' | translate}}</option>
+            <option value="cardsToLearnDesc">{{ 'sort_most_cards_left' | translate}}</option>
+            <option value="lastLearnedAsc">{{ 'sort_last_learned_asc' | translate}}</option>
+            <option value="lastLearnedDesc">{{ 'sort_last_learned_desc' | translate}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="success-container">
+    <table class="table container" id="list" [attr.aria-label]="'deck_list_table_description' | translate">
+      <thead>
+      <tr>
+        <th class="text-start" scope="col"><strong>{{ 'name' | translate}}</strong></th>
+        <th class="text-end" scope="col"><strong>{{ 'cards_left' | translate}}</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let deck of filteredList;">
+        <ng-container *ngIf="deck.deckId != -1; else newItem">
+          <tr class="hover-highlight" routerLink="/deck/{{deck.deckId}}">
+            <td class="align-middle">
+              <span class="d-inline-block">{{ limitTextLength(deck.deckName) }}</span>
+            </td>
+            <td class="pos-delete-button align-middle">
+              <a class="delete-button" *ngIf="showDelete" (click)="deleteItem($event, deck.deckId)" id="trigger-delete-button">
+                <fa-icon class="fa text-danger" [icon]="faTrashCan"></fa-icon>
+              </a>
+              <span>{{ deck.cardsToLearn }}</span>
+            </td>
+          </tr>
+        </ng-container>
+
+        <ng-template #newItem>
+          <tr>
+            <td class="align-middle">
+              <form (ngSubmit)="addedNewDeck()" id="form-add-new-field">
+                <input id="add-new-item-field" class="form-control" type="text" placeholder="{{'input_deck_name' | translate}}" maxlength="255">
+              </form>
+            </td>
+            <td class="align-middle">
+              <button class="btn btn-secondary" (click)="cancelAddItem()">{{ 'cancel' | translate}}</button>
+            </td>
+          </tr>
+        </ng-template>
+
+      </ng-container>
+
+      <ng-container *ngIf="this.deckList.length == 0 && filteredList.length == 0">
+        <tr>
+          <td colspan="2" class="align-middle">
+            <div class="text-container text-center">
+              <p>{{ 'no_decks_created' | translate }}</p>
+              <button class="btn menu-item menu-circle text-white custom-add-button" id="first-time-add" (click)="addItem()">
+                <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+
+    </table>
+  </div>
+
+
+  <div class="menu-wrapper">
+    <div *ngIf="showOptions" class="options-panel">
+      <button class="btn btn-success menu-item menu-circle sub-menu-circle" id="add-deck-button"
+              (click)="isSearchActive ? showSearchActiveToast() : addItem()">
+        <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
+      </button>
+      <button class="btn btn-primary menu-item menu-circle sub-menu-circle" id="import-button"
+              (click)="isSearchActive ? showSearchActiveToast() : showImportModal(content)">
+        <fa-icon class="fa-l fa-solid" [icon]="faFileImport"></fa-icon>
+      </button>
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" id="toggle-delete-button"
+              (click)="toggleDeleteItem()">
+        <fa-icon class="fa-l fa-solid" [icon]="faTrashCan"></fa-icon>
+      </button>
+    </div>
+    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button" id="toggle-options"
+            (click)="toggleOptions()">
+      <fa-icon class="fa-l fa-solid" [icon]="faListUl"></fa-icon>
+    </button>
+  </div>
+</app-base-page>
+
+<ng-template #content let-modal>
+  <div class="modal-header primary-background-color">
+    <h4 class="modal-title" id="modal-basic-title">{{ 'import_deck' | translate}}</h4>
+    <button type="button" class="btn-close" [attr.aria-label]="'close' | translate" (click)="modal.close()"></button>
+  </div>
+  <form (submit)="onSubmitImportDeck($event)">
+    <div class="modal-body">
+      <input type="file" [name]="'deck_list_title' | translate" accept="application/zip" (change)="onFileSelected($event)"
+             [(ngModel)]="importFile">
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="buttonIsPressed" type="submit" class="btn primary-background-color" value="Send Email">
+        <span *ngIf="!buttonIsPressed">{{ 'import' | translate }}</span>
+        <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+  </form>
+</ng-template>

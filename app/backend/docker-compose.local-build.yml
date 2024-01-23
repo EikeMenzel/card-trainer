@@ -1,0 +1,153 @@
+version: "3"
+services:
+  db:
+    container_name: postgres-swtp-project
+    ports:
+      - "5433:5432"
+    image: postgres:14.1-alpine
+    restart: unless-stopped
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - type: bind
+        source: ./database/data
+        target: /var/lib/postgresql/data
+
+    networks:
+      - postgres-network
+    user: postgres
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "16543:80"
+    networks:
+      - postgres-network
+    depends_on:
+      - db
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    volumes:
+      - ./database/servers.json:/pgadmin4/servers.json
+      - ./database/devdbpass:/pgadmin4/devdbpass
+
+  db-service:
+    container_name: db-service
+    build: database-service
+    ports:
+      - "8086:8086"
+    networks:
+      - postgres-network
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  auth:
+    container_name: auth-service
+    build: authentication-service
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  achievment:
+    container_name: achievement-service
+    build: achievement-service
+    ports:
+      - "8085:8085"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  cards:
+    container_name: cards-service
+    build: cards-service
+    ports:
+      - "8082:8082"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  gateway:
+    container_name: gateway-service
+    build: gateway
+    ports:
+      - "80:80"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+      - cards
+      - auth
+      - email
+      - user
+      - frontend
+    restart: unless-stopped
+
+  email:
+    container_name: email-service
+    build: mail-service
+    ports:
+      - "8081:8081"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  user:
+    container_name: user-service
+    build: user-service
+    ports:
+      - "8083:8083"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  session:
+    container_name: session-service
+    build: session-service
+    ports:
+      - "8084:8084"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../frontend/angular-frontend
+      dockerfile: Dockerfile-dev
+    ports:
+      - "4200:4200"
+    networks:
+      - postgres-network
+    depends_on:
+      - db-service
+      - cards
+      - user
+      - auth
+      - email
+      - session
+
+networks:
+  postgres-network:
+    driver: bridge

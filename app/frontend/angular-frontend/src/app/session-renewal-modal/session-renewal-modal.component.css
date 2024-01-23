@@ -1,0 +1,17 @@
+.renewal-modal {
+  min-width: 400px;
+  max-width: 600px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.action-buttons {
+  justify-content: space-around;
+  color: white;
+}
+.renew-button {
+  background-color: green;
+}
+.cancel-button {
+  background-color: red;
+}

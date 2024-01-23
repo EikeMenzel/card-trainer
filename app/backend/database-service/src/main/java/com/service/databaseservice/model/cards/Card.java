@@ -1,6 +1,7 @@
 package com.service.databaseservice.model.cards;
 
 import com.service.databaseservice.model.Deck;
+import com.service.databaseservice.model.Image;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,8 +16,9 @@ public class Card {
     @Column(name = "question", columnDefinition = "TEXT", nullable = false)
     private String question;
 
-    @Column(name = "image_path")
-    private String imagePath;
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image imageData;
 
     @ManyToOne
     @JoinColumn(name = "deck_id", nullable = false)
@@ -26,13 +28,22 @@ public class Card {
     @JoinColumn(name = "card_type_id", nullable = false)
     private CardType cardType;
 
-    public Card(Long id, String question, String imagePath, Deck deck, CardType cardType) {
-        this.id = id;
+    public Card(String question, Image imageData, Deck deck, CardType cardType) {
         this.question = question;
-        this.imagePath = imagePath;
+        this.imageData = imageData;
         this.deck = deck;
         this.cardType = cardType;
     }
+
+    public Card(Long id, String question, Image imageData, Deck deck, CardType cardType) {
+        this.id = id;
+        this.question = question;
+        this.imageData = imageData;
+        this.deck = deck;
+        this.cardType = cardType;
+    }
+
+
 
     public Card() {
     }
@@ -45,8 +56,8 @@ public class Card {
         return question;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Image getImageData() {
+        return imageData;
     }
 
     public Deck getDeck() {
@@ -55,5 +66,20 @@ public class Card {
 
     public CardType getCardType() {
         return cardType;
+    }
+
+    public Card cloneWithDifferentDeck(Deck newDeck) {
+        return new Card(this.question, this.imageData, newDeck, this.cardType);
+    }
+
+    public Card updateCard(String question, Image newImage) {
+        return new Card(this.id, question, newImage, this.deck, this.cardType);
+    }
+    public Card updateCard(String question) {
+        return new Card(this.id, question, null, this.deck, this.cardType);
+    }
+
+    public void setImageData(Image imageData) {
+        this.imageData = imageData;
     }
 }

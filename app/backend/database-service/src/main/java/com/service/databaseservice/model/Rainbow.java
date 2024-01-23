@@ -17,6 +17,10 @@ public class Rainbow {
     public Rainbow() {
     }
 
+    public Rainbow(String password) {
+        this.password = password;
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,0 +1,231 @@
+.deck-view-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 90vh;
+}
+
+.deck-view-card {
+  margin-top: auto;
+  margin-bottom: auto;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-main-color);
+}
+
+.title-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 80%;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.title-input {
+  max-width: 100%;
+}
+
+.deck-view-card .btn {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.deck-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.deck-stat-container {
+  display: inline-block;
+  text-align: center;
+
+}
+
+.badge-style {
+  display: inline-block;
+  padding: 2px 20px;
+  background-color: var(--primary-color);
+  border-radius: 15px;
+  color: white;
+  font-size: 2em;
+  margin: 5px;
+}
+
+.stat-label {
+  display: block;
+  color: #6c757d;
+  font-size: 1em;
+}
+
+.primary-background-color{
+  background-color: var(--primary-color);
+}
+
+.progress-chart-container {
+  width: 100%;
+  /* Placeholder for chart dimensions */
+  height: 200px;
+  margin-bottom: 40px;
+  /* Placeholder for chart styling */
+  background-color: var(--bg-main-color);
+  border-radius: 10px;
+}
+
+.deck-actions {
+  margin-top: 90px;
+}
+
+.card-footer {
+  background: none;
+  border-top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.custom-action-button {
+  width: 200px;
+  height: 50px;
+}
+
+.custom-button-footer {
+  width: 100px;
+  height: 40px;
+}
+
+.custom-button-footer,
+.custom-action-button {
+  padding: 10px 24px;
+  font-size: 1rem;
+  margin: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  background-color: var(--primary-color);
+}
+
+.custom-button-footer:hover,
+.custom-button-footer:active,
+.custom-action-button:hover,
+.custom-action-button:active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+
+/* Media Queries for extra bigger screens */
+@media (min-width: 2560px) {
+  .deck-view-card {
+    min-width: 60%;
+  }
+
+  .deck-stat {
+    font-size: 1.5rem;
+    padding: 15px 20px;
+    border-radius: 15px;
+  }
+
+  .custom-button-footer {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    min-width: 200px;
+    height: 60px;
+  }
+
+  .custom-action-button {
+    font-size: 1.5rem;
+    padding: 1.5rem 3rem;
+    width: 400px;
+    height: 70px;
+  }
+
+  .deck-view-card h2 {
+    font-size: 2.5rem;
+  }
+}
+
+/* Media Queries for bigger screens */
+@media (min-width: 1920px) {
+  .deck-view-card {
+    min-width: 50%;
+  }
+
+  .deck-view-card .btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .deck-view-card h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Media queries for small screens */
+@media screen and (max-width: 768px) {
+  .title-text {
+    font-size: 1.3rem;
+  }
+}
+
+/* Media queries for extra small screens */
+@media screen and (max-width: 576px) {
+  .title-text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Media queries for extra extra small screens */
+@media (max-width: 480px) {
+  .custom-button-footer {
+    width: calc(50% - 10px);
+    margin: 5px;
+  }
+
+  .custom-action-button {
+    width: calc(100% - 40px);
+    margin: 5px;
+  }
+}
+
+/* Media queries for extra extra extra small screens (Galaxy Fold)*/
+@media screen and (max-width: 280px) {
+  .title-text {
+    font-size: 0.8rem;
+  }
+}
+
+.edit-button,
+.cancel-button,
+.save-button {
+  background-color: transparent;
+  border: none;
+  color: var(--primary-color);
+}
+
+.edit-icon,
+.cancel-icon,
+.save-icon {
+  color: var(--primary-color);
+}
+
+.edit-button:hover,
+.cancel-button:hover,
+.save-button:hover {
+  cursor: pointer;
+}
+
+.title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  text-align: center;
+}
+
+.title-input {
+  flex: 1;
+  max-width: 300px;
+}

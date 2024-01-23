@@ -1,0 +1,116 @@
+<app-base-page [PageTitle]="'Edit Deck'">
+
+  <div class="container search-and-sort-container my-3">
+    <!-- Return Button -->
+    <div class="row align-items-center justify-content-start">
+      <div class="col-md-6 col-lg-4">
+        <button class="btn return-button" [routerLink]="'/deck/' + this.onClickReturn()">
+          <fa-icon [icon]="faReply" class="fa fa-solid"></fa-icon>
+          {{ 'return_to_deck' | translate}}
+        </button>
+      </div>
+    </div>
+
+    <!-- Search and Sort Bar -->
+    <div class="row align-items-center justify-content-end mt-3">
+      <!-- Search -->
+      <div class="col-12 col-md-6 col-lg-3 mb-3">
+        <div class="search-container align-items-center d-flex">
+          <fa-icon [icon]="faSearch" class="custom-icon fa-l fa-solid"></fa-icon>
+          <input type="text"
+                 [placeholder]="'search' | translate"
+                 class="form-control search-input custom-search-bar"
+                 [attr.aria-label]="'search' | translate"
+                 [(ngModel)]="searchTerm"
+                 (ngModelChange)="onSearchChange()">
+        </div>
+      </div>
+
+      <!-- Sort -->
+      <div class="col-12 col-md-6 col-lg-3 mb-3">
+        <div class="sort-container align-items-center d-flex">
+          <fa-icon [icon]="faArrowUpZA" class="custom-icon fa-l fa-solid"></fa-icon>
+          <select class="form-select sort-select custom-sort-bar"
+                  [attr.aria-label]="'sort_order' | translate"
+                  [(ngModel)]="sortOrder"
+                  (ngModelChange)="onSortOrderChange()">
+            <option value="" disabled>{{ 'sort_by' | translate}}</option>
+            <option value="oldest" selected> {{'sort_oldest_created' | translate}}</option>
+            <option value="newest"> {{'sort_newest_created' | translate}}</option>
+            <option value="nameAsc">{{ 'sort_name_asc' | translate }}</option>
+            <option value="nameDesc"> {{'sort_name_desc' | translate}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <table class="table container" id="list">
+      <!-- <thead> -->
+      <thead>
+      <tr>
+        <td class="text-start"><strong>{{ 'question' | translate }}</strong></td>
+        <td class="text-end"><strong>{{ 'question_type' | translate }}</strong></td>
+      </tr>
+      </thead>
+
+      <!-- <tbody> -->
+      <tbody>
+
+      <!-- Default list entries -->
+      <tr *ngFor="let card of displayedCards" class="hover-highlight" routerLink="/deck/{{deckId}}/card/{{card.id}}/edit">
+        <td class="align-middle">
+          <span class="d-inline-block" id="card-question">{{ limitTextLength(card.question) }}</span>
+        </td>
+        <td class="align-center">
+          <div class="row g-2 justify-content-end align-items-center">
+            <div class="col-auto">
+              <div class="text-end" id="type-of-card">{{ card.type == 'BASIC' ? "Basic Card" : "Multiple Choice Card" }}</div>
+            </div>
+            <div class="col-auto">
+              <!-- Delete -->
+              <ng-container *ngIf="showDelete">
+                <a class="delete-button" (click)="deleteItem($event, card.id)">
+                  <fa-icon class="fa-l fa-solid text-danger" [icon]="faTrashCan"></fa-icon>
+                </a>
+              </ng-container>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+
+      <!-- If no cards have been created yet -->
+      <ng-container *ngIf="displayedCards.length == 0">
+        <tr>
+          <td colspan="2" class="text-center">
+            <p class="text-muted">{{'no_cards_create' | translate}}</p>
+            <button class="btn menu-item menu-circle text-white custom-add-button" id="first-card-button"
+                    routerLink="/deck/{{deckId}}/card/new/edit">
+              <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="menu-wrapper">
+    <div *ngIf="showOptions" class="options-panel">
+      <button class="btn btn-success menu-item menu-circle sub-menu-circle sub-add-button" id="create-card-button"
+              routerLink="/deck/{{deckId}}/card/new/edit">
+        <fa-icon class="fa-l fa-solid" [icon]="faPlus"></fa-icon>
+      </button>
+      <button class="btn btn-danger menu-item menu-circle sub-menu-circle" (click)="toggleDeleteItem()" id="delete-card-button">
+        <fa-icon class="fa-l fa-solid" [icon]="faTrashCan"></fa-icon>
+      </button>
+    </div>
+    <button class="btn data-mdb-ripple-init menu-circle text-white main-menu-button" id="toggle-menu"
+            (click)="toggleOptions()">
+      <fa-icon class="fa-l fa-solid" [icon]="faListUl"></fa-icon>
+    </button>
+  </div>
+</app-base-page>

@@ -15,6 +15,12 @@ public class StatusType {
     private String type;
 
     public StatusType() {
+        /* NoArgsConstructor for Hibernate */
+    }
+
+    public StatusType(Long id, String type) {
+        this.id = id;
+        this.type = type;
     }
 
     public Long getId() {
