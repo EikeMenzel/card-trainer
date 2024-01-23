@@ -48,7 +48,7 @@ describe('History Component', () => {
   });
 
   it('History: should open screen', () => {
-    cy.contains('You have not done any Sessions yet.').should("be.visible")
+    cy.contains('You have not done any sessions yet. Start your first learn session and see the results here').should("be.visible")
   });
 
 
@@ -142,7 +142,7 @@ describe('History Component', () => {
     cy.reload();
 
     cy.contains("CANCELED").click()
-    cy.contains("No Cards were learned during this Session").should("be.visible")
+    cy.contains("No Cards were learned during this session").should("be.visible")
   });
 
   it('Navbar: should logout ', () => {
