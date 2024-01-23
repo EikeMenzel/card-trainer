@@ -1,0 +1,61 @@
+<div class="login-container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card login-card">
+        <div class="card-body">
+
+          <!-- Simon -->
+          <div class="text-center">
+            <img ngSrc="assets/fox2.png" priority="" [alt]="'profile_image' | translate" class="simon" height="500" width="500">
+            <h2 class="my-3">{{ 'welcome' | translate }}</h2>
+            <p>
+              {{'login_intro_part1' | translate}} <br> {{'login_intro_part2' | translate}}</p>
+          </div>
+          <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" id="login-form">
+
+            <!-- Email -->
+            <div class="form-group mb-3">
+              <label for="email">{{ 'email' | translate}}</label>
+              <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
+                     [placeholder]="'enter_your_email' | translate" name="email" required ngModel>
+            </div>
+
+            <!-- Password -->
+            <!-- Label and forgot password link -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <label for="password" class="mb-0">{{ 'password' | translate }}</label>
+              <a routerLink="/forgot-password" routerLinkActive="active" class="forgot-password-link">{{ 'forgot_password' | translate}}</a>
+            </div>
+
+            <!-- Password input field with show/hide button -->
+            <div class="input-group mb-3">
+              <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" [placeholder]="'enter_your_password' | translate" name="password" ngModel required>
+              <div class="input-group-append">
+                <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
+                  <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Remember me -->
+            <div class="form-group mb-4">
+              <input value="false" [defaultChecked]="true" type="checkbox" class="form-check-input" id="rememberMe"
+                     name="remember" ngModel>
+              <label class="form-check-label" for="rememberMe">{{ 'remember_me' | translate }}</label>
+            </div>
+
+            <button [disabled]="isButtonPressed" type="submit" class="btn btn-block submit-button" id="login-button">
+              <span *ngIf="!isButtonPressed">{{ 'get_started' | translate}}</span>
+              <span *ngIf="isButtonPressed" class="spinner-border spinner-border-sm"></span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Register -->
+        <div class="card-footer text-center mb-4">
+          {{ 'dont_have_an_account' | translate}} <a routerLink="/register" class="sign-up-link">{{ 'sign_up' | translate}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

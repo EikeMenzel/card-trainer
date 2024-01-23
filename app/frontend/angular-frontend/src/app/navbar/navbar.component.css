@@ -1,0 +1,16 @@
+.custom-navbar {
+  background-color: var(--bg-main-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.custom-toggle {
+  cursor: pointer;
+}
+.house-icon,
+.user-icon,
+.custom-text-color,
+.custom-toggle {
+  color: var(--primary-color);
+}
+.custom-dropdown-window {
+  transform: translateX(-120px);
+}

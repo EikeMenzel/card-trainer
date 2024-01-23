@@ -1,0 +1,246 @@
+<app-tutorial pageName="EDIT_DECK"></app-tutorial>
+<app-base-page>
+  <div class="edit-card container mt-5">
+    <div class="edit-card-form mt-2">
+      <div>
+        <div class="align-items-start mb-2" [routerLink]="'/deck/' + this.deckId + '/edit'" id="return-to-card-list">
+          <button class="btn return-button p-2">
+            <fa-icon [icon]="faReply" class="fa fa-solid"></fa-icon>
+            {{ 'return_to_deck' | translate}}
+          </button>
+        </div>
+      </div>
+      <form *ngIf="hasLoaded" (ngSubmit)="saveCardToBackend()">
+
+        <!-- Card type selection -->
+        <div class="form-group customized-form-group row mb-3 mt-4 align-items-center">
+          <label for="cardTypeSelect" class="col-sm-2 col-form-label customized-col-form-label">{{ 'card_type' | translate}}</label>
+          <div class="col-sm-8">
+            <select class="form-control customized-form-control" id="cardTypeSelect"
+                    (change)="updateCardType(cardTypeInput)" #cardTypeInput
+                    [name]="'card_type' | translate" [disabled]="this.cardId != 'new'"
+                    [value]="cardType">
+              <option value="basic">{{ 'basic' | translate}}</option>
+              <option value="multipleChoice">{{ 'multiple_choice' | translate}}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Content for 'Basic' cards -->
+        <div *ngIf="isBasicCard">
+          <!-- Card front input -->
+          <div class="form-group row mb-4 align-items-center">
+            <div class="col-sm-2 col-form-label">{{ 'add_question' | translate}}</div>
+            <div class="col-sm-8">
+              <textarea rows="10" cols="40" class="form-control custom-textarea-frontcard" id="basic-card-question"
+                        [(ngModel)]="questionCardDTO.question"
+                        name="cardFront"></textarea>
+            </div>
+            <div class="col-sm-2 mt-2">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)" id="image-modal-question">
+                <fa-icon class="fa-xl fa-solid" [icon]="faUpload"></fa-icon>
+              </button>
+              <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
+                <img
+                class="oldImgDisplay"
+                [src]="'api/v1/images/' + this.questionCardDTO.imageId"
+                width="50"
+                height="50"
+                [alt]="'upload_image' | translate"
+                (click)="openImageModal('api/v1/images/' + this.questionCardDTO.imageId)">
+                <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
+                  <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <!-- Card back input -->
+          <div class="form-group row mb-2 mt-4 align-items-center">
+            <div class="col-sm-2 col-form-label">{{ 'add_answer' | translate}}</div>
+            <div class="col-sm-8">
+              <textarea rows="10" cols="40" class="form-control custom-textarea-backcard" id="basic-card-answer"
+                        [(ngModel)]="choiceAnswers[0].answer"
+                        name="cardBack"></textarea>
+            </div>
+            <div class="col-sm-2 mt-2">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(1)" id="image-modal-answer">
+                <fa-icon class="nav-icon fa-xl fa-solid" [icon]="faUpload"></fa-icon>
+              </button>
+              <div class="oldImgDisplayWrapper" *ngIf="this.choiceAnswers[0]?.imageId">
+                <img
+                class="oldImgDisplay"
+                [src]="'api/v1/images/' + this.choiceAnswers[0].imageId"
+                width="50"
+                height="50"
+                [alt]="'upload_image' | translate"
+                (click)="openImageModal('api/v1/images/' + this.choiceAnswers[0].imageId)">
+                <a class="deleteOldImg" (click)="deleteImgBasicAnswer(0)">
+                  <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content for 'Multiple Choice' cards -->
+        <div *ngIf="!isBasicCard">
+
+          <!-- Card front input -->
+          <div class="form-group row mb-4 align-items-center">
+            <div class="col-sm-2 col-form-label">{{ 'add_question' | translate}}</div>
+            <div class="col-sm-8">
+              <textarea class="form-control custom-textarea-frontcard-mc" [(ngModel)]="questionCardDTO.question"
+                        name="cardFront" id="multiple-question-card"></textarea>
+            </div>
+            <div class="col-sm-2 mt-2">
+              <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(-1)">
+                <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
+              </button>
+              <div class="oldImgDisplayWrapper" *ngIf="this.questionCardDTO.imageId">
+
+                <img
+                class="oldImgDisplay"
+                [src]="'api/v1/images/' + this.questionCardDTO.imageId"
+                width="50"
+                height="50"
+                [alt]="'upload_image' | translate"
+                (click)="openImageModal('api/v1/images/' + this.questionCardDTO.imageId)">
+                <a class="deleteOldImg" (click)="deleteImgBasicQuestion()">
+                  <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <!-- Options for Multiple Choice -->
+          <div class="form-group" *ngFor="let answer of choiceAnswers; let i = index">
+            <div class="row mt-4 align-items-center">
+              <!-- Option label -->
+              <div class="col-sm-2 col-form-label">
+                {{ 'option' | translate }} {{ i + 1 }}
+              </div>
+              <!-- Textarea for the option -->
+              <div class="col-sm-6">
+                <textarea rows="10" cols="40" type="text" class="form-control custom-textarea-multiple-choice"
+                          [ngModel]="answer.answer"
+                          (ngModelChange)="updateOptionText(i, $event)" name="option{{i}}" id="options-multi-card{{i}}"></textarea>
+              </div>
+              <!-- Upload image button and delete option button -->
+              <div class="col-sm-4 mt-2 d-flex align-items-center">
+                <!-- Upload image button -->
+                <button type="button" class="btn btn-rounded upload-img-button" (click)="openModal(i)">
+                  <fa-icon class="nav-icon fa-xl" [icon]="faUpload"></fa-icon>
+                </button>
+                <!-- Delete option button -->
+                <button type="button" class="btn btn-danger delete-option-button ml-2 customized-margin-left" id="delete-answer-multiple"
+                        (click)="deleteOption(i)">
+                  <fa-icon class="nav-icon fa-xl" [icon]="faTrash"></fa-icon>
+                </button>
+                <div class="oldImgDisplayWrapper" *ngIf="answer.imageId">
+                  <img
+                  class="oldImgDisplay"
+                  [src]="'api/v1/images/' + answer.imageId"
+                  width="50" height="50"
+                  [alt]="'upload_image' | translate"
+                  (click)="openImageModal('api/v1/images/' + answer.imageId)">
+                  <a class="deleteOldImg" (click)="deleteImgBasicAnswer(i)">
+                    <fa-icon class="text-danger" [icon]="faTrash"></fa-icon>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Row for correct answer checkbox -->
+            <div class="row mb-2 align-items-center">
+              <div class="col-sm-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                         name="isRightAnswer" [checked]="this.choiceAnswers[i].rightAnswer" (change)="isCorrectCheckChanged(i, $event)">
+                  <label class="form-check-label" for="flexSwitchCheckDefault">{{ 'correct_answer' | translate}}</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Button to add more options -->
+          <div class="form-group row">
+            <div class="col-md-10 text-center">
+              <button type="button" class="btn add-option-button" (click)="addOption()" id="add-multiple-answers">
+                <fa-icon class="nav-icon fa-xl" [icon]="faPlus"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save card button -->
+        <div class="form-group row mt-3 save-button-wrapper">
+          <div class="col-sm-12">
+            <button type="submit" class="btn save-button btn-rounded float-end" id="save-card-button">
+              <fa-icon class="nav-icon fa-xl" [icon]="faSave"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </form>
+      <div *ngIf="!hasLoaded" class="d-flex align-items-center justify-content-center">
+        <div class="spinner-border">
+
+        </div>
+      </div>
+      <!-- Modal for image upload-->
+      <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content upload-image-modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="uploadModalLabel">{{ 'upload_image' | translate }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" [attr.aria-label]="'close' | translate"
+                      (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body upload-image-modal-body">
+              <!-- Drag & Drop Area -->
+              <div class="upload-area" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+                {{ 'drag_n_drop' | translate}}
+                <a class="browse-link" (click)="openFilePicker($event)">{{ 'click_browse' | translate}}</a>
+              </div>
+              <input type="file" accept=".jpg, .jpeg, .png" #fileInput (change)="onFileSelected($event, fileInput)"
+                     hidden>
+            </div>
+            <div class="icon-container">
+              <div class="file-list" *ngIf="this.selectedFile != null">
+                <div class="file-info">
+                  <fa-icon class="nav-icon fa-xl" [icon]="faFileImage"></fa-icon>
+                  <span class="file-name">{{ this.selectedFile.name }}</span>
+                </div>
+                <fa-icon class="nav-icon fa-xl fa-solid" (click)="deleteFile()" [icon]="faTrash"></fa-icon>
+              </div>
+            </div>
+            <div class="modal-footer upload-image-modal-footer">
+              <button type="button" class="btn image-upload-done-button btn-square btn-rounded" data-bs-dismiss="modal"
+                      [attr.aria-label]="'close' | translate" (click)="confirmImageSave()">
+                {{'done' | translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for image enlargement -->
+      <div class="modal fade" id="imageLargeModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="imageModalLabel">Image</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+              <img id="modalLargeImage" src="" class="img-fluid" alt="imgBig"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-base-page>
+

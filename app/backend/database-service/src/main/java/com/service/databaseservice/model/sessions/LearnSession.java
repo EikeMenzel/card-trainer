@@ -5,34 +5,34 @@ import com.service.databaseservice.model.User;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Table(name = "learn_session")
 public class LearnSession {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ls_id")
     private Long id;
 
     @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    private final Timestamp createdAt = Timestamp.from(Instant.now());
 
     @Column(name = "finished_at")
     private Timestamp finishedAt;
 
-    @Column(name = "difficulty_1", nullable = false)
-    private Integer difficulty1 = 0;
-    @Column(name = "difficulty_2", nullable = false)
-    private Integer difficulty2 = 0;
-    @Column(name = "difficulty_3", nullable = false)
-    private Integer difficulty3 = 0;
-    @Column(name = "difficulty_4", nullable = false)
-    private Integer difficulty4 = 0;
-    @Column(name = "difficulty_5", nullable = false)
-    private Integer difficulty5 = 0;
-    @Column(name = "difficulty_6", nullable = false)
-    private Integer difficulty6 = 0;
+    @Column(name = "rating_1", nullable = false)
+    private Integer rating1 = 0;
+    @Column(name = "rating_2", nullable = false)
+    private Integer rating2 = 0;
+    @Column(name = "rating_3", nullable = false)
+    private Integer rating3 = 0;
+    @Column(name = "rating_4", nullable = false)
+    private Integer rating4 = 0;
+    @Column(name = "rating_5", nullable = false)
+    private Integer rating5 = 0;
+    @Column(name = "rating_6", nullable = false)
+    private Integer rating6 = 0;
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private StatusType status;
@@ -45,19 +45,10 @@ public class LearnSession {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public LearnSession(Long id, Timestamp createdAt, Timestamp finishedAt, Integer difficulty1, Integer difficulty2, Integer difficulty3, Integer difficulty4, Integer difficulty5, Integer difficulty6, StatusType status, Deck deck, User user) {
-        this.id = id;
-        this.createdAt = createdAt;
-        this.finishedAt = finishedAt;
-        this.difficulty1 = difficulty1;
-        this.difficulty2 = difficulty2;
-        this.difficulty3 = difficulty3;
-        this.difficulty4 = difficulty4;
-        this.difficulty5 = difficulty5;
-        this.difficulty6 = difficulty6;
-        this.status = status;
-        this.deck = deck;
+    public LearnSession(User user, Deck deck, StatusType status) {
         this.user = user;
+        this.deck = deck;
+        this.status = status;
     }
 
     public LearnSession() {
@@ -75,28 +66,28 @@ public class LearnSession {
         return finishedAt;
     }
 
-    public Integer getDifficulty1() {
-        return difficulty1;
+    public Integer getRating1() {
+        return rating1;
     }
 
-    public Integer getDifficulty2() {
-        return difficulty2;
+    public Integer getRating2() {
+        return rating2;
     }
 
-    public Integer getDifficulty3() {
-        return difficulty3;
+    public Integer getRating3() {
+        return rating3;
     }
 
-    public Integer getDifficulty4() {
-        return difficulty4;
+    public Integer getRating4() {
+        return rating4;
     }
 
-    public Integer getDifficulty5() {
-        return difficulty5;
+    public Integer getRating5() {
+        return rating5;
     }
 
-    public Integer getDifficulty6() {
-        return difficulty6;
+    public Integer getRating6() {
+        return rating6;
     }
 
     public StatusType getStatus() {
@@ -109,5 +100,43 @@ public class LearnSession {
 
     public User getUser() {
         return user;
+    }
+
+    public void setRating1(Integer rating1) {
+        this.rating1 = rating1;
+    }
+
+    public void setRating2(Integer rating2) {
+        this.rating2 = rating2;
+    }
+
+    public void setRating3(Integer rating3) {
+        this.rating3 = rating3;
+    }
+
+    public void setRating4(Integer rating4) {
+        this.rating4 = rating4;
+    }
+
+    public void setRating5(Integer rating5) {
+        this.rating5 = rating5;
+    }
+
+    public void setRating6(Integer rating6) {
+        this.rating6 = rating6;
+    }
+
+    public void setFinishedAt(Timestamp finishedAt) {
+        this.finishedAt = finishedAt;
+    }
+
+    public LearnSession setLearnStatus(StatusType status) {
+        this.status = status;
+        return this;
+    }
+
+    public LearnSession setEndTimestamp() {
+        this.finishedAt = Timestamp.from(Instant.now());
+        return this;
     }
 }

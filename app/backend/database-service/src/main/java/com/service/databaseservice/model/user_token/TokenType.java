@@ -16,6 +16,9 @@ public class TokenType {
     public TokenType() {
     }
 
+    public TokenType(String tokenType) {
+        this.type = tokenType;
+    }
     public Long getId() {
         return id;
     }

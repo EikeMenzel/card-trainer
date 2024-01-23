@@ -13,8 +13,27 @@
     </properties>
 
     <modules>
-        <module>demo</module>
+        <module>gateway</module>
         <module>database-service</module>
+        <module>mail-service</module>
+        <module>user-service</module>
+        <module>cards-service</module>
+        <module>authentication-service</module>
+        <module>session-service</module>
+        <module>achievement-service</module>
         <!-- Add more modules as needed -->
     </modules>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.4.0.905</version>
+            </plugin>
+        </plugins>
+    </build>
+
+
 </project>

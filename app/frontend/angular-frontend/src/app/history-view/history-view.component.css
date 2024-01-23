@@ -1,0 +1,7 @@
+.primary-background-color {
+  background: var(--primary-color);
+}
+tr.hover-highlight:hover td {
+  background-color: var(--bg-main-color);
+  cursor: pointer;
+}

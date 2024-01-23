@@ -1,0 +1,15 @@
+<div class="modal-header custom-modal-header text-center">
+  <h5 class="modal-title w-100">{{ achievementName | translate }}</h5>
+</div>
+<div class="modal-body text-center custom-modal-body">
+  <img
+    *ngIf="achievementImageUrl"
+    [src]="achievementImageUrl"
+    alt="Achievement Image"
+    class="modal-image hover-zoom">
+  <br><br>
+  <p>{{ achievementDescription }}</p>
+</div>
+<div class="modal-footer custom-modal-footer">
+  <button type="button" class="btn continue-button" (click)="closeModal()"> {{ 'continue' | translate }}</button>
+</div>

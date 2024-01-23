@@ -1,0 +1,96 @@
+<ng-container *ngIf="!loginSuccess; else other" xmlns="http://www.w3.org/1999/html">
+  <div class="register-container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card">
+          <div class="card-body">
+
+            <!-- Simon -->
+            <div class="text-center">
+              <img src="assets/fox3.png" alt="Profile Image" class="simon">
+              <h2 class="my-3">{{ 'hey' |translate }}</h2>
+              <p>
+                {{'no_account_no_worries' | translate}}<br>
+               {{'sign_up_by_entering_the_information_below' | translate}} </p>
+            </div>
+
+            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" id="register-form">
+              <!-- Email -->
+              <div class="form-group mb-3">
+                <label for="email">{{'email' | translate}}</label>
+                <input [style.border-color]="emailBorder" type="email" class="form-control" id="email"
+                       placeholder="{{'enter_your_email' | translate}}" name="email" (ngModelChange)="validateInput('email',emailValue.value)" required ngModel #emailValue>
+                <div class="error">
+                  {{emailError}}
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div class="form-group mb-3">
+                <label for="username">{{'username' | translate}}</label>
+                <input [style.border-color]="usernameBorder" type="text" class="form-control" id="username"
+                       placeholder="{{'enter_your_username' | translate}}" name="username" required ngModel (ngModelChange)="validateInput('username',usernameValue.value)" #usernameValue >
+                <div class="error">
+                  {{usernameError}}
+                </div>
+              </div>
+              <!-- Password with toggle button inside the input field -->
+              <div class="form-group mb-3">
+                <label for="password">{{'password' | translate}}</label>
+                <span class="password-policy" title="{{'password_requirements' | translate }}"
+                >?
+              </span>
+                <div class="input-group mb-1">
+                  <input [style.border-color]="passwordBorder" [type]="showPassword ? 'text' : 'password'"
+                         class="form-control" placeholder="{{'enter_your_password' | translate}}" name="password" id="password" ngModel
+                         required (ngModelChange)="validateInput('password',passwordValue.value)" #passwordValue>
+                  <div class="input-group-append">
+                    <button type="button" class="btn toggle-password" (click)="showPassword = !showPassword">
+                      <fa-icon [icon]="showPassword ? faEye : faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="error">
+                  <p>{{passwordError}}</p>
+                </div>
+              </div>
+
+              <!-- Password repeat -->
+              <div class="form-group mb-3">
+                <label for="password-repeat">{{ 'confirm_password' | translate}}</label>
+                <div class="input-group mb-1">
+                  <input [style.border-color]="passwordRepeatBorder" [type]="showPasswordRepeat ? 'text' : 'password'"
+                         class="form-control" id="password-repeat" placeholder="{{'re-enter_your_password' | translate}}"
+                         name="password-repeat" ngModel required (ngModelChange)="validateInput('passwordRepeat',passwordRepValue.value)" #passwordRepValue>
+                  <div class="input-group-append">
+                    <button type="button" class="btn toggle-password"
+                            (click)="showPasswordRepeat = !showPasswordRepeat">
+                      <fa-icon [icon]="showPasswordRepeat ? faEye : faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div class="error">
+                  {{passwordRepeatError}}
+                </div>
+              </div>
+
+              <button [disabled]="buttonIsPressed" type="submit" id="register-button" class="btn btn-block submit-button">
+                <span *ngIf="!buttonIsPressed">{{ 'sign_up' | translate }}</span>
+                <span *ngIf="buttonIsPressed" class="spinner-border spinner-border-sm"></span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Login -->
+          <div class="card-footer text-center mb-4">
+            {{'already_have_an_account' | translate}} <a routerLink="/login" class="sign-in-link">{{ 'sign_in' | translate }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #other>
+  <app-register-successful [userEmail]="email"></app-register-successful>
+</ng-template>

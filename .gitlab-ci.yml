@@ -4,7 +4,6 @@ stages:
   - code_quality
   - push_to_registry
 
-
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   DOCKER_DRIVER: overlay2
@@ -21,7 +20,8 @@ build_frontend:
   script:
     - cd app/frontend/angular-frontend
     - npm install
-    - ng build --configuration=production
+    - ng build
+  allow_failure: false
 
 build_backend:
   stage: build
@@ -32,6 +32,7 @@ build_backend:
     - cd app/backend
     - mvn clean install -DskipTests=true --batch-mode
     - mvn package
+  allow_failure: false
 
 test_backend: #unit tests backend
   stage: test
@@ -41,17 +42,41 @@ test_backend: #unit tests backend
   script:
     - cd app/backend
     - mvn test
+  allow_failure: false
 
-sonarqube: # Sonarqube community edition only supports master branch
+test_frontend: #e2e tests frontend
+  stage: test
+  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+  tags:
+    - docker
+  script:
+    - cd app/frontend/angular-frontend
+    - npm ci
+    - npm start &
+    - npx wait-on http://localhost:4200
+    - npx cypress run --browser firefox
+  allow_failure: false
+
+sonarqube_frontend:
   stage: code_quality
   image: sonarsource/sonar-scanner-cli:latest
   tags:
     - docker
   allow_failure: false
   script:
-    - sonar-scanner -Dsonar.qualitygate.wait=true
-  only:
-    - master
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONTEND -Dsonar.sources=./app/frontend -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN_FRONTEND -Dsonar.exclusions=angular-frontend/src/app/app.component.css,angular-frontend/src/app/donut-chart/donut-chart.component.css
+
+sonarqube_backend:
+  stage: code_quality
+  tags:
+    - docker
+  image: maven:3.9.6-eclipse-temurin-21-jammy
+  script:
+    - cd app/backend
+    - mvn clean verify
+    - mvn sonar:sonar -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$SONAR_PROJECT_KEY_BACKEND -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN_BACKEND -Dsonar.cpd.exclusions=authentication-service/src/main/java/com/service/authenticationservice/payload/inc/UserDTO.java,authentication-service/src/main/java/com/service/authenticationservice/security/services/UserDetailsImpl.java,cards-service/src/main/java/com/service/cardsservice/configuration/AppConfig.java,gateway/src/main/java/com/service/gateway/model/UserDTO.java,gateway/src/main/java/com/service/gateway/security/services/UserDetailsImpl.java,session-service/src/main/java/com/service/sessionservice/configuration/AppConfig.java -Dsonar.exclusions=mail-service/src/main/java/com/service/mailservice/services/MailContentProvider.java,achievement-service/src/main/java/com/service/achievementservice/configuration/UserHandshakeHandler.java
+  allow_failure: false
+
 
 push_backend_to_registry: # push images to registry
   stage: push_to_registry
@@ -66,10 +91,38 @@ push_backend_to_registry: # push images to registry
     - docker login $CI_REGISTRY_URL -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
-    - cd app/backend/demo
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/demo-service:$CI_COMMIT_SHORT_SHA . #--load
-    - docker push $CI_REGISTRY_IMAGE_PATH/demo-service:$CI_COMMIT_SHORT_SHA
-
+    - cd app/backend/authentication-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/authentication-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/authentication-service:latest
+    - cd ..
+    - cd database-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/database-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/database-service:latest
+    - cd ..
+    - cd mail-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/mail-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/mail-service:latest
+    - cd ..
+    - cd cards-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/cards-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/cards-service:latest
+    - cd ..
+    - cd user-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/user-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/user-service:latest
+    - cd ..
+    - cd session-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/session-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/session-service:latest
+    - cd ..
+    - cd gateway
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/gateway:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/gateway:latest
+    - cd ..
+    - cd achievement-service
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/achievement-service:latest .
+    - docker push $CI_REGISTRY_IMAGE_PATH/achievement-service:latest
+  allow_failure: true
 
 push_frontend_to_registry: # push images to registry
   stage: push_to_registry
@@ -86,5 +139,6 @@ push_frontend_to_registry: # push images to registry
     - export CI_REGISTRY_IMAGE_PATH=$CI_REGISTRY_URL/$GITLAB_PROJECT_URL/$CI_COMMIT_REF_SLUG
     - export FRONTEND=angular-frontend;
     - cd app/frontend/$FRONTEND
-    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA . # --load
-    - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:$CI_COMMIT_SHORT_SHA
+    - DOCKER_BUILDKIT=0 docker build -t $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest -f Dockerfile-dev .
+    - docker push $CI_REGISTRY_IMAGE_PATH/$FRONTEND:latest
+  allow_failure: true

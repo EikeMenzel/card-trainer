@@ -35,6 +35,13 @@ public class UserToken {
         this.user = user;
     }
 
+    public UserToken(String tokenValue, Timestamp expiryTimestamp, TokenType tokenType, User user) {
+        this.tokenValue = tokenValue;
+        this.expiryTimestamp = expiryTimestamp;
+        this.tokenType = tokenType;
+        this.user = user;
+    }
+
     public UserToken() {
     }
 
