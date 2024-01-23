@@ -293,7 +293,7 @@ public class DeckController {
             if (dto instanceof TextAnswerDTO textAnswerDTO) {
                 var cardDTO = new com.service.databaseservice.payload.savecard.CardDTO(textAnswerDTO.getCardDTO().question(), imageService.saveImage(userId, textAnswerDTO.getCardDTO().image()).orElse(null));
                 var jsonNode = objectMapper.valueToTree(new TextAnswerCardDTO(cardDTO, textAnswerDTO.getTextAnswer(), imageService.saveImage(userId, textAnswerDTO.getImage()).orElse(null)));
-                cardService.saveCard(jsonNode, 1L, deck.get().getId());
+                cardService.saveCard(jsonNode, userId, deck.get().getId());
             } else if (dto instanceof MultipleChoiceCardDTO multipleChoiceCardDTO) {
                 var cardDTO = new com.service.databaseservice.payload.savecard.CardDTO(multipleChoiceCardDTO.getCardDTO().question(), imageService.saveImage(userId, multipleChoiceCardDTO.getCardDTO().image()).orElse(null));
                 List<ChoiceAnswerDTO> choiceAnswerDTOList = multipleChoiceCardDTO.getChoiceAnswers()
