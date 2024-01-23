@@ -5,7 +5,7 @@ describe('Forgot Password Component', () => {
   });
 
   it('Forgot Password: should open screen', () => {
-    cy.contains('Reset your Password').should('be.visible')
+    cy.contains('Reset your password').should('be.visible')
   });
 
   it('Forgot Password: should show error on bad email', () => {

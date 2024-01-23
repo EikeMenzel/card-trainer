@@ -61,8 +61,8 @@ it('Deck-Detail: should open Page', () => {
   it('Deck-Detail: should open share modal', () => {
     cy.get('#share-modal-button').click()
 
-    cy.contains('Share your Deck').should("be.visible")
-    cy.contains('Enter the E-Mail Address of the recipient:').should("be.visible")
+    cy.contains('Share Your Deck').should("be.visible")
+    cy.contains('Enter the E-Mail address of the recipient:').should("be.visible")
   });
 
   it('Deck-Detail: should show error for bad Email', () => {
