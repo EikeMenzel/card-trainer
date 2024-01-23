@@ -53,7 +53,7 @@ describe('Edit-Card-Component: create New Card', () => {
 
   it('Edit-Card: on save Card, should throw error', () => {
     cy.get('#save-card-button').click()
-    cy.contains("Please make sure you have entered an answer in every possibility.").should('be.visible')
+    cy.contains("Please make sure you have entered a question and answer in every answer option").should('be.visible')
   });
 
   it('Edit-Card: should save card', () => {
@@ -214,7 +214,7 @@ describe('Edit-Card-Component: Edit existent Card', () => {
     cy.get('#basic-card-answer').clear()
 
     cy.get('#save-card-button').click()
-    cy.contains("Please make sure you have entered an answer in every possibility.").should('be.visible')
+    cy.contains("Please make sure you have entered a question and answer in every answer option").should('be.visible')
   });
 
   it('Edit-Card: should safe card', () => {

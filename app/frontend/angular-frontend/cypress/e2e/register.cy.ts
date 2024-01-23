@@ -44,7 +44,7 @@ describe('Register Component', () => {
 
     cy.get('#register-button').click();
 
-    cy.contains('Username is to long or to short').should("be.visible")
+    cy.contains('Username is too long or too short').should("be.visible")
   });
 
   it('Register: should show error when password are not equal', () => {
