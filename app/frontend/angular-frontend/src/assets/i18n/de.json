@@ -253,5 +253,6 @@
   "deck_creation_error": "Neues Deck konnte nicht erstellt werden",
   "delete_deck_confirmation": "Sind Sie sicher, dass Sie das Deck löschen möchten?",
   "loading_error": "Ladefehler",
-  "deck_deletion_error": "Deck konnte nicht gelöscht werden"
+  "deck_deletion_error": "Deck konnte nicht gelöscht werden",
+  "done": "Fertig"
 }
