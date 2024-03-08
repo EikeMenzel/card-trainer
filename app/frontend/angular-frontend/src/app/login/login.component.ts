@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   ReactiveFormsModule,
   FormsModule,
@@ -15,7 +15,6 @@ import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {WebsocketService} from "../services/websocket/websocket-service";
 import {NgIf, NgOptimizedImage} from "@angular/common";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {CookieService} from "ngx-cookie-service";
 
 @Component({
   selector: 'app-login',
@@ -35,7 +34,7 @@ import {CookieService} from "ngx-cookie-service";
     TranslateModule
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   public emailBorder: string = "var(--bg-main-color)";
   public passwordBorder: string = "var(--bg-main-color)";
@@ -57,10 +56,11 @@ export class LoginComponent {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.authService.isLoggedIn) {
+      // Hardcoded english used here because of ngx-translate bug that will be fixed by the official ngx-translate team later
+      this.toastService.showInfoToast("Warning", "Already Logged in")
       this.router.navigate(["/"])
-      this.toastService.showInfoToast(this.translate.instant("warning"), this.translate.instant("logged_in"))
     }
   }
 

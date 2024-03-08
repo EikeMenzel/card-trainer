@@ -72,12 +72,12 @@ class PasswordSecurityServiceTest {
 
     @Test
     void testCheckPasswordSecurity_NoDigit() {
-        assertFalse(passwordSecurityService.checkPasswordSecurity("NoDigitSymbol!"));
+        assertFalse(passwordSecurityService.checkPasswordSecurity("TestNoDigit!"));
     }
 
     @Test
     void testCheckPasswordSecurity_NoSymbol() {
-        assertFalse(passwordSecurityService.checkPasswordSecurity("NoSymbol123"));
+        assertFalse(passwordSecurityService.checkPasswordSecurity("5TestPass2word6"));
     }
 
     @Test

@@ -1,6 +1,8 @@
 SELECT 'CREATE DATABASE swtp'
 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'swtp');
 
+ALTER DATABASE "swtp" OWNER TO "db_controller";
+
 CREATE TABLE "users"
 (
     u_id              BIGSERIAL PRIMARY KEY,
